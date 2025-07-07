@@ -13,6 +13,55 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon-180x180.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    
+    <!-- React DevTools Integration -->
+    <script>
+      // React DevTools setup pentru development
+      if (process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost') {
+        // Conectare React DevTools pentru React DOM
+        const devToolsScript = document.createElement('script');
+        devToolsScript.src = 'http://localhost:8097';
+        devToolsScript.async = true;
+        devToolsScript.onerror = function() {
+          // Fallback pentru IP local
+          const fallbackScript = document.createElement('script');
+          fallbackScript.src = 'http://192.168.76.130:8097';
+          fallbackScript.async = true;
+          document.head.appendChild(fallbackScript);
+        };
+        document.head.appendChild(devToolsScript);
+        
+        // Debug utilities pentru console
+        window.LibreChatDebug = {
+          enableHighlightUpdates: () => {
+            if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+              window.__REACT_DEVTOOLS_GLOBAL_HOOK__.settings.highlightUpdates = true;
+              console.log('✅ React DevTools: Highlight updates enabled');
+            }
+          },
+          disableHighlightUpdates: () => {
+            if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+              window.__REACT_DEVTOOLS_GLOBAL_HOOK__.settings.highlightUpdates = false;
+              console.log('❌ React DevTools: Highlight updates disabled');
+            }
+          },
+          inspectComponent: (selector) => {
+            const element = document.querySelector(selector);
+            if (element && window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+              window.__REACT_DEVTOOLS_GLOBAL_HOOK__.selectNode(element);
+              console.log('🔍 Selected element for inspection:', element);
+            }
+          }
+        };
+        
+        console.log('🚀 LibreChat Debug Tools loaded!');
+        console.log('📋 Available commands:');
+        console.log('  - LibreChatDebug.enableHighlightUpdates()');
+        console.log('  - LibreChatDebug.disableHighlightUpdates()');
+        console.log('  - LibreChatDebug.inspectComponent("selector")');
+      }
+    </script>
+    
     <style>
       html,
       body {
