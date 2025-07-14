@@ -76,7 +76,7 @@ const Registration: React.FC = () => {
             validation,
           )}
           aria-invalid={!!errors[id]}
-          className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-[#dbeafe] dark:bg-[#1a1a2e] px-3.5 pb-2.5 pt-3 text-black dark:text-white duration-200 focus:border-[#4d8eff] focus:outline-none"
+          className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-[#dbeafe] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#1a1a2e] dark:text-white"
           placeholder=" "
           data-testid={id}
         />
