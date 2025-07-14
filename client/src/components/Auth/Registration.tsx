@@ -82,7 +82,7 @@ const Registration: React.FC = () => {
         />
         <label
           htmlFor={id}
-          className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-white dark:bg-black px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+          className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-white px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-black rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
         >
           {localize(label)}
         </label>
