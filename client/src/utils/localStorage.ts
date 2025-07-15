@@ -78,3 +78,16 @@ export function clearAllConversationStorage() {
     }
   });
 }
+
+export function clearEndpointStorage() {
+  const keys = Object.keys(localStorage);
+  keys.forEach((key) => {
+    if (
+      key.startsWith(LocalStorageKeys.LAST_CONVO_SETUP) ||
+      key === LocalStorageKeys.LAST_MODEL ||
+      key === LocalStorageKeys.LAST_SPEC
+    ) {
+      localStorage.removeItem(key);
+    }
+  });
+}

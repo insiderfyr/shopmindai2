@@ -13,6 +13,7 @@ import {
   BedrockIcon,
   Sparkles,
 } from '~/components/svg';
+import CustomLogoIcon from '~/components/svg/CustomLogoIcon';
 import UnknownIcon from './UnknownIcon';
 import { cn } from '~/utils';
 
@@ -65,7 +66,7 @@ export const icons: IconsRecord = {
   [EModelEndpoint.openAI]: GPTIcon,
   [EModelEndpoint.gptPlugins]: MinimalPlugin,
   [EModelEndpoint.anthropic]: AnthropicIcon,
-  [EModelEndpoint.chatGPTBrowser]: LightningIcon,
+  [EModelEndpoint.chatGPTBrowser]: CustomLogoIcon,
   [EModelEndpoint.google]: GoogleMinimalIcon,
   [EModelEndpoint.custom]: CustomMinimalIcon,
   [EModelEndpoint.assistants]: AssistantAvatar,

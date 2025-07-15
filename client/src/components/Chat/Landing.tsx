@@ -45,7 +45,6 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
     let ep = conversation?.endpoint ?? '';
     if (
       [
-        EModelEndpoint.chatGPTBrowser,
         EModelEndpoint.azureOpenAI,
         EModelEndpoint.gptPlugins,
       ].includes(ep as EModelEndpoint)

@@ -11,6 +11,7 @@ import {
   BedrockIcon,
   Sparkles,
 } from '~/components/svg';
+import CustomLogoIcon from '~/components/svg/CustomLogoIcon';
 import UnknownIcon from '~/hooks/Endpoint/UnknownIcon';
 import { IconProps } from '~/common';
 import { cn } from '~/utils';
@@ -43,7 +44,7 @@ const MinimalIcon: React.FC<IconProps> = (props) => {
       icon: <CustomMinimalIcon />,
       name: 'Custom',
     },
-    [EModelEndpoint.chatGPTBrowser]: { icon: <LightningIcon />, name: 'ChatGPT' },
+    [EModelEndpoint.chatGPTBrowser]: { icon: <CustomLogoIcon />, name: 'ChatGPT' },
     [EModelEndpoint.assistants]: { icon: <Sparkles className="icon-sm" />, name: 'Assistant' },
     [EModelEndpoint.azureAssistants]: { icon: <Sparkles className="icon-sm" />, name: 'Assistant' },
     [EModelEndpoint.agents]: {
