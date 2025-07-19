@@ -4,7 +4,6 @@ const tokenizer = require('./tokenizer');
 const endpoints = require('./endpoints');
 const staticRoute = require('./static');
 const messages = require('./messages');
-const memories = require('./memories');
 const presets = require('./presets');
 const prompts = require('./prompts');
 const balance = require('./balance');
@@ -20,7 +19,6 @@ const roles = require('./roles');
 const oauth = require('./oauth');
 const files = require('./files');
 const share = require('./share');
-const tags = require('./tags');
 const auth = require('./auth');
 const edit = require('./edit');
 const keys = require('./keys');
@@ -32,7 +30,6 @@ module.exports = {
   auth,
   keys,
   user,
-  tags,
   roles,
   oauth,
   files,
@@ -49,7 +46,6 @@ module.exports = {
   presets,
   balance,
   messages,
-  memories,
   endpoints,
   tokenizer,
   assistants,

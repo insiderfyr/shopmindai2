@@ -2,7 +2,6 @@ const {
   SystemRoles,
   Permissions,
   PermissionTypes,
-  isMemoryEnabled,
   removeNullishValues,
 } = require('librechat-data-provider');
 const { updateAccessPermissions } = require('~/models/Role');
@@ -21,13 +20,7 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
   const hasModelSpecs = config?.modelSpecs?.list?.length > 0;
   const includesAddedEndpoints = config?.modelSpecs?.addedEndpoints?.length > 0;
 
-  const memoryConfig = config?.memory;
-  const memoryEnabled = isMemoryEnabled(memoryConfig);
-  /** Only disable memories if memory config is present but disabled/invalid */
-  const shouldDisableMemories = memoryConfig && !memoryEnabled;
-  /** Check if personalization is enabled (defaults to true if memory is configured and enabled) */
-  const isPersonalizationEnabled =
-    memoryConfig && memoryEnabled && memoryConfig.personalize !== false;
+  // Memory functionality removed
 
   /** @type {TCustomConfig['interface']} */
   const loadedInterface = removeNullishValues({
@@ -38,12 +31,10 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
       (hasModelSpecs ? includesAddedEndpoints : defaults.modelSelect),
     parameters: interfaceConfig?.parameters ?? (hasModelSpecs ? false : defaults.parameters),
     presets: interfaceConfig?.presets ?? (hasModelSpecs ? false : defaults.presets),
-    sidePanel: interfaceConfig?.sidePanel ?? defaults.sidePanel,
     privacyPolicy: interfaceConfig?.privacyPolicy ?? defaults.privacyPolicy,
     termsOfService: interfaceConfig?.termsOfService ?? defaults.termsOfService,
     mcpServers: interfaceConfig?.mcpServers ?? defaults.mcpServers,
     bookmarks: interfaceConfig?.bookmarks ?? defaults.bookmarks,
-    memories: shouldDisableMemories ? false : (interfaceConfig?.memories ?? defaults.memories),
     prompts: interfaceConfig?.prompts ?? defaults.prompts,
     multiConvo: interfaceConfig?.multiConvo ?? defaults.multiConvo,
     agents: interfaceConfig?.agents ?? defaults.agents,
@@ -56,10 +47,6 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
   await updateAccessPermissions(roleName, {
     [PermissionTypes.PROMPTS]: { [Permissions.USE]: loadedInterface.prompts },
     [PermissionTypes.BOOKMARKS]: { [Permissions.USE]: loadedInterface.bookmarks },
-    [PermissionTypes.MEMORIES]: {
-      [Permissions.USE]: loadedInterface.memories,
-      [Permissions.OPT_OUT]: isPersonalizationEnabled,
-    },
     [PermissionTypes.MULTI_CONVO]: { [Permissions.USE]: loadedInterface.multiConvo },
     [PermissionTypes.AGENTS]: { [Permissions.USE]: loadedInterface.agents },
     [PermissionTypes.TEMPORARY_CHAT]: { [Permissions.USE]: loadedInterface.temporaryChat },
@@ -69,10 +56,6 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
   await updateAccessPermissions(SystemRoles.ADMIN, {
     [PermissionTypes.PROMPTS]: { [Permissions.USE]: loadedInterface.prompts },
     [PermissionTypes.BOOKMARKS]: { [Permissions.USE]: loadedInterface.bookmarks },
-    [PermissionTypes.MEMORIES]: {
-      [Permissions.USE]: loadedInterface.memories,
-      [Permissions.OPT_OUT]: isPersonalizationEnabled,
-    },
     [PermissionTypes.MULTI_CONVO]: { [Permissions.USE]: loadedInterface.multiConvo },
     [PermissionTypes.AGENTS]: { [Permissions.USE]: loadedInterface.agents },
     [PermissionTypes.TEMPORARY_CHAT]: { [Permissions.USE]: loadedInterface.temporaryChat },

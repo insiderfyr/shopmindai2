@@ -167,9 +167,7 @@ module.exports = {
       filters.push({ $or: [{ isArchived: false }, { isArchived: { $exists: false } }] });
     }
 
-    if (Array.isArray(tags) && tags.length > 0) {
-      filters.push({ tags: { $in: tags } });
-    }
+
 
     filters.push({ $or: [{ expiredAt: null }, { expiredAt: { $exists: false } }] });
 

@@ -37,7 +37,7 @@ const { createGetMCPAuthMap, checkCapability } = require('~/server/services/Conf
 const { addCacheControl, createContextHandlers } = require('~/app/clients/prompts');
 const { initializeAgent } = require('~/server/services/Endpoints/agents/agent');
 const { spendTokens, spendStructuredTokens } = require('~/models/spendTokens');
-const { getFormattedMemories, deleteMemory, setMemory } = require('~/models');
+// const { getFormattedMemories, deleteMemory, setMemory } = require('~/models');
 const { encodeAndFormat } = require('~/server/services/Files/images/encode');
 const { getProviderConfig } = require('~/server/services/Endpoints');
 const BaseClient = require('~/app/clients/BaseClient');
@@ -398,26 +398,8 @@ class AgentClient extends BaseClient {
    * @returns {Promise<string | undefined>}
    */
   async useMemory() {
-    const user = this.options.req.user;
-    if (user.personalization?.memories === false) {
-      return;
-    }
-    const hasAccess = await checkAccess({
-      user,
-      permissionType: PermissionTypes.MEMORIES,
-      permissions: [Permissions.USE],
-      getRoleByName,
-    });
-
-    if (!hasAccess) {
-      logger.debug(
-        `[api/server/controllers/agents/client.js #useMemory] User ${user.id} does not have USE permission for memories`,
-      );
-      return;
-    }
-    /** @type {TCustomConfig['memory']} */
-    const memoryConfig = this.options.req?.app?.locals?.memory;
-    if (!memoryConfig || memoryConfig.disabled === true) {
+    // Memory functionality has been removed
+    return;
       return;
     }
 
@@ -487,9 +469,9 @@ class AgentClient extends BaseClient {
       messageId,
       conversationId,
       memoryMethods: {
-        setMemory,
-        deleteMemory,
-        getFormattedMemories,
+              // setMemory,
+      // deleteMemory,
+      // getFormattedMemories,
       },
       res: this.options.res,
     });
