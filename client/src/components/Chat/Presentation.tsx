@@ -5,7 +5,9 @@ import type { ExtendedFile } from '~/common';
 import { useDeleteFilesMutation } from '~/data-provider';
 import DragDropWrapper from '~/components/Chat/Input/Files/DragDropWrapper';
 import Artifacts from '~/components/Artifacts/Artifacts';
-import { SidePanelGroup } from '~/components/SidePanel';
+import { ResizableHandleAlt, ResizablePanel, ResizablePanelGroup } from '~/components/ui/Resizable';
+import { normalizeLayout } from '~/utils';
+import throttle from 'lodash/throttle';
 import { useSetFilesToDelete } from '~/hooks';
 import { EditorProvider } from '~/Providers';
 import store from '~/store';
@@ -47,34 +49,60 @@ export default function Presentation({ children }: { children: React.ReactNode }
     mutateAsync({ files });
   }, [mutateAsync]);
 
-  const defaultLayout = useMemo(() => {
-    const resizableLayout = localStorage.getItem('react-resizable-panels:layout');
-    return typeof resizableLayout === 'string' ? JSON.parse(resizableLayout) : undefined;
-  }, []);
-  const defaultCollapsed = useMemo(() => {
-    const collapsedPanels = localStorage.getItem('react-resizable-panels:collapsed');
-    return typeof collapsedPanels === 'string' ? JSON.parse(collapsedPanels) : true;
-  }, []);
-  const fullCollapse = useMemo(() => localStorage.getItem('fullPanelCollapse') === 'true', []);
+  const calculateLayout = useMemo(() => {
+    if (artifacts == null || Object.keys(artifacts ?? {}).length === 0 || artifactsVisibility !== true) {
+      return [100];
+    } else {
+      return [50, 50];
+    }
+  }, [artifacts, artifactsVisibility]);
+
+  const currentLayout = useMemo(() => normalizeLayout(calculateLayout), [calculateLayout]);
+
+  const throttledSaveLayout = useMemo(
+    () =>
+      throttle((sizes: number[]) => {
+        const normalizedSizes = normalizeLayout(sizes);
+        localStorage.setItem('react-resizable-panels:layout', JSON.stringify(normalizedSizes));
+      }, 350),
+    [],
+  );
+
+  const minSizeMain = useMemo(() => (artifacts != null && Object.keys(artifacts ?? {}).length > 0 && artifactsVisibility === true ? 15 : 30), [artifacts, artifactsVisibility]);
 
   return (
     <DragDropWrapper className="relative flex w-full grow overflow-hidden bg-presentation">
-      <SidePanelGroup
-        defaultLayout={defaultLayout}
-        fullPanelCollapse={fullCollapse}
-        defaultCollapsed={defaultCollapsed}
-        artifacts={
-          artifactsVisibility === true && Object.keys(artifacts ?? {}).length > 0 ? (
-            <EditorProvider>
-              <Artifacts />
-            </EditorProvider>
-          ) : null
-        }
+      <ResizablePanelGroup
+        direction="horizontal"
+        onLayout={(sizes) => throttledSaveLayout(sizes)}
+        className="transition-width relative h-full w-full flex-1 overflow-auto bg-presentation"
       >
-        <main className="flex h-full flex-col overflow-y-auto" role="main">
-          {children}
-        </main>
-      </SidePanelGroup>
+        <ResizablePanel
+          defaultSize={currentLayout[0]}
+          minSize={minSizeMain}
+          order={1}
+          id="messages-view"
+        >
+          <main className="flex h-full flex-col overflow-y-auto" role="main">
+            {children}
+          </main>
+        </ResizablePanel>
+        {artifactsVisibility === true && Object.keys(artifacts ?? {}).length > 0 && (
+          <>
+            <ResizableHandleAlt withHandle className="ml-3 bg-border-medium text-text-primary" />
+            <ResizablePanel
+              defaultSize={currentLayout[1]}
+              minSize={minSizeMain}
+              order={2}
+              id="artifacts-panel"
+            >
+              <EditorProvider>
+                <Artifacts />
+              </EditorProvider>
+            </ResizablePanel>
+          </>
+        )}
+      </ResizablePanelGroup>
     </DragDropWrapper>
   );
 }
