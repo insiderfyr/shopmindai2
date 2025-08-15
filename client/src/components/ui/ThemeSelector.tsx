@@ -11,8 +11,8 @@ declare global {
 const Theme = ({ theme, onChange }: { theme: string; onChange: (value: string) => void }) => {
   const themeIcons = {
     system: <Monitor />,
-    dark: <Moon color="white" />,
-    light: <Sun />,
+    dark: <Sun />,
+    light: <Moon color="white" />,
   };
 
   const nextTheme = theme === 'dark' ? 'light' : 'dark';
