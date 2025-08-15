@@ -60,12 +60,15 @@ function AuthLayout({
     <div className="relative flex min-h-screen flex-col bg-blue-100 dark:bg-[#1a1a2e]">
       <Banner />
       <BlinkAnimation active={isFetching}>
-        <div className="mt-6 h-16 w-full bg-cover">
+        <div className="mt-6 flex h-16 w-full items-center justify-center gap-4 bg-cover">
           <img
             src="/assets/logo.svg"
-            className="h-full w-full object-contain"
+            className="h-full object-contain"
             alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
           />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-blue-600">
+            ShopMindAI
+          </h1>
         </div>
       </BlinkAnimation>
       <DisplayError />
