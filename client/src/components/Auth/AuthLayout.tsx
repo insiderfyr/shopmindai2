@@ -60,14 +60,14 @@ function AuthLayout({
     <div className="relative flex min-h-screen flex-col bg-blue-100 dark:bg-[#1a1a2e]">
       <Banner />
       <BlinkAnimation active={isFetching}>
-        <div className="mt-6 flex h-16 w-full items-center justify-center gap-4 bg-cover">
+        <div className="flex h-14 items-center justify-center gap-3 -ml-20 mt-6">
           <img
             src="/assets/logo.svg"
             className="h-full object-contain"
             alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
           />
-          <h1 className="text-3xl font-bold text-foreground">
-            ShopMindAI
+          <h1 className="text-2xl font-bold text-foreground">
+            ShopMind<span className="text-[#4d8eff]">AI</span>
           </h1>
         </div>
       </BlinkAnimation>
@@ -77,20 +77,22 @@ function AuthLayout({
       </div>
 
       <div className="flex flex-grow items-center justify-center">
-        <div className="w-authPageWidth overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-lg">
-          {!hasStartupConfigError && !isFetching && (
-            <h1
-              className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
-              style={{ userSelect: 'none' }}
-            >
-              {header}
-            </h1>
-          )}
-          {children}
-          {!pathname.includes('2fa') &&
-            (pathname.includes('login') || pathname.includes('register')) && (
-              <SocialLoginRender startupConfig={startupConfig} />
+        <div className="flex flex-col items-center gap-8">
+          <div className="w-authPageWidth overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-lg">
+            {!hasStartupConfigError && !isFetching && (
+              <h1
+                className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
+                style={{ userSelect: 'none' }}
+              >
+                {header}
+              </h1>
             )}
+            {children}
+            {!pathname.includes('2fa') &&
+              (pathname.includes('login') || pathname.includes('register')) && (
+                <SocialLoginRender startupConfig={startupConfig} />
+              )}
+          </div>
         </div>
       </div>
       <Footer startupConfig={startupConfig} />
