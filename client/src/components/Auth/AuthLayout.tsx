@@ -66,7 +66,7 @@ function AuthLayout({
             className="h-full object-contain"
             alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
           />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-blue-600">
+          <h1 className="text-3xl font-bold text-foreground">
             ShopMindAI
           </h1>
         </div>
