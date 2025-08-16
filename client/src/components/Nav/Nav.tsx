@@ -203,7 +203,7 @@ const Nav = memo(
                   <nav
                     id="chat-history-nav"
                     aria-label={localize('com_ui_chat_history')}
-                    className="flex h-full flex-col px-2 pb-3.5 md:px-3 bg-blue-100/60"
+                    className="flex h-full flex-col px-2 pb-3.5 md:px-3 bg-blue-100/60 dark:bg-[#0f1a2a]"
                   >
                     <div className="flex flex-1 flex-col" ref={outerContainerRef}>
                       <MemoNewChat

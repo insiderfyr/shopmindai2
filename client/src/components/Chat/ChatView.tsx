@@ -86,7 +86,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                   className={cn(
                     'flex flex-col',
                     isLandingPage
-                      ? 'flex-1 items-center justify-end sm:justify-center bg-blue-50'
+                      ? 'flex-1 items-center justify-end sm:justify-center bg-blue-50 dark:bg-[#182533]'
                       : 'h-full overflow-y-auto',
                   )}
                 >
