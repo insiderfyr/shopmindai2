@@ -138,7 +138,7 @@ export default function Conversation({
     <div
       className={cn(
         'group relative flex h-12 w-full items-center rounded-lg transition-colors duration-200 md:h-9',
-        isActiveConvo ? 'bg-surface-active-alt' : 'hover:bg-surface-active-alt',
+        'hover:bg-blue-100 dark:hover:bg-[#1a1a2e]',
       )}
       role="listitem"
       tabIndex={0}

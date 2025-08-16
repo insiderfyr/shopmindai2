@@ -38,9 +38,9 @@ const BookmarkNav: FC<BookmarkNavProps> = ({ tags, setTags, isSmallScreen }: Boo
                 aria-label={localize('com_ui_bookmarks')}
                 className={cn(
                   'flex items-center justify-center',
-                  'size-10 border-none text-text-primary hover:bg-accent hover:text-accent-foreground',
-                  'rounded-full border-none p-2 hover:bg-surface-hover md:rounded-xl',
-                  open ? 'bg-surface-hover' : '',
+                  'size-10 border-none text-text-primary hover:bg-blue-100 dark:hover:bg-[#1a1a2e] hover:text-accent-foreground',
+                                      'rounded-full border-none p-2 hover:bg-blue-100 dark:hover:bg-[#1a1a2e] md:rounded-xl',
+                                      open ? 'bg-blue-100 dark:bg-[#1a1a2e]' : '',
                 )}
                 data-testid="bookmark-menu"
               >

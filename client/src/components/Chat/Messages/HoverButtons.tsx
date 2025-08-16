@@ -80,12 +80,12 @@ const HoverButton = memo(
   }: HoverButtonProps) => {
     const buttonStyle = cn(
       'hover-button rounded-lg p-1.5 text-text-secondary-alt transition-colors duration-200',
-      'hover:text-text-primary hover:bg-surface-hover',
+      'hover:text-text-primary hover:bg-blue-100 dark:hover:bg-[#1a1a2e]',
       'md:group-hover:visible md:group-focus-within:visible md:group-[.final-completion]:visible',
       !isLast && 'md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100',
       !isVisible && 'opacity-0',
       'focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white focus-visible:outline-none',
-      isActive && isVisible && 'active text-text-primary bg-surface-hover',
+      isActive && isVisible && 'active text-text-primary bg-blue-100 dark:bg-[#1a1a2e]',
       className,
     );
 
