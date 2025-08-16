@@ -1,136 +1,82 @@
-import { useRecoilState } from 'recoil';
-import { Settings2 } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
-import { Root, Anchor } from '@radix-ui/react-popover';
-import { EModelEndpoint, isParamEndpoint, tConvoUpdateSchema } from 'librechat-data-provider';
-import { useUserKeyQuery } from 'librechat-data-provider/react-query';
-import type { TPreset, TInterfaceConfig } from 'librechat-data-provider';
-import { EndpointSettings, SaveAsPresetDialog, AlternativeSettings } from '~/components/Endpoints';
-import { useSetIndexOptions, useMediaQuery, useLocalize } from '~/hooks';
-import { PluginStoreDialog, TooltipAnchor } from '~/components';
-import { useGetEndpointsQuery } from '~/data-provider';
-import OptionsPopover from './OptionsPopover';
-import PopoverButtons from './PopoverButtons';
+import { useState } from 'react';
+import { useLocalize } from '~/hooks';
 import { useChatContext } from '~/Providers';
-import { getEndpointField } from '~/utils';
-import store from '~/store';
+import { useGetStartupConfig } from '~/data-provider';
+import { useHasAccess } from '~/hooks';
+import { PermissionTypes, Permissions } from 'librechat-data-provider';
+import { isAssistantsEndpoint } from 'librechat-data-provider';
+import { Button } from '~/components/ui';
+import { Settings, Plug, Plus } from 'lucide-react';
+import { PluginStoreDialog } from '~/components/Plugins';
 
 export default function HeaderOptions({
   interfaceConfig,
 }: {
-  interfaceConfig?: Partial<TInterfaceConfig>;
+  interfaceConfig?: any;
 }) {
-  const { data: endpointsConfig } = useGetEndpointsQuery();
-
-  const [saveAsDialogShow, setSaveAsDialogShow] = useState<boolean>(false);
-  const [showPluginStoreDialog, setShowPluginStoreDialog] = useRecoilState(
-    store.showPluginStoreDialog,
-  );
   const localize = useLocalize();
+  const { conversation } = useChatContext();
+  const { data: startupConfig } = useGetStartupConfig();
+  const [showPluginStoreDialog, setShowPluginStoreDialog] = useState(false);
+  const [showMentionPopover, setShowMentionPopover] = useState(false);
 
-  const { showPopover, conversation, setShowPopover } = useChatContext();
-  const { setOption } = useSetIndexOptions();
-  const { endpoint, conversationId } = conversation ?? {};
-  const { data: keyExpiry = { expiresAt: undefined } } = useUserKeyQuery(endpoint ?? '');
-  const userProvidesKey = useMemo(
-    () => !!(endpointsConfig?.[endpoint ?? '']?.userProvide ?? false),
-    [endpointsConfig, endpoint],
-  );
-  const keyProvided = useMemo(
-    () => (userProvidesKey ? !!(keyExpiry.expiresAt ?? '') : true),
-    [keyExpiry.expiresAt, userProvidesKey],
-  );
+  const hasAccessToPlugins = useHasAccess({
+    permissionType: PermissionTypes.PLUGINS,
+    permission: Permissions.USE,
+  });
 
-  const noSettings = useMemo<{ [key: string]: boolean }>(
-    () => ({
-      [EModelEndpoint.chatGPTBrowser]: true,
-    }),
-    [conversationId],
-  );
+  const hasAccessToPrompts = useHasAccess({
+    permissionType: PermissionTypes.PROMPTS,
+    permission: Permissions.USE,
+  });
 
-  useEffect(() => {
-    if (endpoint && noSettings[endpoint]) {
-      setShowPopover(false);
-    }
-  }, [endpoint, noSettings]);
+  const endpoint = conversation?.endpoint;
+  const paramEndpoint = isAssistantsEndpoint(endpoint);
 
-  const saveAsPreset = () => {
-    setSaveAsDialogShow(true);
-  };
-
-  if (!endpoint) {
+  if (!conversation) {
     return null;
   }
 
-  const triggerAdvancedMode = () => setShowPopover((prev) => !prev);
-
-  const endpointType = getEndpointField(endpointsConfig, endpoint, 'type');
-  const paramEndpoint = isParamEndpoint(endpoint, endpointType);
-
   return (
-    <Root
-      open={showPopover}
-      // onOpenChange={} //  called when the open state of the popover changes.
-    >
-      <Anchor>
-        <div className="my-auto lg:max-w-2xl xl:max-w-3xl">
-          <span className="flex w-full flex-col items-center justify-center gap-0 md:order-none md:m-auto md:gap-2">
-            <div className="z-[61] flex w-full items-center justify-center gap-2">
-              {!noSettings[endpoint] &&
-                interfaceConfig?.parameters === true &&
-                paramEndpoint === false && (
-                  <TooltipAnchor
-                    id="parameters-button"
-                    aria-label={localize('com_ui_model_parameters')}
-                    description={localize('com_ui_model_parameters')}
-                    tabIndex={0}
-                    role="button"
-                    onClick={triggerAdvancedMode}
-                    data-testid="parameters-button"
-                    className="inline-flex size-10 items-center justify-center rounded-lg border border-border-light bg-transparent text-text-primary transition-all ease-in-out hover:bg-surface-tertiary disabled:pointer-events-none disabled:opacity-50 radix-state-open:bg-surface-tertiary"
-                  >
-                    <Settings2 size={16} aria-label="Settings/Parameters Icon" />
-                  </TooltipAnchor>
-                )}
-            </div>
-            {interfaceConfig?.parameters === true && paramEndpoint === false && (
-              <OptionsPopover
-                visible={showPopover}
-                saveAsPreset={saveAsPreset}
-                presetsDisabled={!(interfaceConfig.presets ?? false)}
-                PopoverButtons={<PopoverButtons />}
-                closePopover={() => setShowPopover(false)}
-              >
-                <div className="px-4 py-4">
-                  <EndpointSettings
-                    className="[&::-webkit-scrollbar]:w-2"
-                    conversation={conversation}
-                    setOption={setOption}
-                  />
-                  <AlternativeSettings conversation={conversation} setOption={setOption} />
-                </div>
-              </OptionsPopover>
-            )}
-            {interfaceConfig?.presets === true && (
-              <SaveAsPresetDialog
-                open={saveAsDialogShow}
-                onOpenChange={setSaveAsDialogShow}
-                preset={
-                  tConvoUpdateSchema.parse({
-                    ...conversation,
-                  }) as TPreset
-                }
-              />
-            )}
-            {interfaceConfig?.parameters === true && (
-              <PluginStoreDialog
-                isOpen={showPluginStoreDialog}
-                setIsOpen={setShowPluginStoreDialog}
-              />
-            )}
-          </span>
+    <div className="flex items-center gap-2">
+      <span className="flex items-center gap-2">
+        <Button
+          size="icon"
+          variant="outline"
+          className="h-8 w-8 rounded-lg border border-border-light bg-surface-secondary p-1 hover:bg-surface-tertiary"
+          aria-label={localize('com_ui_settings')}
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
+        <div className="flex items-center gap-2">
+          {hasAccessToPlugins && (
+            <Button
+              type="button"
+              className="h-auto w-[150px] justify-start rounded-md border border-gray-300/50 bg-transparent px-2 py-1 text-xs font-normal text-black hover:bg-gray-100 hover:text-black focus-visible:ring-1 focus-visible:ring-ring-primary dark:border-gray-600 dark:bg-transparent dark:text-white dark:hover:bg-gray-600 dark:focus-visible:ring-white"
+              onClick={() => setShowPluginStoreDialog(true)}
+            >
+              <Plug className="mr-1 w-[14px]" />
+              {localize('com_ui_plugins')}
+            </Button>
+          )}
+          {hasAccessToPrompts && (
+            <Button
+              type="button"
+              className="h-auto w-[150px] justify-start rounded-md border border-gray-300/50 bg-transparent px-2 py-1 text-xs font-normal text-black hover:bg-gray-100 hover:text-black focus-visible:ring-1 focus-visible:ring-ring-primary dark:border-gray-600 dark:bg-transparent dark:text-white dark:hover:bg-gray-600 dark:focus-visible:ring-white"
+              onClick={() => setShowMentionPopover(true)}
+            >
+              <Plus className="mr-1 w-[14px]" />
+              {localize('com_ui_prompts')}
+            </Button>
+          )}
         </div>
-      </Anchor>
-    </Root>
+        {interfaceConfig?.parameters === true && (
+          <PluginStoreDialog
+            isOpen={showPluginStoreDialog}
+            setIsOpen={setShowPluginStoreDialog}
+          />
+        )}
+      </span>
+    </div>
   );
 }

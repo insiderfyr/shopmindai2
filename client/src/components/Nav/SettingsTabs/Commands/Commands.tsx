@@ -3,7 +3,6 @@ import { PermissionTypes, Permissions } from 'librechat-data-provider';
 import HoverCardSettings from '~/components/Nav/SettingsTabs/HoverCardSettings';
 import { useLocalize, useHasAccess } from '~/hooks';
 import SlashCommandSwitch from './SlashCommandSwitch';
-import PlusCommandSwitch from './PlusCommandSwitch';
 import AtCommandSwitch from './AtCommandSwitch';
 
 function Commands() {
@@ -11,11 +10,6 @@ function Commands() {
 
   const hasAccessToPrompts = useHasAccess({
     permissionType: PermissionTypes.PROMPTS,
-    permission: Permissions.USE,
-  });
-
-  const hasAccessToMultiConvo = useHasAccess({
-    permissionType: PermissionTypes.MULTI_CONVO,
     permission: Permissions.USE,
   });
 
@@ -31,11 +25,6 @@ function Commands() {
         <div className="pb-3">
           <AtCommandSwitch />
         </div>
-        {hasAccessToMultiConvo === true && (
-          <div className="pb-3">
-            <PlusCommandSwitch />
-          </div>
-        )}
         {hasAccessToPrompts === true && (
           <div className="pb-3">
             <SlashCommandSwitch />
