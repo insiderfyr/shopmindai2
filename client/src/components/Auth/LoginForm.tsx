@@ -102,12 +102,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
                 },
               })}
               aria-invalid={!!errors.email}
-              className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-[#dbeafe] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#1a1a2e] dark:text-white"
+              className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] bg-blue-50 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#182533] dark:border-[#4d8eff] dark:text-white"
               placeholder=" "
             />
             <label
               htmlFor="email"
-              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-white px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-black rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
             >
               {useUsernameLogin
                 ? localize('com_auth_username').replace(/ \(.*$/, '')
@@ -129,12 +129,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
                 maxLength: { value: 128, message: localize('com_auth_password_max_length') },
               })}
               aria-invalid={!!errors.password}
-              className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-[#dbeafe] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#1a1a2e] dark:text-white"
+              className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] bg-blue-50 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#182533] dark:border-[#4d8eff] dark:text-white"
               placeholder=" "
             />
             <label
               htmlFor="password"
-              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-white px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-black rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
             >
               {localize('com_auth_password')}
             </label>
@@ -172,7 +172,7 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
             type="submit"
             disabled={(requireCaptcha && !turnstileToken) || isSubmitting}
             variant="submit"
-            className="h-12 w-full rounded-2xl"
+            className="h-12 w-full rounded-3xl"
           >
             {isSubmitting ? <Spinner /> : localize('com_auth_continue')}
           </Button>

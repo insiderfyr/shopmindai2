@@ -107,7 +107,7 @@ function RequestPasswordReset() {
               },
             })}
             aria-invalid={!!errors.email}
-            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-surface-primary px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
+            className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] bg-blue-100 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#182533] dark:border-[#4d8eff] dark:text-white"
             placeholder=" "
           />
           <label
@@ -129,7 +129,7 @@ function RequestPasswordReset() {
           type="submit"
           disabled={!!errors.email || isLoading}
           variant="submit"
-          className="h-12 w-full rounded-2xl"
+          className="h-12 w-full rounded-3xl"
         >
           {isLoading ? <Spinner /> : localize('com_auth_continue')}
         </Button>
