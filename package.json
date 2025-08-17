@@ -145,9 +145,6 @@
     ]
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.3",
-    "@redis/client": "^5.8.1",
-    "@smithy/signature-v4": "^2.3.0",
     "diff": "^7.0.0"
   }
 }
