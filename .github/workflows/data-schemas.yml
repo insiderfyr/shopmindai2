@@ -24,8 +24,14 @@ jobs:
         with:
           node-version: '18.x'
           
+      - name: Clean dependencies
+        run: |
+          cd packages/data-schemas
+          rm -rf node_modules 2>/dev/null || true
+          rm -f package-lock.json 2>/dev/null || true
+        
       - name: Install dependencies
-        run: cd packages/data-schemas && npm ci
+        run: cd packages/data-schemas && npm install
         
       - name: Build
         run: cd packages/data-schemas && npm run build

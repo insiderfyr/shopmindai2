@@ -31,8 +31,13 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Clean dependencies
+        run: |
+          rm -rf node_modules 2>/dev/null || true
+          rm -f package-lock.json 2>/dev/null || true
+
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install Data Provider Package
         run: npm run build:data-provider

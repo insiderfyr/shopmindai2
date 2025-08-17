@@ -92,7 +92,7 @@ function ResetPassword() {
               },
             })}
             aria-invalid={!!errors.password}
-            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-surface-primary px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
+            className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-border-light bg-surface-primary px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
             placeholder=" "
           />
           <label
@@ -119,7 +119,7 @@ function ResetPassword() {
               validate: (value) => value === password || localize('com_auth_password_not_match'),
             })}
             aria-invalid={!!errors.confirm_password}
-            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-surface-primary px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
+            className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-border-light bg-surface-primary px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
             placeholder=" "
           />
           <label
@@ -151,7 +151,7 @@ function ResetPassword() {
           aria-label={localize('com_auth_submit_registration')}
           disabled={!!errors.password || !!errors.confirm_password || isSubmitting}
           variant="submit"
-          className="h-12 w-full rounded-2xl"
+          className="h-12 w-full rounded-3xl"
         >
           {isSubmitting ? <Spinner /> : localize('com_auth_continue')}
         </Button>

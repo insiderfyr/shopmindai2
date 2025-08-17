@@ -31,7 +31,7 @@ function SourceItem({ source, isNews, expanded = false }: SourceItemProps) {
         href={source.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex w-full flex-col rounded-lg bg-surface-primary-contrast px-3 py-2 text-sm transition-all duration-300 hover:bg-surface-tertiary"
+        className="hover:bg-blue-75 flex w-full flex-col rounded-lg bg-surface-primary-contrast px-3 py-2 text-sm transition-all duration-300 dark:hover:bg-[#16213e]"
       >
         <div className="flex items-center gap-2">
           <FaviconImage domain={domain} />
@@ -61,7 +61,7 @@ function SourceItem({ source, isNews, expanded = false }: SourceItemProps) {
                 href={source.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-full w-full flex-col rounded-lg bg-surface-primary-contrast px-3 py-2 text-sm transition-all duration-300 hover:bg-surface-tertiary"
+                className="hover:bg-blue-75 flex h-full w-full flex-col rounded-lg bg-surface-primary-contrast px-3 py-2 text-sm transition-all duration-300 dark:hover:bg-[#16213e]"
               >
                 <div className="flex items-center gap-2">
                   <FaviconImage domain={domain} />
@@ -139,7 +139,7 @@ function ImageItem({ image }: { image: ImageResult }) {
       href={image.imageUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="group overflow-hidden rounded-lg bg-surface-secondary transition-all duration-300 hover:bg-surface-tertiary"
+      className="hover:bg-blue-75 group overflow-hidden rounded-lg bg-surface-secondary transition-all duration-300 dark:hover:bg-[#16213e]"
     >
       {image.imageUrl && (
         <div className="relative aspect-square w-full overflow-hidden">
@@ -200,7 +200,7 @@ function SourcesGroup({ sources, limit = 3 }: { sources: ValidSource[]; limit?: 
           </div>
         ))}
         {hasMoreSources && (
-          <OGDialogTrigger className="flex flex-col rounded-lg bg-surface-primary-contrast px-3 py-2 text-sm transition-all duration-300 hover:bg-surface-tertiary">
+          <OGDialogTrigger className="hover:bg-blue-75 flex flex-col rounded-lg bg-surface-primary-contrast px-3 py-2 text-sm transition-all duration-300 dark:hover:bg-[#16213e]">
             <div className="flex items-center gap-2">
               <StackedFavicons sources={remainingSources} />
               <span className="truncate text-xs font-medium text-text-secondary">
@@ -215,7 +215,7 @@ function SourcesGroup({ sources, limit = 3 }: { sources: ValidSource[]; limit?: 
               {localize('com_sources_title')}
             </OGDialogTitle>
             <OGDialogClose
-              className="rounded-full p-1 text-text-secondary hover:bg-surface-tertiary hover:text-text-primary"
+              className="hover:bg-blue-75 rounded-full p-1 text-text-secondary hover:text-text-primary dark:hover:bg-[#16213e]"
               aria-label={localize('com_ui_close')}
             >
               <X className="h-4 w-4" />
@@ -229,7 +229,7 @@ function SourcesGroup({ sources, limit = 3 }: { sources: ValidSource[]; limit?: 
                   href={source.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-surface-tertiary"
+                  className="hover:bg-blue-75 flex gap-2 rounded-lg px-2 py-2 transition-colors dark:hover:bg-[#16213e]"
                 >
                   <FaviconImage
                     domain={getCleanDomain(source.link)}
@@ -269,7 +269,7 @@ function SourcesGroup({ sources, limit = 3 }: { sources: ValidSource[]; limit?: 
 
 function TabWithIcon({ label, icon }: { label: string; icon: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 rounded-md px-3 py-1 text-sm transition-colors hover:bg-surface-tertiary hover:text-text-primary">
+    <div className="hover:bg-blue-75 flex items-center gap-2 rounded-md px-3 py-1 text-sm transition-colors hover:text-text-primary dark:hover:bg-[#16213e]">
       {React.cloneElement(icon as React.ReactElement, { size: 14 })}
       <span>{label}</span>
     </div>

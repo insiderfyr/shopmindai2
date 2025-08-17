@@ -30,8 +30,13 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Clean dependencies
+        run: |
+          rm -rf node_modules 2>/dev/null || true
+          rm -f package-lock.json 2>/dev/null || true
+
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       # Run ESLint on changed files within the api/ and client/ directories.
       - name: Run ESLint on changed files

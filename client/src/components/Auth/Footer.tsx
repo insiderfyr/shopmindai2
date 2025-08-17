@@ -10,25 +10,23 @@ function Footer({ startupConfig }: { startupConfig: TStartupConfig | null | unde
   const termsOfService = startupConfig.interface?.termsOfService;
 
   const privacyPolicyRender = privacyPolicy?.externalUrl && (
-    <a
-      className="text-sm text-green-500"
-      href={privacyPolicy.externalUrl}
-      target={privacyPolicy.openNewTab ? '_blank' : undefined}
-      rel="noreferrer"
+    <button
+      type="button"
+      className="rounded text-sm text-gray-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
+      onClick={() => window.open(privacyPolicy.externalUrl, '_blank')}
     >
       {localize('com_ui_privacy_policy')}
-    </a>
+    </button>
   );
 
   const termsOfServiceRender = termsOfService?.externalUrl && (
-    <a
-      className="text-sm text-green-500"
-      href={termsOfService.externalUrl}
-      target={termsOfService.openNewTab ? '_blank' : undefined}
-      rel="noreferrer"
+    <button
+      type="button"
+      className="rounded text-sm text-gray-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
+      onClick={() => window.open(termsOfService.externalUrl, '_blank')}
     >
       {localize('com_ui_terms_of_service')}
-    </a>
+    </button>
   );
 
   return (

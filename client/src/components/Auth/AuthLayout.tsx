@@ -57,15 +57,27 @@ function AuthLayout({
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-blue-100 dark:bg-[#1a1a2e]">
+    <div
+      className="relative flex min-h-screen flex-col bg-blue-50 dark:bg-[#182533]"
+      style={
+        {
+          '--page-bg': 'rgb(239, 246, 255)',
+          '--page-bg-dark': '#182533',
+        } as React.CSSProperties
+      }
+    >
       <Banner />
       <BlinkAnimation active={isFetching}>
-        <div className="mt-6 h-16 w-full bg-cover">
+        <div className="-ml-20 mt-4 flex h-14 items-center justify-center gap-3">
           <img
             src="/assets/logo.svg"
-            className="h-full w-full object-contain"
+            className="h-full object-contain"
             alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
           />
+          <h1 className="text-2xl font-bold text-foreground">
+            {localize('com_ui_shopmind')}
+            <span className="text-[#4d8eff]">{localize('com_ui_ai')}</span>
+          </h1>
         </div>
       </BlinkAnimation>
       <DisplayError />
@@ -74,20 +86,22 @@ function AuthLayout({
       </div>
 
       <div className="flex flex-grow items-center justify-center">
-        <div className="w-authPageWidth overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-lg">
-          {!hasStartupConfigError && !isFetching && (
-            <h1
-              className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
-              style={{ userSelect: 'none' }}
-            >
-              {header}
-            </h1>
-          )}
-          {children}
-          {!pathname.includes('2fa') &&
-            (pathname.includes('login') || pathname.includes('register')) && (
-              <SocialLoginRender startupConfig={startupConfig} />
+        <div className="flex flex-col items-center gap-8">
+          <div className="w-authPageWidth overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-lg">
+            {!hasStartupConfigError && !isFetching && (
+              <h1
+                className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
+                style={{ userSelect: 'none' }}
+              >
+                {header}
+              </h1>
             )}
+            {children}
+            {!pathname.includes('2fa') &&
+              (pathname.includes('login') || pathname.includes('register')) && (
+                <SocialLoginRender startupConfig={startupConfig} />
+              )}
+          </div>
         </div>
       </div>
       <Footer startupConfig={startupConfig} />
