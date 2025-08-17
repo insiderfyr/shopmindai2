@@ -32,7 +32,9 @@ jobs:
           cache: 'npm'
 
       - name: Clean dependencies
-        run: rm -rf node_modules package-lock.json
+        run: |
+          rm -rf node_modules 2>/dev/null || true
+          rm -f package-lock.json 2>/dev/null || true
 
       - name: Install dependencies
         run: npm install
