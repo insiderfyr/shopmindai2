@@ -1,11 +1,12 @@
 import { FullConfig } from '@playwright/test';
 import authenticate from './authenticate';
+import localUser from '../config.local';
 
 async function globalSetup(config: FullConfig) {
   const user = {
-    name: 'test',
-    email: String(process.env.E2E_USER_EMAIL),
-    password: String(process.env.E2E_USER_PASSWORD),
+    name: localUser.name,
+    email: localUser.email,
+    password: localUser.password,
   };
 
   await authenticate(config, user);

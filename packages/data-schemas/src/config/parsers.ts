@@ -61,7 +61,7 @@ const redactFormat = winston.format((info: winston.Logform.TransformableInfo) =>
   if (!info || typeof info.level === 'undefined') {
     return info; // Return info if undefined to prevent crash
   }
-  
+
   if (info.level === 'error') {
     // Type guard to ensure message is a string
     if (typeof info.message === 'string') {
