@@ -15,7 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 16
-      - run: cd packages/data-provider && npm ci
+      - run: cd packages/data-provider && rm -rf node_modules package-lock.json
+      - run: cd packages/data-provider && npm install
       - run: cd packages/data-provider && npm run build
 
   publish-npm:
@@ -27,7 +28,8 @@ jobs:
         with:
           node-version: 16
           registry-url: 'https://registry.npmjs.org'
-      - run: cd packages/data-provider && npm ci
+      - run: cd packages/data-provider && rm -rf node_modules package-lock.json
+      - run: cd packages/data-provider && npm install
       - run: cd packages/data-provider && npm run build
       - run: cd packages/data-provider && npm publish
         env:
