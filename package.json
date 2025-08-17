@@ -136,5 +136,9 @@
       "admin/",
       "packages/"
     ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "@smithy/signature-v4": "^2.3.0"
   }
 }

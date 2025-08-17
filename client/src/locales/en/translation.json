@@ -1065,5 +1065,7 @@
   "com_ui_zoom": "Zoom",
   "com_user_message": "You",
   "com_ui_show_password": "Show password",
-  "com_ui_hide_password": "Hide password"
+  "com_ui_hide_password": "Hide password",
+  "com_ui_shopmind": "ShopMind",
+  "com_ui_ai": "AI"
 }
