@@ -57,16 +57,18 @@ function AuthLayout({
   };
 
   return (
-    <div 
+    <div
       className="relative flex min-h-screen flex-col bg-blue-50 dark:bg-[#182533]"
-      style={{
-        '--page-bg': 'rgb(239, 246, 255)',
-        '--page-bg-dark': '#182533'
-      } as React.CSSProperties}
+      style={
+        {
+          '--page-bg': 'rgb(239, 246, 255)',
+          '--page-bg-dark': '#182533',
+        } as React.CSSProperties
+      }
     >
       <Banner />
       <BlinkAnimation active={isFetching}>
-        <div className="flex h-14 items-center justify-center gap-3 -ml-20 mt-4">
+        <div className="-ml-20 mt-4 flex h-14 items-center justify-center gap-3">
           <img
             src="/assets/logo.svg"
             className="h-full object-contain"

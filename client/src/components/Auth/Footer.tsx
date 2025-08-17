@@ -10,21 +10,13 @@ function Footer({ startupConfig }: { startupConfig: TStartupConfig | null | unde
   const termsOfService = startupConfig.interface?.termsOfService;
 
   const privacyPolicyRender = privacyPolicy?.externalUrl && (
-    <a
-      className="text-sm text-gray-600"
-      href="#"
-      onClick={(e) => e.preventDefault()}
-    >
+    <a className="text-sm text-gray-600" href="#" onClick={(e) => e.preventDefault()}>
       {localize('com_ui_privacy_policy')}
     </a>
   );
 
   const termsOfServiceRender = termsOfService?.externalUrl && (
-    <a
-      className="text-sm text-gray-600"
-      href="#"
-      onClick={(e) => e.preventDefault()}
-    >
+    <a className="text-sm text-gray-600" href="#" onClick={(e) => e.preventDefault()}>
       {localize('com_ui_terms_of_service')}
     </a>
   );

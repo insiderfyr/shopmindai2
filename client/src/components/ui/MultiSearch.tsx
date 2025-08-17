@@ -48,12 +48,12 @@ export default function MultiSearch({
         onChange={onChangeHandler}
         placeholder={placeholder ?? localize('com_ui_select_search_model')}
         aria-label="Search Model"
-        className="flex-1 rounded-md border-none bg-white/50 dark:bg-[#1f2937]/50 px-2.5 py-2 text-sm placeholder-text-secondary focus:outline-none focus:ring-1 focus:ring-ring-primary"
+        className="flex-1 rounded-md border-none bg-white/50 px-2.5 py-2 text-sm placeholder-text-secondary focus:outline-none focus:ring-1 focus:ring-ring-primary dark:bg-[#1f2937]/50"
       />
       <button
         className={cn(
           'relative flex h-5 w-5 items-center justify-end rounded-md text-text-secondary-alt',
-          value?.length ?? 0 ? 'cursor-pointer opacity-100' : 'hidden',
+          (value?.length ?? 0) ? 'cursor-pointer opacity-100' : 'hidden',
         )}
         aria-label={'Clear search'}
         onClick={clearSearch}
@@ -63,7 +63,7 @@ export default function MultiSearch({
           aria-hidden={'true'}
           className={cn(
             'text-text-secondary-alt',
-            value?.length ?? 0 ? 'cursor-pointer opacity-100' : 'opacity-0',
+            (value?.length ?? 0) ? 'cursor-pointer opacity-100' : 'opacity-0',
           )}
         />
       </button>

@@ -31,7 +31,7 @@ const Theme = ({ theme, onChange }: { theme: string; onChange: (value: string) =
 
   return (
     <button
-      className="flex items-center gap-2 rounded-lg p-2 text-black bg-blue-50 hover:bg-blue-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:text-white dark:bg-[#182533] dark:hover:bg-gray-800"
+      className="flex items-center gap-2 rounded-lg bg-blue-50 p-2 text-black transition-colors hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:bg-[#182533] dark:text-white dark:hover:bg-gray-800"
       aria-label={label}
       aria-keyshortcuts="Ctrl+Shift+T"
       onClick={(e) => {

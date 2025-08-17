@@ -77,10 +77,12 @@ const Registration: React.FC = () => {
           )}
           aria-invalid={!!errors[id]}
           className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:text-white"
-          style={{ 
-            backgroundColor: 'var(--page-bg)',
-            '--tw-bg-opacity': '1'
-          } as React.CSSProperties}
+          style={
+            {
+              backgroundColor: 'var(--page-bg)',
+              '--tw-bg-opacity': '1',
+            } as React.CSSProperties
+          }
           placeholder=" "
           data-testid={id}
         />

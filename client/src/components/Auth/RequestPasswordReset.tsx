@@ -107,7 +107,7 @@ function RequestPasswordReset() {
               },
             })}
             aria-invalid={!!errors.email}
-            className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] bg-blue-100 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:bg-[#182533] dark:border-[#4d8eff] dark:text-white"
+            className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] bg-blue-100 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
             placeholder=" "
           />
           <label

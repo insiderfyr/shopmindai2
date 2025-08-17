@@ -243,7 +243,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               isTextAreaFocused ? 'shadow-lg' : 'shadow-md',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
-                : 'border-border-light bg-blue-25 dark:bg-surface-chat',
+                : 'bg-blue-25 border-border-light dark:bg-surface-chat',
             )}
           >
             <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />
@@ -296,7 +296,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             )}
             <div
               className={cn(
-                'items-between flex gap-2 pb-2 bg-white/50 dark:bg-[#1f2937]/50',
+                'items-between flex gap-2 bg-white/50 pb-2 dark:bg-[#1f2937]/50',
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >

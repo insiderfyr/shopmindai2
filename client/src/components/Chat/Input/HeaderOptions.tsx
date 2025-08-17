@@ -9,11 +9,7 @@ import { Button } from '~/components/ui';
 import { Settings, Plug, Plus } from 'lucide-react';
 import { PluginStoreDialog } from '~/components/Plugins';
 
-export default function HeaderOptions({
-  interfaceConfig,
-}: {
-  interfaceConfig?: any;
-}) {
+export default function HeaderOptions({ interfaceConfig }: { interfaceConfig?: any }) {
   const localize = useLocalize();
   const { conversation } = useChatContext();
   const { data: startupConfig } = useGetStartupConfig();
@@ -71,10 +67,7 @@ export default function HeaderOptions({
           )}
         </div>
         {interfaceConfig?.parameters === true && (
-          <PluginStoreDialog
-            isOpen={showPluginStoreDialog}
-            setIsOpen={setShowPluginStoreDialog}
-          />
+          <PluginStoreDialog isOpen={showPluginStoreDialog} setIsOpen={setShowPluginStoreDialog} />
         )}
       </span>
     </div>

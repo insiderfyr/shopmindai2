@@ -38,9 +38,11 @@ export default [
       'packages/data-provider/types/**/*',
       'packages/data-provider/dist/**/*',
       'packages/data-provider/test_bundle/**/*',
+      'packages/data-schemas/dist/**/*',
       'data-node/**/*',
       'meili_data/**/*',
       '**/node_modules/**/*',
+      '**/dist/**/*',
     ],
   },
   ...fixupConfigRules(
@@ -304,6 +306,7 @@ export default [
   {
     // **Data-provider specific configuration block**
     files: ['./packages/data-provider/**/*.ts'],
+    ignores: ['./packages/data-provider/dist/**/*'],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: 'latest',
@@ -318,6 +321,7 @@ export default [
   },
   {
     files: ['./packages/api/**/*.ts'],
+    ignores: ['./packages/api/dist/**/*'],
   },
   {
     files: ['./config/translations/**/*.ts'],
@@ -363,6 +367,7 @@ export default [
   {
     // **New Data-schemas configuration block**
     files: ['./packages/data-schemas/**/*.ts'],
+    ignores: ['./packages/data-schemas/dist/**/*'],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: 'latest',
