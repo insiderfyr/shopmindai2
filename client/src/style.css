@@ -87,7 +87,7 @@ html {
   --surface-submit-hover: #3a6cd9;
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
-  --surface-chat: var(--white);
+  --surface-chat: rgb(239, 246, 255);
   --border-light: var(--gray-200);
   --border-medium-alt: var(--gray-300);
   --border-medium: var(--gray-300);
@@ -2577,7 +2577,7 @@ html {
   border-width: 1px;
   border-style: solid;
   border-color: var(--border-light);
-  background-color: var(--surface-primary);
+  background-color: rgb(239, 246, 255);
   padding: 0.5rem;
   color: var(--text-primary);
   box-shadow:
@@ -2613,7 +2613,7 @@ html {
 }
 
 .popover-ui:where(.dark, .dark *) {
-  background-color: var(--surface-secondary);
+  background-color: #182533;
   color: var(--text-secondary);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.25),
@@ -2629,6 +2629,15 @@ html {
   border-radius: 0.5rem;
   padding: 0.5rem;
   outline: none !important;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.select-item:hover {
+  background-color: rgb(219, 234, 254);
+}
+
+.select-item:where(.dark, .dark *):hover {
+  background-color: #16213e;
 }
 
 .select-item[aria-disabled='true'] {
@@ -2636,7 +2645,12 @@ html {
 }
 
 .select-item[data-active-item] {
-  background-color: var(--surface-hover);
+  background-color: rgb(219, 234, 254);
+  color: var(--text-primary);
+}
+
+.select-item:where(.dark, .dark *)[data-active-item] {
+  background-color: #1a1a2e;
   color: var(--text-primary);
 }
 

@@ -36,7 +36,7 @@ export default function GroupSidePanel({
       )}
     >
       {children}
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto bg-blue-50 dark:bg-[#182533]">
         <List groups={promptGroups} isChatRoute={isChatRoute} isLoading={!!groupsQuery.isLoading} />
       </div>
       <div className="flex items-center justify-between">
