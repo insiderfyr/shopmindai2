@@ -75,7 +75,8 @@ function AuthLayout({
             alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
           />
           <h1 className="text-2xl font-bold text-foreground">
-            {localize('com_ui_shopmind')}<span className="text-[#4d8eff]">{localize('com_ui_ai')}</span>
+            {localize('com_ui_shopmind')}
+            <span className="text-[#4d8eff]">{localize('com_ui_ai')}</span>
           </h1>
         </div>
       </BlinkAnimation>

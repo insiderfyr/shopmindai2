@@ -22,7 +22,7 @@ export default function HeaderOptions({ interfaceConfig }: { interfaceConfig?: a
     permission: Permissions.USE,
   });
 
-  const endpoint = conversation?.endpoint;
+  const _endpoint = conversation?.endpoint;
 
   if (!conversation) {
     return null;
@@ -54,7 +54,9 @@ export default function HeaderOptions({ interfaceConfig }: { interfaceConfig?: a
             <Button
               type="button"
               className="h-auto w-[150px] justify-start rounded-md border border-gray-300/50 bg-transparent px-2 py-1 text-xs font-normal text-black hover:bg-gray-100 hover:text-black focus-visible:ring-1 focus-visible:ring-ring-primary dark:border-gray-600 dark:bg-transparent dark:text-white dark:hover:bg-gray-600 dark:focus-visible:ring-white"
-              onClick={() => {/* TODO: Implement prompts functionality */}}
+              onClick={() => {
+                /* TODO: Implement prompts functionality */
+              }}
             >
               <Plus className="mr-1 w-[14px]" />
               {localize('com_ui_prompts')}
