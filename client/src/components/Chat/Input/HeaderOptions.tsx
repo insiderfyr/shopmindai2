@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useLocalize } from '~/hooks';
 import { useChatContext } from '~/Providers';
-import { useGetStartupConfig } from '~/data-provider';
 import { useHasAccess } from '~/hooks';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
-import { isAssistantsEndpoint } from 'librechat-data-provider';
 import { Button } from '~/components/ui';
 import { Settings, Plug, Plus } from 'lucide-react';
 import { PluginStoreDialog } from '~/components/Plugins';
@@ -12,9 +10,7 @@ import { PluginStoreDialog } from '~/components/Plugins';
 export default function HeaderOptions({ interfaceConfig }: { interfaceConfig?: any }) {
   const localize = useLocalize();
   const { conversation } = useChatContext();
-  const { data: startupConfig } = useGetStartupConfig();
   const [showPluginStoreDialog, setShowPluginStoreDialog] = useState(false);
-  const [showMentionPopover, setShowMentionPopover] = useState(false);
 
   const hasAccessToPlugins = useHasAccess({
     permissionType: PermissionTypes.PLUGINS,
@@ -27,7 +23,6 @@ export default function HeaderOptions({ interfaceConfig }: { interfaceConfig?: a
   });
 
   const endpoint = conversation?.endpoint;
-  const paramEndpoint = isAssistantsEndpoint(endpoint);
 
   if (!conversation) {
     return null;
@@ -59,7 +54,7 @@ export default function HeaderOptions({ interfaceConfig }: { interfaceConfig?: a
             <Button
               type="button"
               className="h-auto w-[150px] justify-start rounded-md border border-gray-300/50 bg-transparent px-2 py-1 text-xs font-normal text-black hover:bg-gray-100 hover:text-black focus-visible:ring-1 focus-visible:ring-ring-primary dark:border-gray-600 dark:bg-transparent dark:text-white dark:hover:bg-gray-600 dark:focus-visible:ring-white"
-              onClick={() => setShowMentionPopover(true)}
+              onClick={() => {/* TODO: Implement prompts functionality */}}
             >
               <Plus className="mr-1 w-[14px]" />
               {localize('com_ui_prompts')}
