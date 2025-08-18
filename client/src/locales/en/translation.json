@@ -1067,5 +1067,8 @@
   "com_ui_show_password": "Show password",
   "com_ui_hide_password": "Hide password",
   "com_ui_shopmind": "ShopMind",
-  "com_ui_ai": "AI"
+  "com_ui_ai": "AI",
+  "com_auth_or": "Or",
+  "com_ui_talking_to": "Talking to",
+  "com_ui_latest_tailwind_css_gpt": "[latest] Tailwind CSS GPT"
 }

@@ -37,7 +37,7 @@ function RequestPasswordReset() {
       setVerificationStatus(true);
       countdownRedirect();
     },
-    onError: (error: unknown) => {
+    onError: (_error: unknown) => {
       setHeaderText(localize('com_auth_email_verification_failed') + ' 😢');
       setShowResendLink(true);
       setVerificationStatus(true);
@@ -75,7 +75,7 @@ function RequestPasswordReset() {
       setShowResendLink(true);
       setVerificationStatus(true);
     }
-  }, [token, email, verificationStatus, verifyEmailMutation]);
+  }, [token, email, verificationStatus, verifyEmailMutation, localize]);
 
   const VerificationSuccess = () => (
     <div className="flex flex-col items-center justify-center">
