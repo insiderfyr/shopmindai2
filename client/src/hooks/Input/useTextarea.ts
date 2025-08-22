@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import type { TEndpointOption } from 'librechat-data-provider';
 import type { KeyboardEvent } from 'react';
@@ -70,6 +70,34 @@ export default function useTextarea({
     }
   }, [activePrompt, setActivePrompt, textAreaRef]);
 
+  // State for dynamic placeholder rotation
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  
+  // E-commerce messages array
+  const ecommerceMessages = [
+    "What are you looking for today?",
+    "Describe your perfect product",
+    "I can help you find anything",
+    "Tell me your shopping needs",
+    "What's your style preference?",
+    "Looking for gifts or personal items?",
+    "I'll find the best deals for you",
+    "What's your budget range?",
+    "Let me discover products you'll love",
+    "I'm your personal shopping assistant"
+  ];
+
+  // Effect for rotating messages every 4 seconds
+  useEffect(() => {
+    if (isAgent && (!conversation?.agent_id || !agentsMap?.[conversation?.agent_id])) {
+      const interval = setInterval(() => {
+        setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % ecommerceMessages.length);
+      }, 4000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isAgent, conversation?.agent_id, agentsMap, ecommerceMessages.length]);
+
   useEffect(() => {
     const currentValue = textAreaRef.current?.value ?? '';
     if (currentValue) {
@@ -84,24 +112,8 @@ export default function useTextarea({
       const currentAgentId = conversation?.agent_id ?? '';
       const currentAssistantId = conversation?.assistant_id ?? '';
       if (isAgent && (!currentAgentId || !agentsMap?.[currentAgentId])) {
-        // Return dynamic e-commerce messages with rotation
-        const ecommerceMessages = [
-          "What are you looking for today?",
-          "Describe your perfect product",
-          "I can help you find anything",
-          "Tell me your shopping needs",
-          "What's your style preference?",
-          "Looking for gifts or personal items?",
-          "I'll find the best deals for you",
-          "What's your budget range?",
-          "Let me discover products you'll love",
-          "I'm your personal shopping assistant"
-        ];
-        
-        // Get current message based on time for ultra-smooth rotation every 4 seconds
-        const currentTime = Date.now();
-        const messageIndex = Math.floor(currentTime / 4000) % ecommerceMessages.length;
-        return ecommerceMessages[messageIndex];
+        // Return current rotating message
+        return ecommerceMessages[currentMessageIndex];
       } else if (
         isAssistant &&
         (!currentAssistantId || !assistantMap?.[currentEndpoint]?.[currentAssistantId])
@@ -155,6 +167,8 @@ export default function useTextarea({
     conversation,
     latestMessage,
     isNotAppendable,
+    currentMessageIndex,
+    ecommerceMessages,
   ]);
 
   const handleKeyDown = useCallback(
