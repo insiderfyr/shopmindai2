@@ -1,8 +1,8 @@
-/* Ultra-smooth placeholder appearance animations from top */
+/* Ultra-smooth placeholder appearance animations */
 @keyframes placeholderFadeIn {
   0% {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;
@@ -17,7 +17,7 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(-8px);
   }
 }
 
