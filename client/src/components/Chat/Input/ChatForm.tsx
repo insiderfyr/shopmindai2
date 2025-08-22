@@ -32,6 +32,7 @@ import SendButton from './SendButton';
 import EditBadges from './EditBadges';
 import BadgeRow from './BadgeRow';
 import Mention from './Mention';
+import DynamicPlaceholder from './DynamicPlaceholder';
 import store from '~/store';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
@@ -253,6 +254,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               setBadges={setBadges}
             />
             <FileFormChat disableInputs={disableInputs} />
+            
+            {/* Dynamic E-commerce Placeholder */}
+            {endpoint && isAgentsEndpoint(endpoint) && !conversation?.agent_id && (
+              <div className="px-4 py-2">
+                <DynamicPlaceholder />
+              </div>
+            )}
+            
             {endpoint && (
               <div className={cn('flex', isRTL ? 'flex-row-reverse' : 'flex-row')}>
                 <TextareaAutosize

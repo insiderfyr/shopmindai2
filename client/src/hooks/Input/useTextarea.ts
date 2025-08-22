@@ -84,7 +84,24 @@ export default function useTextarea({
       const currentAgentId = conversation?.agent_id ?? '';
       const currentAssistantId = conversation?.assistant_id ?? '';
       if (isAgent && (!currentAgentId || !agentsMap?.[currentAgentId])) {
-        return localize('com_endpoint_agent_placeholder');
+        // Return dynamic e-commerce messages instead of static placeholder
+        const ecommerceMessages = [
+          "What are you looking for today?",
+          "Describe your perfect product",
+          "I can help you find anything",
+          "Tell me your shopping needs",
+          "What's your style preference?",
+          "Looking for gifts or personal items?",
+          "I'll find the best deals for you",
+          "What's your budget range?",
+          "Let me discover products you'll love",
+          "I'm your personal shopping assistant"
+        ];
+        
+        // Get current message based on time
+        const currentTime = Date.now();
+        const messageIndex = Math.floor(currentTime / 4000) % ecommerceMessages.length;
+        return ecommerceMessages[messageIndex];
       } else if (
         isAssistant &&
         (!currentAssistantId || !assistantMap?.[currentEndpoint]?.[currentAssistantId])

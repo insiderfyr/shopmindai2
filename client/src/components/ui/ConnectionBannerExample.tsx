@@ -41,14 +41,13 @@ export default function ConnectionBannerExample() {
         isVisible={!isConnected}
         onRetry={handleRetry}
         title="Not Connected"
-        message="The stagewise toolbar isn't connected to any IDE window."
+        message="Connection not established."
         steps={[
-          "Open your IDE (Cursor, Windsurf, etc.)",
-          "Install the stagewise extension",
-          "Make sure the extension is active",
-          "Click refresh below"
+          "Check your connection settings",
+          "Verify network connectivity",
+          "Try refreshing the page",
+          "Contact support if issues persist"
         ]}
-        extensionUrl="https://marketplace.visualstudio.com/items?itemName=stagewise.stagewise-vscode-extension"
       />
 
       {isConnected && (
