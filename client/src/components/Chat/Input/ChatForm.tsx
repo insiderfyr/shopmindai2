@@ -208,7 +208,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     <form
       onSubmit={methods.handleSubmit(submitMessage)}
       className={cn(
-        'mx-auto flex w-full flex-row gap-3 transition-[max-width] duration-300 sm:px-2',
+        'mx-auto flex w-4/5 flex-row gap-3 transition-[max-width] duration-300 sm:px-2 transform scale-110',
         'max-w-3xl',
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
@@ -279,7 +279,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   }}
                   onBlur={setIsTextAreaFocused.bind(null, false)}
                   onClick={handleFocusOrClick}
-                  style={{ height: 70, overflowY: 'auto' }}
+                  style={{ height: 80, overflowY: 'auto', fontSize: '16px' }}
                   className={cn(
                     baseClasses,
                     removeFocusRings,

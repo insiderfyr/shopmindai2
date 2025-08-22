@@ -53,9 +53,9 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
     >
       <div className="flex flex-col items-center gap-0 p-2">
         {/* Logo + ShopMindAI - exact ca în pagina de login */}
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-4">
           <LogoIcon
-            size={56}
+            size={64}
             className="text-[#4d8eff]"
           />
           <h1 className="text-4xl font-bold text-foreground">

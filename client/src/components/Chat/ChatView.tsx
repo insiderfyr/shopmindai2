@@ -16,7 +16,6 @@ import { buildTree, cn } from '~/utils';
 import ChatForm from './Input/ChatForm';
 import Landing from './Landing';
 import Header from './Header';
-import Footer from './Footer';
 import store from '~/store';
 
 function LoadingSpinner() {
@@ -79,7 +78,7 @@ function ChatView({ index = 0 }: { index?: number }) {
       <ChatContext.Provider value={chatHelpers}>
         <AddedChatContext.Provider value={addedChatHelpers}>
           <Presentation>
-            <div className="flex h-full w-full flex-col border border-gray-200/30 dark:border-gray-700/30" style={{ marginTop: '-40px' }}>
+            <div className="flex h-full w-full flex-col border border-gray-200/30 dark:border-gray-700/30" style={{ marginTop: '-60px' }}>
               {!isLoading && <Header />}
               <>
                 <div
@@ -93,15 +92,15 @@ function ChatView({ index = 0 }: { index?: number }) {
                   {content}
                   <div
                     className={cn(
-                      'w-full',
+                      'w-4/5 transform scale-105',
                       'max-w-4xl transition-all duration-200',
                     )}
                   >
                     <ChatForm index={index} />
-                    {isLandingPage ? <ConversationStarters /> : <Footer />}
+                    {isLandingPage ? <ConversationStarters /> : null}
                   </div>
                 </div>
-                {isLandingPage && <Footer />}
+                {isLandingPage && null}
               </>
             </div>
           </Presentation>
