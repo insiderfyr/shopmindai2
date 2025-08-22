@@ -98,9 +98,9 @@ export default function useTextarea({
           "I'm your personal shopping assistant"
         ];
         
-        // Get current message based on time for smooth rotation every 3 seconds
+        // Get current message based on time for ultra-smooth rotation every 4 seconds
         const currentTime = Date.now();
-        const messageIndex = Math.floor(currentTime / 3000) % ecommerceMessages.length;
+        const messageIndex = Math.floor(currentTime / 4000) % ecommerceMessages.length;
         return ecommerceMessages[messageIndex];
       } else if (
         isAssistant &&
@@ -138,7 +138,7 @@ export default function useTextarea({
       }
     };
 
-    const debouncedSetPlaceholder = debounce(setPlaceholder, 80);
+    const debouncedSetPlaceholder = debounce(setPlaceholder, 50);
     debouncedSetPlaceholder();
 
     return () => debouncedSetPlaceholder.cancel();
