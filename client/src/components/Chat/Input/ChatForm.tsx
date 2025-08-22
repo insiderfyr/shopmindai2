@@ -283,11 +283,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     baseClasses,
                     removeFocusRings,
                     'transition-[max-height] duration-200 disabled:cursor-not-allowed',
-                    // Add special styling for dynamic placeholder with ultra-smooth animation
+                    // Add special styling for dynamic placeholder with smooth appearance animation
                     'placeholder:text-gray-500 placeholder:dark:text-gray-400',
-                    'placeholder:transition-all placeholder:duration-1000 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
-                    'placeholder:animate-pulse placeholder:animate-duration-2000 placeholder:animate-ease-in-out',
-                    'dynamic-placeholder dynamic-placeholder-transition enhanced-pulse'
+                    'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
+                    'dynamic-placeholder dynamic-placeholder-transition'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
