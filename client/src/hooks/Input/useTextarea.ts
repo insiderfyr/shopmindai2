@@ -84,7 +84,7 @@ export default function useTextarea({
       const currentAgentId = conversation?.agent_id ?? '';
       const currentAssistantId = conversation?.assistant_id ?? '';
       if (isAgent && (!currentAgentId || !agentsMap?.[currentAgentId])) {
-        // Return dynamic e-commerce messages instead of static placeholder
+        // Return dynamic e-commerce messages with rotation
         const ecommerceMessages = [
           "What are you looking for today?",
           "Describe your perfect product",
@@ -98,9 +98,9 @@ export default function useTextarea({
           "I'm your personal shopping assistant"
         ];
         
-        // Get current message based on time
+        // Get current message based on time for smooth rotation every 3 seconds
         const currentTime = Date.now();
-        const messageIndex = Math.floor(currentTime / 4000) % ecommerceMessages.length;
+        const messageIndex = Math.floor(currentTime / 3000) % ecommerceMessages.length;
         return ecommerceMessages[messageIndex];
       } else if (
         isAssistant &&

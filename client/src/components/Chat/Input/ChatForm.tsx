@@ -32,7 +32,6 @@ import SendButton from './SendButton';
 import EditBadges from './EditBadges';
 import BadgeRow from './BadgeRow';
 import Mention from './Mention';
-import DynamicPlaceholder from './DynamicPlaceholder';
 import store from '~/store';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
@@ -254,14 +253,6 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               setBadges={setBadges}
             />
             <FileFormChat disableInputs={disableInputs} />
-            
-            {/* Dynamic E-commerce Placeholder */}
-            {endpoint && isAgentsEndpoint(endpoint) && !conversation?.agent_id && (
-              <div className="px-4 py-2">
-                <DynamicPlaceholder />
-              </div>
-            )}
-            
             {endpoint && (
               <div className={cn('flex', isRTL ? 'flex-row-reverse' : 'flex-row')}>
                 <TextareaAutosize
@@ -291,6 +282,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     baseClasses,
                     removeFocusRings,
                     'transition-[max-height] duration-200 disabled:cursor-not-allowed',
+                    // Add special styling for dynamic placeholder with smooth animation
+                    'placeholder:text-gray-500 placeholder:dark:text-gray-400',
+                    'placeholder:transition-all placeholder:duration-700 placeholder:ease-in-out',
+                    'placeholder:animate-pulse placeholder:animate-duration-1000'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
