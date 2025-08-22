@@ -73,26 +73,26 @@ export default function useTextarea({
   // State for dynamic placeholder rotation
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   
-  // E-commerce messages array
-  const ecommerceMessages = [
-    "What are you looking for today?",
-    "Describe your perfect product",
-    "I can help you find anything",
-    "Tell me your shopping needs",
-    "What's your style preference?",
-    "Looking for gifts or personal items?",
-    "I'll find the best deals for you",
-    "What's your budget range?",
-    "Let me discover products you'll love",
-    "I'm your personal shopping assistant"
-  ];
+           // E-commerce messages array - optimized for 15s loop
+         const ecommerceMessages = [
+           "What are you looking for today?",
+           "Describe your perfect product",
+           "I can help you find anything",
+           "Tell me your shopping needs",
+           "What's your style preference?",
+           "Looking for gifts or personal items?",
+           "I'll find the best deals for you",
+           "What's your budget range?",
+           "Let me discover products you'll love",
+           "I'm your personal shopping assistant"
+         ];
 
-  // Effect for rotating messages every 4 seconds
+  // Effect for rotating messages every 15 seconds - GENIUS timing
   useEffect(() => {
     if (isAgent && (!conversation?.agent_id || !agentsMap?.[conversation?.agent_id])) {
       const interval = setInterval(() => {
         setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % ecommerceMessages.length);
-      }, 4000);
+      }, 15000); // Rotation every 15 seconds - PERFECT timing
 
       return () => clearInterval(interval);
     }

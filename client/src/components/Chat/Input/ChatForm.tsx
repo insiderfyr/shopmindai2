@@ -197,6 +197,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     () =>
       cn(
         'md:py-3.5 m-0 w-full resize-none py-[13px] placeholder-black/50 bg-white/50 dark:bg-[#1f2937]/50 dark:placeholder-white/50',
+        'text-base md:text-lg font-light leading-relaxed', // Ultra-thin typography
         isCollapsed ? 'max-h-[52px]' : 'max-h-[45vh] md:max-h-[55vh]',
         isMoreThanThreeRows ? 'pl-5' : 'px-5',
       ),
