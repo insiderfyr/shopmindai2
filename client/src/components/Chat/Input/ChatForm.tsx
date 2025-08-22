@@ -19,6 +19,8 @@ import {
 } from '~/hooks';
 import { mainTextareaId, BadgeItem } from '~/common';
 import AttachFileChat from './Files/AttachFileChat';
+import DailyDealsButton from './DailyDealsButton';
+import DiscountHunterButton from './DiscountHunterButton';
 import FileFormChat from './Files/FileFormChat';
 import { TextareaAutosize } from '~/components';
 import { cn, removeFocusRings } from '~/utils';
@@ -305,8 +307,12 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
-              <div className={`${isRTL ? 'mr-2' : 'ml-2'}`}>
+              <div className={`${isRTL ? 'mr-2' : 'ml-2'} flex items-center gap-2`}>
                 <AttachFileChat disableInputs={disableInputs} />
+                
+                {/* Premium Shopping Buttons - Separate Components */}
+                <DailyDealsButton />
+                <DiscountHunterButton />
               </div>
               <BadgeRow
                 showEphemeralBadges={!isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)}
