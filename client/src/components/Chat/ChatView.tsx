@@ -79,14 +79,14 @@ function ChatView({ index = 0 }: { index?: number }) {
       <ChatContext.Provider value={chatHelpers}>
         <AddedChatContext.Provider value={addedChatHelpers}>
           <Presentation>
-            <div className="flex h-full w-full flex-col">
+            <div className="flex h-full w-full flex-col" style={{ marginTop: '-20px' }}>
               {!isLoading && <Header />}
               <>
                 <div
                   className={cn(
                     'flex flex-col',
                     isLandingPage
-                      ? 'flex-1 items-center justify-end bg-blue-50 dark:bg-[#182533] sm:justify-center'
+                      ? 'flex-1 items-center justify-center bg-blue-50 dark:bg-[#182533]'
                       : 'h-full overflow-y-auto',
                   )}
                 >
@@ -94,7 +94,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                   <div
                     className={cn(
                       'w-full',
-                      isLandingPage && 'max-w-3xl transition-all duration-200 xl:max-w-4xl',
+                      'max-w-4xl transition-all duration-200',
                     )}
                   >
                     <ChatForm index={index} />

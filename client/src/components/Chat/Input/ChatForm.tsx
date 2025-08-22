@@ -207,7 +207,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       onSubmit={methods.handleSubmit(submitMessage)}
       className={cn(
         'mx-auto flex w-full flex-row gap-3 transition-[max-width] duration-300 sm:px-2',
-        maximizeChatSpace ? 'max-w-full' : 'md:max-w-4xl xl:max-w-5xl',
+        'max-w-3xl',
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
@@ -239,7 +239,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           <div
             onClick={handleContainerClick}
             className={cn(
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-4 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-0',
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-1 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-0',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
                 : 'bg-blue-25 border-border-light dark:bg-surface-chat',
@@ -277,7 +277,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   }}
                   onBlur={setIsTextAreaFocused.bind(null, false)}
                   onClick={handleFocusOrClick}
-                  style={{ height: 52, overflowY: 'auto' }}
+                  style={{ height: 70, overflowY: 'auto' }}
                   className={cn(
                     baseClasses,
                     removeFocusRings,
@@ -295,7 +295,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             )}
             <div
               className={cn(
-                'items-between flex gap-2 bg-white/50 pb-2 dark:bg-[#1f2937]/50',
+                'items-between flex gap-2 bg-white/50 pb-1 dark:bg-[#1f2937]/50',
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
