@@ -23,5 +23,4 @@ export * from './CodeBlockContext';
 export * from './ToolCallsMapContext';
 export * from './SetConvoContext';
 export * from './SearchContext';
-export * from './BadgeRowContext';
-export { default as BadgeRowProvider } from './BadgeRowContext';
+

@@ -10,17 +10,11 @@ import React, {
 } from 'react';
 import { useRecoilValue, useRecoilCallback } from 'recoil';
 import type { LucideIcon } from 'lucide-react';
-import CodeInterpreter from './CodeInterpreter';
-import { BadgeRowProvider } from '~/Providers';
-import ToolsDropdown from './ToolsDropdown';
+
+
 import type { BadgeItem } from '~/common';
 import { useChatBadges } from '~/hooks';
 import { Badge } from '~/components/ui';
-import ToolDialogs from './ToolDialogs';
-import FileSearch from './FileSearch';
-import Artifacts from './Artifacts';
-import MCPSelect from './MCPSelect';
-import WebSearch from './WebSearch';
 import store from '~/store';
 
 interface BadgeRowProps {
@@ -320,9 +314,8 @@ function BadgeRow({
   }, [dragState.draggedBadge, handleMouseMove, handleMouseUp]);
 
   return (
-    <BadgeRowProvider conversationId={conversationId} isSubmitting={isSubmitting}>
-      <div ref={containerRef} className="relative flex flex-wrap items-center gap-2">
-        {showEphemeralBadges === true && <ToolsDropdown />}
+    <div ref={containerRef} className="relative flex flex-wrap items-center gap-2">
+
         {tempBadges.map((badge, index) => (
           <React.Fragment key={badge.id}>
             {dragState.draggedBadge && dragState.insertIndex === index && ghostBadge && (
@@ -362,15 +355,7 @@ function BadgeRow({
             />
           </div>
         )}
-        {showEphemeralBadges === true && (
-          <>
-            <WebSearch />
-            <CodeInterpreter />
-            <FileSearch />
-            <Artifacts />
-            <MCPSelect />
-          </>
-        )}
+
         {ghostBadge && (
           <div
             className="ghost-badge h-full"
@@ -396,8 +381,6 @@ function BadgeRow({
           </div>
         )}
       </div>
-      <ToolDialogs />
-    </BadgeRowProvider>
   );
 }
 

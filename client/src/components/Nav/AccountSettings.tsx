@@ -30,7 +30,7 @@ function AccountSettings() {
       <Select.Select
         aria-label={localize('com_nav_account_settings')}
         data-testid="nav-user"
-        className="mt-text-sm flex h-auto w-full items-center gap-2 rounded-xl p-2 text-sm transition-all duration-200 ease-in-out hover:bg-blue-50 dark:hover:bg-[#2a3a4a]"
+        className="mt-text-sm flex h-auto w-full items-center gap-2 rounded-lg p-2 text-sm transition-all duration-200 ease-in-out hover:bg-blue-50 dark:hover:bg-[#2a3a4a]"
       >
         <div className="-ml-0.9 -mt-0.8 h-8 w-8 flex-shrink-0">
           <div className="relative flex">
@@ -42,14 +42,14 @@ function AccountSettings() {
                   height: '32px',
                   boxShadow: 'rgba(240, 246, 252, 0.1) 0px 0px 0px 1px',
                 }}
-                className="relative flex items-center justify-center rounded-full p-1 text-text-primary"
+                className="relative flex items-center justify-center rounded-lg p-1 text-text-primary"
                 aria-hidden="true"
               >
                 <UserIcon />
               </div>
             ) : (
               <img
-                className="rounded-full"
+                className="rounded-lg"
                 src={(user?.avatar ?? '') || avatarSrc}
                 alt={`${user?.name || user?.username || user?.email || ''}'s avatar`}
               />

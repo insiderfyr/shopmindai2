@@ -5,6 +5,7 @@ import SocialLoginRender from './SocialLoginRender';
 import { BlinkAnimation } from './BlinkAnimation';
 import { ThemeSelector } from '~/components';
 import { Banner } from '../Banners';
+import LogoIcon from '~/components/svg/LogoIcon';
 import Footer from './Footer';
 
 function AuthLayout({
@@ -69,10 +70,9 @@ function AuthLayout({
       <Banner />
       <BlinkAnimation active={isFetching}>
         <div className="-ml-20 mt-4 flex h-14 items-center justify-center gap-3">
-          <img
-            src="/assets/logo.svg"
-            className="h-full object-contain"
-            alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'ShopMindAI' })}
+          <LogoIcon
+            size={56}
+            className="text-[#4d8eff]"
           />
           <h1 className="text-2xl font-bold text-foreground">
             {localize('com_ui_shopmind')}

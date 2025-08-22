@@ -11,7 +11,7 @@ import {
   HoverCardTrigger,
 } from '~/components/ui';
 import { cn, defaultTextProps, optionText, removeFocusOutlines, removeFocusRings } from '~/utils';
-import OptionHoverAlt from '~/components/SidePanel/Parameters/OptionHover';
+
 import { useLocalize, useDebouncedInput } from '~/hooks';
 import OptionHover from './OptionHover';
 import { ESide } from '~/common';

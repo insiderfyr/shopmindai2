@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { getSettingsKeys } from 'librechat-data-provider';
 import type { SettingDefinition } from 'librechat-data-provider';
 import type { TModelSelectProps } from '~/common';
-import { componentMapping } from '~/components/SidePanel/Parameters/components';
+
 import { presetSettings } from 'librechat-data-provider';
 
 export default function OpenAISettings({

@@ -137,7 +137,7 @@ describe('AppService', () => {
         endpointsMenu: true,
         modelSelect: true,
         parameters: true,
-        sidePanel: true,
+
         presets: true,
       }),
       mcpConfig: null,

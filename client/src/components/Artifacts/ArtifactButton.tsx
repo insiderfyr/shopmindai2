@@ -53,7 +53,7 @@ const ArtifactButton = ({ artifact }: { artifact: Artifact | null }) => {
   const fileType = getFileType('artifact');
 
   return (
-    <div className="group relative my-4 rounded-xl text-sm text-text-primary">
+    <div className="group relative my-4 rounded-2xl text-sm text-text-primary">
       <button
         type="button"
         onClick={() => {
@@ -69,7 +69,7 @@ const ArtifactButton = ({ artifact }: { artifact: Artifact | null }) => {
             setCurrentArtifactId(artifact.id);
           }, 15);
         }}
-        className="relative overflow-hidden rounded-xl border border-border-medium transition-all duration-300 hover:border-border-xheavy hover:shadow-lg"
+        className="relative overflow-hidden rounded-2xl border border-border-medium transition-all duration-300 hover:border-border-xheavy hover:shadow-lg"
       >
         <div className="w-fit bg-surface-tertiary p-2">
           <div className="flex flex-row items-center gap-2">

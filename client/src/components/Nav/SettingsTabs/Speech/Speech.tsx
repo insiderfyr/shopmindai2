@@ -12,14 +12,7 @@ import {
   VoiceDropdown,
   PlaybackRate,
 } from './TTS';
-import {
-  AutoTranscribeAudioSwitch,
-  LanguageSTTDropdown,
-  SpeechToTextSwitch,
-  AutoSendTextSelector,
-  EngineSTTDropdown,
-  DecibelSelector,
-} from './STT';
+
 import { useOnClickOutside, useMediaQuery, useLocalize } from '~/hooks';
 import ConversationModeSwitch from './ConversationModeSwitch';
 import { cn, logger } from '~/utils';
@@ -32,18 +25,11 @@ function Speech() {
   const { data } = useGetCustomConfigSpeechQuery();
   const isSmallScreen = useMediaQuery('(max-width: 767px)');
 
-  const [sttExternal, setSttExternal] = useState(false);
   const [ttsExternal, setTtsExternal] = useState(false);
   const [advancedMode, setAdvancedMode] = useRecoilState(store.advancedMode);
-  const [autoTranscribeAudio, setAutoTranscribeAudio] = useRecoilState(store.autoTranscribeAudio);
   const [conversationMode, setConversationMode] = useRecoilState(store.conversationMode);
-  const [speechToText, setSpeechToText] = useRecoilState(store.speechToText);
   const [textToSpeech, setTextToSpeech] = useRecoilState(store.textToSpeech);
   const [cacheTTS, setCacheTTS] = useRecoilState(store.cacheTTS);
-  const [engineSTT, setEngineSTT] = useRecoilState<string>(store.engineSTT);
-  const [languageSTT, setLanguageSTT] = useRecoilState<string>(store.languageSTT);
-  const [decibelValue, setDecibelValue] = useRecoilState(store.decibelValue);
-  const [autoSendText, setAutoSendText] = useRecoilState(store.autoSendText);
   const [engineTTS, setEngineTTS] = useRecoilState<string>(store.engineTTS);
   const [voice, setVoice] = useRecoilState(store.voice);
   const [cloudBrowserVoices, setCloudBrowserVoices] = useRecoilState<boolean>(
@@ -56,18 +42,11 @@ function Speech() {
   const updateSetting = useCallback(
     (key: string, newValue: string | number) => {
       const settings = {
-        sttExternal: { value: sttExternal, setFunc: setSttExternal },
         ttsExternal: { value: ttsExternal, setFunc: setTtsExternal },
         conversationMode: { value: conversationMode, setFunc: setConversationMode },
         advancedMode: { value: advancedMode, setFunc: setAdvancedMode },
-        speechToText: { value: speechToText, setFunc: setSpeechToText },
         textToSpeech: { value: textToSpeech, setFunc: setTextToSpeech },
         cacheTTS: { value: cacheTTS, setFunc: setCacheTTS },
-        engineSTT: { value: engineSTT, setFunc: setEngineSTT },
-        languageSTT: { value: languageSTT, setFunc: setLanguageSTT },
-        autoTranscribeAudio: { value: autoTranscribeAudio, setFunc: setAutoTranscribeAudio },
-        decibelValue: { value: decibelValue, setFunc: setDecibelValue },
-        autoSendText: { value: autoSendText, setFunc: setAutoSendText },
         engineTTS: { value: engineTTS, setFunc: setEngineTTS },
         voice: { value: voice, setFunc: setVoice },
         cloudBrowserVoices: { value: cloudBrowserVoices, setFunc: setCloudBrowserVoices },
@@ -82,36 +61,22 @@ function Speech() {
       }
     },
     [
-      sttExternal,
       ttsExternal,
       conversationMode,
       advancedMode,
-      speechToText,
       textToSpeech,
       cacheTTS,
-      engineSTT,
-      languageSTT,
-      autoTranscribeAudio,
-      decibelValue,
-      autoSendText,
       engineTTS,
       voice,
       cloudBrowserVoices,
       languageTTS,
       automaticPlayback,
       playbackRate,
-      setSttExternal,
       setTtsExternal,
       setConversationMode,
       setAdvancedMode,
-      setSpeechToText,
       setTextToSpeech,
       setCacheTTS,
-      setEngineSTT,
-      setLanguageSTT,
-      setAutoTranscribeAudio,
-      setDecibelValue,
-      setAutoSendText,
       setEngineTTS,
       setVoice,
       setCloudBrowserVoices,
@@ -126,9 +91,9 @@ function Speech() {
       Object.entries(data).forEach(([key, value]) => {
         // Only apply config values as defaults if no user preference exists in localStorage
         const existingValue = localStorage.getItem(key);
-        if (existingValue === null && key !== 'sttExternal' && key !== 'ttsExternal') {
+        if (existingValue === null && key !== 'ttsExternal') {
           updateSetting(key, value);
-        } else if (key === 'sttExternal' || key === 'ttsExternal') {
+        } else if (key === 'ttsExternal') {
           updateSetting(key, value);
         }
       });
@@ -145,7 +110,7 @@ function Speech() {
     }
   }, [engineTTS, setEngineTTS]);
 
-  logger.log({ sttExternal, ttsExternal });
+  logger.log({ ttsExternal });
 
   const contentRef = useRef(null);
   useOnClickOutside(contentRef, () => confirmClear && setConfirmClear(false), []);
@@ -189,10 +154,6 @@ function Speech() {
 
       <Tabs.Content value={'simple'}>
         <div className="flex flex-col gap-3 text-sm text-text-primary">
-          <SpeechToTextSwitch />
-          <EngineSTTDropdown external={sttExternal} />
-          <LanguageSTTDropdown />
-          <div className="h-px bg-border-medium" role="none" />
           <TextToSpeechSwitch />
           <EngineTTSDropdown external={ttsExternal} />
           <VoiceDropdown />
@@ -203,23 +164,6 @@ function Speech() {
         <div className="flex flex-col gap-3 text-sm text-text-primary">
           <ConversationModeSwitch />
           <div className="mt-2 h-px bg-border-medium" role="none" />
-          <SpeechToTextSwitch />
-
-          <EngineSTTDropdown external={sttExternal} />
-
-          <LanguageSTTDropdown />
-          <div className="pb-2">
-            <AutoTranscribeAudioSwitch />
-          </div>
-          {autoTranscribeAudio && (
-            <div className="pb-2">
-              <DecibelSelector />
-            </div>
-          )}
-          <div className="pb-2">
-            <AutoSendTextSelector />
-          </div>
-          <div className="h-px bg-border-medium" role="none" />
           <div className="pb-3">
             <TextToSpeechSwitch />
           </div>

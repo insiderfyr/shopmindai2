@@ -28,7 +28,7 @@ const PromptVariables = ({
   }, [promptText]);
 
   return (
-    <div className="rounded-xl border border-border-light bg-transparent p-4 shadow-md">
+          <div className="rounded-2xl border border-border-light bg-transparent p-4 shadow-md">
       <h3 className="flex items-center gap-2 py-2 text-lg font-semibold text-text-primary">
         <Variable className="icon-sm" aria-hidden="true" />
         {localize('com_ui_variables')}
@@ -39,7 +39,7 @@ const PromptVariables = ({
             {variables.map((variable, index) => (
               <span
                 className={cn(
-                  'rounded-full border border-border-light px-3 py-1 text-text-primary',
+                  'rounded-2xl border border-border-light px-3 py-1 text-text-primary',
                   specialVariables[variable.toLowerCase()] != null ? specialVariableClasses : '',
                 )}
                 key={index}

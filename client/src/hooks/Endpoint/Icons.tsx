@@ -1,6 +1,6 @@
 import { EModelEndpoint } from 'librechat-data-provider';
 import type { IconMapProps, AgentIconMapProps, IconsRecord } from '~/common';
-import { Feather } from 'lucide-react';
+import LogoIcon from '~/components/svg/LogoIcon';
 import {
   MinimalPlugin,
   GPTIcon,
@@ -40,7 +40,7 @@ const AssistantAvatar = ({
   return <Sparkles className={cn(context === 'landing' ? 'icon-2xl' : '', className)} />;
 };
 
-const AgentAvatar = ({ className = '', avatar = '', agentName, size }: AgentIconMapProps) => {
+const LogoAvatar = ({ className = '', avatar = '', agentName, size }: AgentIconMapProps) => {
   if (agentName != null && agentName && avatar) {
     return (
       <img
@@ -53,7 +53,7 @@ const AgentAvatar = ({ className = '', avatar = '', agentName, size }: AgentIcon
     );
   }
 
-  return <Feather className={cn(agentName === '' ? 'icon-2xl' : '', className)} size={size} />;
+  return <LogoIcon className={cn(agentName === '' ? 'icon-2xl' : '', className)} size={size} />;
 };
 
 const Bedrock = ({ className = '' }: IconMapProps) => {
@@ -70,7 +70,7 @@ export const icons: IconsRecord = {
   [EModelEndpoint.custom]: CustomMinimalIcon,
   [EModelEndpoint.assistants]: AssistantAvatar,
   [EModelEndpoint.azureAssistants]: AssistantAvatar,
-  [EModelEndpoint.agents]: AgentAvatar,
+  [EModelEndpoint.agents]: LogoAvatar,
   [EModelEndpoint.bedrock]: Bedrock,
   unknown: UnknownIcon,
 };

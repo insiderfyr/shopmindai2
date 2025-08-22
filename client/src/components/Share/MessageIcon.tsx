@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { TMessage, Assistant, Agent } from 'librechat-data-provider';
 import type { TMessageProps } from '~/common';
 import MessageEndpointIcon from '../Endpoints/MessageEndpointIcon';
-import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
+import { icons } from '~/hooks/Endpoint/Icons';
 import { getIconEndpoint } from '~/utils';
 import { UserIcon } from '../svg';
 
@@ -49,17 +49,18 @@ export default function MessageIcon(
     agentName,
     agentAvatar,
   });
-  if (message?.isCreatedByUser !== true && iconURL && iconURL.includes('http')) {
+  if (message?.isCreatedByUser !== true && agent) {
     return (
-      <ConvoIconURL
-        iconURL={iconURL}
-        modelLabel={messageSettings.chatGptLabel ?? messageSettings.modelLabel ?? ''}
-        context="message"
-        assistantAvatar={assistantAvatar}
-        assistantName={assistantName}
-        agentAvatar={agentAvatar}
-        agentName={agentName}
-      />
+      <div className="icon-md">
+        {icons.agents && (
+          <icons.agents
+            size={28.8}
+            className="h-2/3 w-2/3"
+            agentName={agentName}
+            avatar={agentAvatar}
+          />
+        )}
+      </div>
     );
   }
 

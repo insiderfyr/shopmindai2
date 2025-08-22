@@ -54,7 +54,7 @@ export default function Badge({
     <motion.button
       onClick={handleClick}
       className={cn(
-        'group relative inline-flex items-center gap-1.5 rounded-full px-4 py-1.5',
+        'group relative inline-flex items-center gap-1.5 rounded-2xl px-4 py-1.5',
         'border border-border-medium text-sm font-medium transition-shadow md:w-full',
         'size-9 p-2 md:p-3',
         isActive

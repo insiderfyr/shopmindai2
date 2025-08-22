@@ -5,7 +5,7 @@ import type { TMessageContentParts } from 'librechat-data-provider';
 import type { Option } from '~/common';
 import useTextToSpeechExternal from '~/hooks/Input/useTextToSpeechExternal';
 import useTextToSpeechBrowser from '~/hooks/Input/useTextToSpeechBrowser';
-import useGetAudioSettings from '~/hooks/Input/useGetAudioSettings';
+
 import useAudioRef from '~/hooks/Audio/useAudioRef';
 import { usePauseGlobalAudio } from '../Audio';
 import { logger } from '~/utils';
@@ -26,7 +26,7 @@ const useTextToSpeech = (props?: TUseTextToSpeech) => {
   const [isSpeakingState, setIsSpeaking] = useState(false);
   const { audioRef } = useAudioRef({ setIsPlaying: setIsSpeaking });
 
-  const { textToSpeechEndpoint } = useGetAudioSettings();
+  const textToSpeechEndpoint = useRecoilValue(store.engineTTS);
   const { pauseGlobalAudio } = usePauseGlobalAudio(index);
   const [voice, setVoice] = useRecoilState(store.voice);
   const globalIsPlaying = useRecoilValue(store.globalAudioPlayingFamily(index));

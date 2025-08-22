@@ -44,7 +44,7 @@ const Command = ({
   }
 
   return (
-    <div className="rounded-xl border border-border-light shadow-md">
+          <div className="rounded-2xl border border-border-light shadow-md">
       <h3 className="flex h-10 items-center gap-1 pl-4 text-sm text-text-secondary">
         <SquareSlash className="icon-sm" aria-hidden="true" />
         <Input

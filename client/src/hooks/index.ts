@@ -32,6 +32,6 @@ export { default as useLocalStorage } from './useLocalStorage';
 export { default as useDocumentTitle } from './useDocumentTitle';
 export { default as useDelayedRender } from './useDelayedRender';
 export { default as useOnClickOutside } from './useOnClickOutside';
-export { default as useSpeechToText } from './Input/useSpeechToText';
+
 export { default as useTextToSpeech } from './Input/useTextToSpeech';
 export { default as useGenerationsByLatest } from './useGenerationsByLatest';

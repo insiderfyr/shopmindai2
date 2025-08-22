@@ -23,7 +23,7 @@ import {
   optionText,
   cn,
 } from '~/utils';
-import OptionHoverAlt from '~/components/SidePanel/Parameters/OptionHover';
+
 import { useLocalize, useDebouncedInput } from '~/hooks';
 import OptionHover from './OptionHover';
 import { ESide } from '~/common';

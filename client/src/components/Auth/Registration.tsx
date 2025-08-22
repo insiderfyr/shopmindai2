@@ -76,7 +76,7 @@ const Registration: React.FC = () => {
             validation,
           )}
           aria-invalid={!!errors[id]}
-          className="webkit-dark-styles transition-color peer w-full rounded-3xl border border-[#4d8eff] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:text-white"
+          className="webkit-dark-styles transition-color peer w-full rounded-md border border-[#4d8eff] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:text-white"
           style={
             {
               backgroundColor: 'var(--page-bg)',
@@ -209,7 +209,7 @@ const Registration: React.FC = () => {
                 type="submit"
                 aria-label="Submit registration"
                 variant="submit"
-                className="h-12 w-full rounded-3xl"
+                className="h-12 w-full rounded-md"
               >
                 {isSubmitting ? <Spinner /> : localize('com_auth_continue')}
               </Button>

@@ -5,7 +5,7 @@ import type {
   TPreset,
   TAssistantsMap,
 } from 'librechat-data-provider';
-import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
+import { icons } from '~/hooks/Endpoint/Icons';
 import MinimalIcon from '~/components/Endpoints/MinimalIcon';
 import { getEndpointField, getIconEndpoint } from '~/utils';
 
@@ -39,16 +39,18 @@ export default function EndpointIcon({
 
   const iconURL = assistantAvatar || convoIconURL;
 
-  if (iconURL && (iconURL.includes('http') || iconURL.startsWith('/images/'))) {
+  if (assistant && assistantAvatar) {
     return (
-      <ConvoIconURL
-        iconURL={iconURL}
-        modelLabel={conversation?.chatGptLabel ?? conversation?.modelLabel ?? ''}
-        context={context}
-        endpointIconURL={endpointIconURL}
-        assistantAvatar={assistantAvatar}
-        assistantName={assistantName ?? ''}
-      />
+      <div className="icon-md">
+        {icons.assistants && (
+          <icons.assistants
+            size={20}
+            className="h-2/3 w-2/3"
+            assistantName={assistantName ?? ''}
+            avatar={assistantAvatar}
+          />
+        )}
+      </div>
     );
   } else {
     return (

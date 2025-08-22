@@ -502,7 +502,7 @@ export const intefaceSchema = z
     endpointsMenu: z.boolean().optional(),
     modelSelect: z.boolean().optional(),
     parameters: z.boolean().optional(),
-    sidePanel: z.boolean().optional(),
+
     multiConvo: z.boolean().optional(),
     bookmarks: z.boolean().optional(),
     memories: z.boolean().optional(),
@@ -518,7 +518,7 @@ export const intefaceSchema = z
     endpointsMenu: true,
     modelSelect: true,
     parameters: true,
-    sidePanel: true,
+
     presets: true,
     multiConvo: true,
     bookmarks: true,

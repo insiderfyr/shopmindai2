@@ -44,7 +44,7 @@ export function TemporaryChat() {
             onClick={handleBadgeToggle}
             aria-label={localize(temporaryBadge.label)}
             className={cn(
-              'hover:bg-blue-75 inline-flex size-10 flex-shrink-0 items-center justify-center rounded-xl border border-border-light text-text-primary transition-all ease-in-out dark:hover:bg-[#16213e]',
+              'hover:bg-blue-75 inline-flex size-10 flex-shrink-0 items-center justify-center rounded-md border border-border-light text-text-primary transition-all ease-in-out dark:hover:bg-[#16213e]',
               isTemporary
                 ? 'bg-blue-100 shadow-md dark:bg-[#1a1a2e]'
                 : 'bg-transparent shadow-sm hover:bg-blue-100 hover:shadow-md dark:hover:bg-[#1a1a2e]',

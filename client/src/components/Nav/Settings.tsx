@@ -158,7 +158,7 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
           <div className={cn('fixed inset-0 flex w-screen items-center justify-center p-4')}>
             <DialogPanel
               className={cn(
-                'min-h-[600px] overflow-hidden rounded-xl rounded-b-lg bg-blue-50 pb-6 shadow-2xl backdrop-blur-2xl animate-in dark:bg-[#182533] sm:rounded-2xl md:min-h-[373px] md:w-[680px]',
+                'min-h-[600px] overflow-hidden rounded-md rounded-b-lg bg-blue-50 pb-6 shadow-2xl backdrop-blur-2xl animate-in dark:bg-[#182533] sm:rounded-md md:min-h-[373px] md:w-[680px]',
               )}
             >
               <DialogTitle
@@ -203,7 +203,7 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                     className={cn(
                       'min-w-auto max-w-auto relative -ml-[8px] flex flex-shrink-0 flex-col flex-nowrap overflow-auto sm:max-w-none',
                       isSmallScreen
-                        ? 'flex-row rounded-xl bg-blue-100/60 dark:bg-[#0f1a2a]'
+                        ? 'flex-row rounded-md bg-blue-100/60 dark:bg-[#0f1a2a]'
                         : 'sticky top-0 h-full',
                     )}
                     onKeyDown={handleKeyDown}
@@ -212,7 +212,7 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                       <Tabs.Trigger
                         key={value}
                         className={cn(
-                          'group relative z-10 m-1 flex items-center justify-start gap-2 rounded-xl px-2 py-1.5 transition-all duration-200 ease-in-out',
+                          'group relative z-10 m-1 flex items-center justify-start gap-2 rounded-lg px-2 py-1.5 transition-all duration-200 ease-in-out',
                           isSmallScreen
                             ? 'flex-1 justify-center text-nowrap p-1 px-3 text-sm text-text-secondary radix-state-active:bg-blue-100 radix-state-active:text-text-primary dark:radix-state-active:bg-[#182533]'
                             : 'bg-transparent text-text-secondary radix-state-active:bg-blue-100 radix-state-active:text-text-primary dark:radix-state-active:bg-[#182533]',
