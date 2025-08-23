@@ -210,14 +210,21 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     <form
       onSubmit={methods.handleSubmit(submitMessage)}
       className={cn(
-        'mx-auto flex w-4/5 flex-row gap-3 transition-[max-width] duration-300 sm:px-2 transform scale-110',
-        'max-w-3xl',
+        // Responsive width and layout
+        'mx-auto flex flex-row gap-2 sm:gap-3 transition-all duration-300 ease-in-out',
+        // Mobile-first responsive design
+        'w-full px-2 sm:w-11/12 sm:px-3 md:w-4/5 md:px-4 lg:w-4/5',
+        // Responsive scaling
+        'transform scale-100 sm:scale-105 md:scale-110',
+        // Responsive max-width
+        'max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl',
+        // Responsive margins
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 sm:mb-28'
-          : 'sm:mb-10',
+          ? 'transition-all duration-200 mb-16 sm:mb-20 md:mb-24 lg:mb-28'
+          : 'mb-6 sm:mb-8 md:mb-10 lg:mb-12',
       )}
     >
       <div className="relative flex h-full flex-1 items-stretch md:flex-col">
@@ -281,7 +288,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   }}
                   onBlur={setIsTextAreaFocused.bind(null, false)}
                   onClick={handleFocusOrClick}
-                  style={{ height: 80, overflowY: 'auto', fontSize: '16px' }}
+                  style={{ 
+                    height: window.innerWidth < 768 ? 60 : 80, 
+                    overflowY: 'auto', 
+                    fontSize: window.innerWidth < 768 ? '14px' : '16px'
+                  }}
                   className={cn(
                     baseClasses,
                     removeFocusRings,

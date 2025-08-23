@@ -44,7 +44,7 @@ export default function MessagesView({
               width: '100%',
             }}
           >
-            <div className="flex flex-col bg-blue-50 pb-9 dark:bg-[#182533]">
+            <div className="flex flex-col bg-blue-50 pb-6 sm:pb-8 md:pb-9 dark:bg-[#182533]">
               {(_messagesTree && _messagesTree.length == 0) || _messagesTree === null ? (
                 <div
                   className={cn(

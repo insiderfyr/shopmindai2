@@ -28,11 +28,11 @@ export default function Header() {
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   return (
-    <div className="sticky top-0 z-10 flex h-14 w-full items-center justify-between bg-blue-50 p-2 font-semibold text-text-primary dark:bg-[#182533]">
+    <div className="sticky top-0 z-10 flex h-12 sm:h-14 w-full items-center justify-between bg-blue-50 p-1 sm:p-2 font-semibold text-text-primary dark:bg-[#182533]">
       <div className="hide-scrollbar flex w-full items-center justify-between gap-2 overflow-x-auto">
-        <div className="mx-1 flex items-center gap-2">
+        <div className="mx-1 flex items-center gap-1 sm:gap-2">
           <div
-            className={`flex items-center gap-2 ${
+            className={`flex items-center gap-1 sm:gap-2 ${
               !isSmallScreen ? 'transition-all duration-200 ease-in-out' : ''
             } ${
               !navVisible
@@ -44,7 +44,7 @@ export default function Header() {
             <HeaderNewChat />
           </div>
           <div
-            className={`flex items-center gap-2 ${
+            className={`flex items-center gap-1 sm:gap-2 ${
               !isSmallScreen ? 'transition-all duration-200 ease-in-out' : ''
             } ${!navVisible ? 'translate-x-0' : 'translate-x-[-100px]'}`}
           >
