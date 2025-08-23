@@ -1,9 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
-import { useLocalize } from '~/hooks';
-import { useConversationsInfiniteQuery } from '~/data-provider';
 import { cn } from '~/utils';
-import store from '~/store';
 import './Sidebar.css';
 import { 
   MessageSquare, 
@@ -38,9 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
   
-  const localize = useLocalize();
-  const { data: conversationsData } = useConversationsInfiniteQuery();
-  const conversations = conversationsData?.pages?.flatMap(page => page.conversations) || [];
+
 
   // Auto-expand on hover, auto-collapse after delay
   const handleMouseEnter = () => {
@@ -89,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       id: 'conversations',
       icon: <MessageSquare size={20} />,
       label: 'Conversations',
-      badge: conversations.length,
+      badge: 0, // Will be updated when conversation system is integrated
       isActive: false
     },
     {
