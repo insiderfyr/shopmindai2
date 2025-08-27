@@ -133,10 +133,10 @@ const ContentRender = memo(
 
 
         {msg.isCreatedByUser ? (
-          <>
+          <div className="flex flex-col gap-2 w-full">
             <div
               className={cn(
-                'relative flex flex-col',
+                'relative flex flex-col ml-auto',
                 'user-turn',
               )}
             >
@@ -186,7 +186,7 @@ const ContentRender = memo(
                 />
               </SubRow>
             )}
-          </>
+          </div>
         ) : (
           <div
             className={cn(
