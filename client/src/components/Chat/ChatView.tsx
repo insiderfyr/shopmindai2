@@ -78,7 +78,7 @@ function ChatView({ index = 0 }: { index?: number }) {
       <ChatContext.Provider value={chatHelpers}>
         <AddedChatContext.Provider value={addedChatHelpers}>
           <Presentation>
-            <div className="flex h-full w-full flex-col border border-gray-200/30 dark:border-gray-700/30" style={{ marginTop: '-60px' }}>
+            <div className="flex h-screen w-full flex-col border border-gray-200/30 dark:border-gray-700/30">
               {!isLoading && <Header />}
               <>
                 <div
