@@ -77,14 +77,12 @@ const HoverButton = memo(
     isDisabled = false,
     isLast = false,
     className = '',
-    isCreatedByUser = false,
-  }: HoverButtonProps & { isCreatedByUser?: boolean }) => {
+  }: HoverButtonProps) => {
     const buttonStyle = cn(
       'hover-button rounded-lg p-1.5 text-text-secondary-alt transition-colors duration-200',
       'hover:text-text-primary hover:bg-blue-100 dark:hover:bg-[#1a1a2e]',
-      isCreatedByUser 
-        ? 'md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100' 
-        : 'md:visible',
+      'md:group-hover:visible md:group-focus-within:visible md:group-[.final-completion]:visible',
+      !isLast && 'md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100',
       !isVisible && 'opacity-0',
       'focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white focus-visible:outline-none',
       isActive && isVisible && 'active text-text-primary bg-blue-100 dark:bg-[#1a1a2e]',
@@ -168,7 +166,6 @@ const HoverButtons = ({
             title={localize('com_ui_regenerate')}
             icon={<RegenerateIcon size="19" />}
             isLast={isLast}
-            isCreatedByUser={isCreatedByUser}
           />
         )}
       </div>
@@ -200,7 +197,6 @@ const HoverButtons = ({
               icon={props.icon}
               isActive={props.isActive}
               isLast={isLast}
-              isCreatedByUser={isCreatedByUser}
             />
           )}
         />
@@ -214,7 +210,6 @@ const HoverButtons = ({
         }
         icon={isCopied ? <CheckMark className="h-[18px] w-[18px]" /> : <Clipboard size="19" />}
         isLast={isLast}
-        isCreatedByUser={isCreatedByUser}
         className={`ml-0 flex items-center gap-1.5 text-xs ${isSubmitting && isCreatedByUser ? 'md:opacity-0 md:group-hover:opacity-100' : ''}`}
       />
 
@@ -229,7 +224,6 @@ const HoverButtons = ({
           isVisible={!hideEditButton}
           isDisabled={hideEditButton}
           isLast={isLast}
-          isCreatedByUser={isCreatedByUser}
           className={isCreatedByUser ? '' : 'active'}
         />
       )}
@@ -255,7 +249,6 @@ const HoverButtons = ({
           title={localize('com_ui_regenerate')}
           icon={<RegenerateIcon size="19" />}
           isLast={isLast}
-          isCreatedByUser={isCreatedByUser}
           className="active"
         />
       )}
@@ -267,7 +260,6 @@ const HoverButtons = ({
           title={localize('com_ui_continue')}
           icon={<ContinueIcon className="w-19 h-19 -rotate-180" />}
           isLast={isLast}
-          isCreatedByUser={isCreatedByUser}
           className="active"
         />
       )}
