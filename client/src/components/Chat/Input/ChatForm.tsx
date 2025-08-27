@@ -295,7 +295,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
                     'dynamic-placeholder dynamic-placeholder-transition',
                     // Responsive textarea styling
-                    'min-h-[44px] max-h-[120px] sm:max-h-[200px] text-base'
+                    'min-h-[60px] max-h-[180px] sm:max-h-[300px] text-lg'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">

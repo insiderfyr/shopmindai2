@@ -165,7 +165,7 @@ const EditMessage = ({
             'm-0 w-full resize-none border-0 bg-transparent py-[10px]',
             'placeholder-text-secondary focus:ring-0 focus-visible:ring-0 md:py-3.5',
             isRTL ? 'text-right' : 'text-left',
-            'max-h-[65vh] pr-3 md:max-h-[75vh] md:pr-4',
+            'max-h-[75vh] pr-3 md:max-h-[85vh] md:pr-4',
             removeFocusRings,
           )}
           dir={isRTL ? 'rtl' : 'ltr'}

@@ -52,8 +52,8 @@ export default defineConfig(({ command }) => ({
       },
       includeAssets: [],
       manifest: {
-        name: 'LibreChat',
-        short_name: 'LibreChat',
+        name: 'Shop Mind AI',
+        short_name: 'Shop Mind AI',
         start_url: '/',
         display: 'standalone',
         background_color: '#000000',

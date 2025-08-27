@@ -102,15 +102,15 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivEleme
     <div
       ref={ref}
       className={cn(
-        'group relative mt-1 flex h-10 cursor-pointer items-center gap-3 rounded-md border-border-medium px-3 py-2 text-text-primary transition-colors duration-200 focus-within:bg-surface-hover hover:bg-surface-hover',
-        isSmallScreen === true ? 'mb-2 h-14 rounded-md' : '',
+        'group relative mt-1 flex h-12 cursor-pointer items-center gap-3 rounded-md border-border-medium px-4 py-3 text-text-primary transition-colors duration-200 focus-within:bg-surface-hover hover:bg-surface-hover',
+        isSmallScreen === true ? 'mb-2 h-16 rounded-md' : '',
       )}
     >
-      <Search className="absolute left-3 h-4 w-4 text-text-secondary group-focus-within:text-text-primary group-hover:text-text-primary" />
+      <Search className="absolute left-4 h-5 w-5 text-text-secondary group-focus-within:text-text-primary group-hover:text-text-primary" />
       <input
         type="text"
         ref={inputRef}
-        className="m-0 mr-0 w-full border-none bg-transparent p-0 pl-7 text-sm leading-tight placeholder-text-secondary placeholder-opacity-100 focus-visible:outline-none group-focus-within:placeholder-text-primary group-hover:placeholder-text-primary"
+        className="m-0 mr-0 w-full border-none bg-transparent p-0 pl-8 text-base leading-tight placeholder-text-secondary placeholder-opacity-100 focus-visible:outline-none group-focus-within:placeholder-text-primary group-hover:placeholder-text-primary"
         value={text}
         onChange={onChange}
         onKeyDown={(e) => {
@@ -128,15 +128,15 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivEleme
         type="button"
         aria-label={`${localize('com_ui_clear')} ${localize('com_ui_search')}`}
         className={cn(
-          'absolute right-[7px] flex h-5 w-5 items-center justify-center rounded-md border-none bg-transparent p-0 transition-opacity duration-200',
+          'absolute right-3 flex h-6 w-6 items-center justify-center rounded-md border-none bg-transparent p-0 transition-opacity duration-200',
           showClearIcon ? 'opacity-100' : 'opacity-0',
-          isSmallScreen === true ? 'right-[16px]' : '',
+          isSmallScreen === true ? 'right-4' : '',
         )}
         onClick={clearText}
         tabIndex={showClearIcon ? 0 : -1}
         disabled={!showClearIcon}
       >
-        <X className="h-5 w-5 cursor-pointer" />
+        <X className="h-6 w-6 cursor-pointer" />
       </button>
     </div>
   );
