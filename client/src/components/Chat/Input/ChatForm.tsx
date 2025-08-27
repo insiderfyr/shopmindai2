@@ -198,9 +198,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const baseClasses = useMemo(
     () =>
       cn(
-        'md:py-3.5 m-0 w-full resize-none py-[13px] placeholder-black/50 bg-white/50 dark:bg-[#1f2937]/50 dark:placeholder-white/50',
+        'md:py-3 m-0 w-full resize-none py-[12px] placeholder-black/50 bg-white dark:bg-gray-800 dark:placeholder-white/50',
         'text-base md:text-lg font-light leading-relaxed', // Ultra-thin typography
-        isCollapsed ? 'max-h-[52px]' : 'max-h-[45vh] md:max-h-[55vh]',
+        isCollapsed ? 'max-h-[50px]' : 'max-h-[40vh] md:max-h-[50vh]',
         isMoreThanThreeRows ? 'pl-5' : 'px-5',
       ),
     [isCollapsed, isMoreThanThreeRows],
@@ -214,8 +214,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
         'mx-auto flex flex-row gap-2 sm:gap-3 transition-all duration-300 ease-in-out',
         // Mobile-first responsive design - fixed
         'w-full px-2 sm:w-11/12 sm:px-3 md:w-11/12 md:px-4 lg:w-11/12',
-        // Responsive max-width - increased by 25%
-        'max-w-full sm:max-w-5xl md:max-w-6xl lg:max-w-7xl xl:max-w-8xl 2xl:max-w-9xl',
+        // Responsive max-width - reduced by 10%
+        'max-w-full sm:max-w-4xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-8xl',
         // Responsive margins - fixed for mobile
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
@@ -248,10 +248,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           <div
             onClick={handleContainerClick}
             className={cn(
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-1 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-0 mt-4 min-w-full shadow-xl',
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-2 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-1 mt-4 min-w-full',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
-                : 'bg-blue-25 border-border-light dark:bg-surface-chat',
+                : 'bg-white border-border-light dark:bg-gray-800',
             )}
           >
             <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />
@@ -294,8 +294,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     'placeholder:text-gray-500 placeholder:dark:text-gray-400',
                     'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
                     'dynamic-placeholder dynamic-placeholder-transition',
-                    // Responsive textarea styling - increased by 25%
-                    'min-h-[75px] max-h-[225px] sm:max-h-[375px] text-lg w-full'
+                    // Responsive textarea styling - compact size
+                    'min-h-[60px] max-h-[180px] sm:max-h-[300px] text-lg w-full'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
@@ -309,11 +309,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             )}
             <div
               className={cn(
-                'items-between flex gap-2 bg-white/50 pb-1 dark:bg-[#1f2937]/50',
+                'items-between flex gap-2 bg-white pb-1 dark:bg-gray-800',
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
-              <div className={`${isRTL ? 'mr-2' : 'ml-2'} flex items-center gap-1 sm:gap-2`}>
+              <div className={`${isRTL ? 'mr-2' : 'ml-2'} flex items-center gap-1.5 sm:gap-2`}>
                 <AttachFileChat disableInputs={disableInputs} />
                 
                 {/* Premium Shopping Buttons - Separate Components */}
