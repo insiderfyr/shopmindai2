@@ -372,3 +372,52 @@ p.whitespace-pre-wrap a, li a {
 .dark p.whitespace-pre-wrap a, .dark li a {
   color: #52a0ff;
 }
+
+/* Responsive improvements for chat components */
+@media (max-width: 767px) {
+  /* Chat form improvements */
+  .chat-form-container {
+    padding: 0 8px;
+  }
+  
+  /* Textarea improvements */
+  textarea[data-testid="text-input"] {
+    min-height: 44px !important;
+    max-height: 120px !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* Button spacing improvements */
+  .chat-buttons-container {
+    gap: 4px !important;
+  }
+  
+  /* Header improvements */
+  .chat-header {
+    padding: 8px !important;
+  }
+  
+  /* Message container improvements */
+  .message-container {
+    padding: 8px 12px !important;
+  }
+}
+
+/* Improved touch targets for mobile */
+@media (max-width: 767px) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing for mobile */
+  .flex.gap-1.sm\\:gap-2 {
+    gap: 4px !important;
+  }
+  
+  /* Improved textarea on mobile */
+  textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}

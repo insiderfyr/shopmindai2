@@ -17,7 +17,6 @@ import {
 import TermsAndConditionsModal from '~/components/ui/TermsAndConditionsModal';
 import { useUserTermsQuery, useGetStartupConfig } from '~/data-provider';
 import { Nav } from '~/components/Nav';
-import { Sidebar } from '~/components/Sidebar';
 import { useHealthCheck } from '~/data-provider';
 import { Banner } from '~/components/Banners';
 
@@ -72,9 +71,8 @@ export default function Root() {
             <Banner onHeightChange={setBannerHeight} />
             <div className="flex" style={{ height: `calc(100dvh - ${bannerHeight}px)` }}>
               <div className="relative z-0 flex h-full w-full overflow-hidden">
-                <Sidebar />
                 <Nav navVisible={navVisible} setNavVisible={setNavVisible} />
-                <div className="relative flex h-full max-w-full flex-1 flex-col overflow-hidden ml-20 lg:ml-64">
+                <div className="relative flex h-full max-w-full flex-1 flex-col overflow-hidden">
                   <Outlet context={{ navVisible, setNavVisible } satisfies ContextType} />
                 </div>
               </div>

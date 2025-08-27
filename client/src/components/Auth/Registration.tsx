@@ -76,7 +76,7 @@ const Registration: React.FC = () => {
             validation,
           )}
           aria-invalid={!!errors[id]}
-          className="webkit-dark-styles transition-color peer w-full rounded-md border border-[#4d8eff] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:text-white"
+          className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:text-white"
           style={
             {
               backgroundColor: 'var(--page-bg)',
@@ -88,7 +88,7 @@ const Registration: React.FC = () => {
         />
         <label
           htmlFor={id}
-          className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-md bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+          className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
         >
           {localize(label)}
         </label>
@@ -110,7 +110,7 @@ const Registration: React.FC = () => {
       )}
       {registerUser.isSuccess && countdown > 0 && (
         <div
-          className="rounded-md border border-green-500 bg-green-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200"
+          className="rounded-[16px] border border-green-500 bg-green-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200"
           role="alert"
         >
           {localize(
@@ -209,7 +209,7 @@ const Registration: React.FC = () => {
                 type="submit"
                 aria-label="Submit registration"
                 variant="submit"
-                className="h-12 w-full rounded-md"
+                className="h-12 w-full rounded-[20px]"
               >
                 {isSubmitting ? <Spinner /> : localize('com_auth_continue')}
               </Button>

@@ -87,7 +87,7 @@ function AuthLayout({
 
       <div className="flex flex-grow items-center justify-center">
         <div className="flex flex-col items-center gap-8">
-          <div className="w-authPageWidth overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-lg">
+          <div className="w-authPageWidth overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-[20px]">
             {!hasStartupConfigError && !isFetching && (
               <h1
                 className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"

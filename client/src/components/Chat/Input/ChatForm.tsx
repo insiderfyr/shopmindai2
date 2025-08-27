@@ -212,19 +212,17 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       className={cn(
         // Responsive width and layout
         'mx-auto flex flex-row gap-2 sm:gap-3 transition-all duration-300 ease-in-out',
-        // Mobile-first responsive design
+        // Mobile-first responsive design - fixed
         'w-full px-2 sm:w-11/12 sm:px-3 md:w-4/5 md:px-4 lg:w-4/5',
-        // Responsive scaling
-        'transform scale-100 sm:scale-105 md:scale-110',
         // Responsive max-width
         'max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl',
-        // Responsive margins
+        // Responsive margins - fixed for mobile
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 mb-16 sm:mb-20 md:mb-24 lg:mb-28'
-          : 'mb-6 sm:mb-8 md:mb-10 lg:mb-12',
+          ? 'transition-all duration-200 mb-8 sm:mb-12 md:mb-16 lg:mb-20'
+          : 'mb-4 sm:mb-6 md:mb-8 lg:mb-10',
       )}
     >
       <div className="relative flex h-full flex-1 items-stretch md:flex-col">
@@ -288,11 +286,6 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   }}
                   onBlur={setIsTextAreaFocused.bind(null, false)}
                   onClick={handleFocusOrClick}
-                  style={{ 
-                    height: window.innerWidth < 768 ? 60 : 80, 
-                    overflowY: 'auto', 
-                    fontSize: window.innerWidth < 768 ? '14px' : '16px'
-                  }}
                   className={cn(
                     baseClasses,
                     removeFocusRings,
@@ -300,7 +293,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     // Add special styling for dynamic placeholder with smooth appearance animation
                     'placeholder:text-gray-500 placeholder:dark:text-gray-400',
                     'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
-                    'dynamic-placeholder dynamic-placeholder-transition'
+                    'dynamic-placeholder dynamic-placeholder-transition',
+                    // Responsive textarea styling
+                    'min-h-[44px] max-h-[120px] sm:max-h-[200px] text-base'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
@@ -318,7 +313,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
-              <div className={`${isRTL ? 'mr-2' : 'ml-2'} flex items-center gap-2`}>
+              <div className={`${isRTL ? 'mr-2' : 'ml-2'} flex items-center gap-1 sm:gap-2`}>
                 <AttachFileChat disableInputs={disableInputs} />
                 
                 {/* Premium Shopping Buttons - Separate Components */}

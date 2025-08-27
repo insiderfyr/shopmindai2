@@ -48,7 +48,7 @@ export default function Header() {
               !isSmallScreen ? 'transition-all duration-200 ease-in-out' : ''
             } ${!navVisible ? 'translate-x-0' : 'translate-x-[-100px]'}`}
           >
-            <ModelSelector startupConfig={startupConfig} />
+            {/* <ModelSelector startupConfig={startupConfig} /> */}
             {hasAccessToBookmarks === true && <BookmarkMenu />}
             {isSmallScreen && (
               <>
