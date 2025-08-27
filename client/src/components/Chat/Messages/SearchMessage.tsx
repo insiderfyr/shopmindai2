@@ -22,9 +22,8 @@ const MessageAvatar = ({ iconData }: { iconData: TMessageIcon }) => (
 
 const MessageBody = ({ message, messageLabel, fontSize }) => (
   <div
-    className={cn('relative flex w-11/12 flex-col', message.isCreatedByUser ? '' : 'agent-turn')}
+    className={cn('relative flex flex-col', message.isCreatedByUser ? 'user-turn' : 'agent-turn')}
   >
-    <div className={cn('select-none font-semibold', fontSize)}>{messageLabel}</div>
     <SearchContent message={message} />
     <SubRow classes="text-xs">
       <MinimalHoverButtons message={message} />
