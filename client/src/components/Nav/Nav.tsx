@@ -18,7 +18,7 @@ import NewChat from './NewChat';
 import { cn } from '~/utils';
 import store from '~/store';
 
-const BookmarkNav = lazy(() => import('./Bookmarks/BookmarkNav'));
+
 const AccountSettings = lazy(() => import('./AccountSettings'));
 
 const NAV_WIDTH_DESKTOP = '260px';
@@ -61,10 +61,7 @@ const Nav = memo(
     const [showLoading, setShowLoading] = useState(false);
     const [tags, setTags] = useState<string[]>([]);
 
-    const hasAccessToBookmarks = useHasAccess({
-      permissionType: PermissionTypes.BOOKMARKS,
-      permission: Permissions.USE,
-    });
+
 
     const search = useRecoilValue(store.search);
 
@@ -155,16 +152,8 @@ const Nav = memo(
     );
 
     const headerButtons = useMemo(
-      () =>
-        hasAccessToBookmarks && (
-          <>
-            <div className="mt-1.5" />
-            <Suspense fallback={null}>
-              <BookmarkNav tags={tags} setTags={setTags} isSmallScreen={isSmallScreen} />
-            </Suspense>
-          </>
-        ),
-      [hasAccessToBookmarks, tags, isSmallScreen],
+      () => null,
+      [],
     );
 
     const [isSearchLoading, setIsSearchLoading] = useState(

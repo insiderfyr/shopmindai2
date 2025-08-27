@@ -7,7 +7,7 @@ import { HeaderNewChat, OpenSidebar } from './Menus';
 import { useGetStartupConfig } from '~/data-provider';
 import ExportAndShareMenu from './ExportAndShareMenu';
 import { useMediaQuery, useHasAccess } from '~/hooks';
-import BookmarkMenu from './Menus/BookmarkMenu';
+
 import { TemporaryChat } from './TemporaryChat';
 
 const defaultInterface = getConfigDefaults().interface;
@@ -20,10 +20,7 @@ export default function Header() {
     [startupConfig],
   );
 
-  const hasAccessToBookmarks = useHasAccess({
-    permissionType: PermissionTypes.BOOKMARKS,
-    permission: Permissions.USE,
-  });
+
 
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
@@ -49,7 +46,7 @@ export default function Header() {
             } ${!navVisible ? 'translate-x-0' : 'translate-x-[-100px]'}`}
           >
             {/* <ModelSelector startupConfig={startupConfig} /> */}
-            {hasAccessToBookmarks === true && <BookmarkMenu />}
+
             {isSmallScreen && (
               <>
                 <ExportAndShareMenu
