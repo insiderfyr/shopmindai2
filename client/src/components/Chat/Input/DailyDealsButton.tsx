@@ -13,8 +13,8 @@ const DailyDealsButton = () => {
       onClick={handleClick}
       className={`flex items-center px-2.5 py-2 sm:px-3 text-sm rounded-lg border transition-all duration-300 ease-in-out transform ${
         isActive
-          ? 'bg-blue-600 text-white border-blue-600 shadow-lg hover:bg-blue-700 hover:border-blue-700 scale-105'
-          : 'bg-white text-blue-600 border-blue-300 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700'
+          ? 'bg-[#3b82f6] text-white border-[#3b82f6] shadow-lg hover:bg-[#2563eb] hover:border-[#2563eb] scale-105'
+          : 'bg-white text-[#3b82f6] border-[#3b82f6] hover:bg-blue-50 hover:border-[#2563eb] hover:text-[#2563eb]'
       }`}
       title="Discover today's best deals and offers"
     >
