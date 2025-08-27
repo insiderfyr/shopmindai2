@@ -199,9 +199,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     () =>
       cn(
         'md:py-3 m-0 w-full resize-none py-[12px] placeholder-black/50 bg-white dark:bg-gray-800 dark:placeholder-white/50',
-        'text-base md:text-lg font-light leading-relaxed', // Ultra-thin typography
+        'text-base md:text-lg font-light leading-relaxed font-["DM Sans"]', // DM Sans for e-commerce
         isCollapsed ? 'max-h-[50px]' : 'max-h-[40vh] md:max-h-[50vh]',
         isMoreThanThreeRows ? 'pl-5' : 'px-5',
+        'shadow-inner',
       ),
     [isCollapsed, isMoreThanThreeRows],
   );
@@ -248,7 +249,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           <div
             onClick={handleContainerClick}
             className={cn(
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-2 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-1 mt-4 min-w-full',
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-2 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-1 mt-4 min-w-full shadow-md dark:shadow-gray-900/30',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
                 : 'bg-white border-border-light dark:bg-gray-800',

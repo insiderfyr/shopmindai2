@@ -87,16 +87,14 @@ export default function useTextarea({
            "I'm your personal shopping assistant"
          ];
 
-  // Effect for rotating messages every 15 seconds - GENIUS timing
+  // Effect for rotating messages every 15 seconds - UNIVERSAL timing
   useEffect(() => {
-    if (isAgent && (!conversation?.agent_id || !agentsMap?.[conversation?.agent_id])) {
-      const interval = setInterval(() => {
-        setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % ecommerceMessages.length);
-      }, 15000); // Rotation every 15 seconds - PERFECT timing
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % ecommerceMessages.length);
+    }, 15000); // Rotation every 15 seconds - UNIVERSAL timing
 
-      return () => clearInterval(interval);
-    }
-  }, [isAgent, conversation?.agent_id, agentsMap, ecommerceMessages.length]);
+    return () => clearInterval(interval);
+  }, [ecommerceMessages.length]);
 
   useEffect(() => {
     const currentValue = textAreaRef.current?.value ?? '';
@@ -108,31 +106,13 @@ export default function useTextarea({
       if (disabled) {
         return localize('com_endpoint_config_placeholder');
       }
-      const currentEndpoint = conversation?.endpoint ?? '';
-      const currentAgentId = conversation?.agent_id ?? '';
-      const currentAssistantId = conversation?.assistant_id ?? '';
-      if (isAgent && (!currentAgentId || !agentsMap?.[currentAgentId])) {
-        // Return current rotating message
-        return ecommerceMessages[currentMessageIndex];
-      } else if (
-        isAssistant &&
-        (!currentAssistantId || !assistantMap?.[currentEndpoint]?.[currentAssistantId])
-      ) {
-        return localize('com_endpoint_assistant_placeholder');
-      }
-
+      
       if (isNotAppendable) {
         return localize('com_endpoint_message_not_appendable');
       }
 
-      const sender =
-        isAssistant || isAgent
-          ? getEntityName({ name: entityName, isAgent, localize })
-          : getSender(conversation as TEndpointOption);
-
-      return `${localize('com_endpoint_message_new', {
-        0: sender ? sender : localize('com_endpoint_ai'),
-      })}`;
+      // UNIVERSAL: Always return rotating e-commerce messages
+      return ecommerceMessages[currentMessageIndex];
     };
 
     const placeholder = getPlaceholderText();
@@ -155,16 +135,9 @@ export default function useTextarea({
 
     return () => debouncedSetPlaceholder.cancel();
   }, [
-    isAgent,
     localize,
     disabled,
-    getSender,
-    agentsMap,
-    entityName,
     textAreaRef,
-    isAssistant,
-    assistantMap,
-    conversation,
     latestMessage,
     isNotAppendable,
     currentMessageIndex,
