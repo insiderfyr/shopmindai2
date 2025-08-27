@@ -196,14 +196,14 @@ const Conversations: FC<ConversationsProps> = ({
   );
 
   return (
-    <div className="relative flex h-full flex-col pb-2 text-sm text-text-primary">
+    <div className="relative flex h-full flex-col pb-2 text-sm text-text-primary nav-scroll-container">
       {isSearchLoading ? (
         <div className="flex flex-1 items-center justify-center">
           <Spinner className="text-text-primary" />
           <span className="ml-2 text-text-primary">Loading...</span>
         </div>
       ) : (
-        <div className="flex-1">
+        <div className="flex-1 nav-scroll-container">
           <AutoSizer>
             {({ width, height }) => (
               <List
@@ -215,7 +215,7 @@ const Conversations: FC<ConversationsProps> = ({
                 rowHeight={getRowHeight}
                 rowRenderer={rowRenderer}
                 overscanRowCount={10}
-                className="outline-none"
+                className="outline-none nav-scroll-container"
                 style={{ outline: 'none' }}
                 role="list"
                 aria-label="Conversations"

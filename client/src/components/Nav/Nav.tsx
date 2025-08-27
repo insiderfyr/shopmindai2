@@ -186,7 +186,7 @@ const Nav = memo(
         <div
           data-testid="nav"
           className={cn(
-            'nav active max-w-[320px] flex-shrink-0 transform overflow-x-hidden bg-surface-primary-alt transition-all duration-200 ease-in-out',
+            'nav active max-w-[320px] flex-shrink-0 transform overflow-x-hidden bg-surface-primary-alt transition-all duration-200 ease-in-out nav-scroll-container',
             'md:max-w-[260px]',
           )}
           style={{
@@ -194,18 +194,18 @@ const Nav = memo(
             transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
           }}
         >
-          <div className="h-full w-[320px] md:w-[260px]">
+          <div className="h-full w-[320px] md:w-[260px] nav-scroll-container">
             <div className="flex h-full flex-col">
               <div
                 className={`flex h-full flex-col transition-opacity duration-200 ease-in-out ${navVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                <div className="flex h-full flex-col">
+                <div className="flex h-full flex-col nav-scroll-container">
                   <nav
                     id="chat-history-nav"
                     aria-label={localize('com_ui_chat_history')}
-                    className="flex h-full flex-col bg-blue-100/60 px-2 pb-3.5 dark:bg-[#0f1a2a] md:px-3"
+                    className="flex h-full flex-col bg-blue-100/60 px-2 pb-3.5 dark:bg-[#0f1a2a] md:px-3 nav-scroll-container"
                   >
-                    <div className="flex flex-1 flex-col" ref={outerContainerRef}>
+                    <div className="flex flex-1 flex-col nav-scroll-container" ref={outerContainerRef}>
                       <MemoNewChat
                         subHeaders={subHeaders}
                         toggleNav={toggleNavVisible}

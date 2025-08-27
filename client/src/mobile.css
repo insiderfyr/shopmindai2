@@ -122,6 +122,46 @@
   display: none; /* For WebKit browsers */
 }
 
+/* Enhanced scrollbar hiding with smooth scrolling */
+.hide-scrollbar-smooth {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scroll-behavior: smooth; /* Smooth scrolling */
+}
+
+.hide-scrollbar-smooth::-webkit-scrollbar {
+  display: none; /* For WebKit browsers */
+}
+
+.hide-scrollbar-smooth::-webkit-scrollbar-track {
+  display: none;
+}
+
+.hide-scrollbar-smooth::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+/* Specific for nav containers */
+.nav-scroll-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.nav-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-scroll-container::-webkit-scrollbar-track {
+  display: none;
+}
+
+.nav-scroll-container::-webkit-scrollbar-thumb {
+  display: none;
+}
+
 .gemini-gradient {
   /* Adjust the colors and positioning as necessary to match the image */
   background-image: radial-gradient(circle at center, #0000ff, #87cefa, #ffffff);
