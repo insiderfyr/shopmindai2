@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import type { TMessageContentParts } from 'librechat-data-provider';
 import type { TMessageProps, TMessageIcon } from '~/common';
-import { useMessageHelpers, useLocalize, useAttachments } from '~/hooks';
+import { useMessageActions, useLocalize, useAttachments } from '~/hooks';
 import MessageIcon from '~/components/Chat/Messages/MessageIcon';
 import ContentParts from './Content/ContentParts';
 import SiblingSwitch from './SiblingSwitch';
@@ -35,7 +35,13 @@ export default function Message(props: TMessageProps) {
     handleContinue,
     copyToClipboard,
     regenerateMessage,
-  } = useMessageHelpers(props);
+    handleFeedback,
+  } = useMessageActions({
+    message,
+    currentEditId,
+    setCurrentEditId,
+    searchResults,
+  });
 
   const fontSize = useRecoilValue(store.fontSize);
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
@@ -98,8 +104,8 @@ export default function Message(props: TMessageProps) {
             aria-label={`message-${message.depth}-${messageId}`}
             className={cn(baseClasses.common, baseClasses.chat, 'message-render')}
           >
-            <div className="relative flex flex-shrink-0 flex-col items-center">
-              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
+            <div className="relative flex flex-shrink-0 flex-col items-center mt-2">
+              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-1">
                 <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
               </div>
             </div>
@@ -109,7 +115,7 @@ export default function Message(props: TMessageProps) {
                 isCreatedByUser ? 'user-turn' : 'agent-turn',
               )}
             >
-              <h2 className={cn('select-none font-semibold text-text-primary', fontSize)}>
+              <h2 className={cn('select-none font-semibold text-text-primary mt-4', fontSize)}>
                 {name}
               </h2>
               <div className="flex flex-col gap-1">
@@ -150,6 +156,7 @@ export default function Message(props: TMessageProps) {
                       handleContinue={handleContinue}
                       latestMessage={latestMessage}
                       isLast={isLast}
+                      handleFeedback={handleFeedback}
                     />
                   </SubRow>
                 )}

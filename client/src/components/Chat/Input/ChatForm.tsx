@@ -213,16 +213,16 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
         // Responsive width and layout
         'mx-auto flex flex-row gap-2 sm:gap-3 transition-all duration-300 ease-in-out',
         // Mobile-first responsive design - fixed
-        'w-full px-2 sm:w-11/12 sm:px-3 md:w-4/5 md:px-4 lg:w-4/5',
-        // Responsive max-width
-        'max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl',
+        'w-full px-2 sm:w-11/12 sm:px-3 md:w-11/12 md:px-4 lg:w-11/12',
+        // Responsive max-width - increased by 25%
+        'max-w-full sm:max-w-5xl md:max-w-6xl lg:max-w-7xl xl:max-w-8xl 2xl:max-w-9xl',
         // Responsive margins - fixed for mobile
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 mb-8 sm:mb-12 md:mb-16 lg:mb-20'
-          : 'mb-4 sm:mb-6 md:mb-8 lg:mb-10',
+          ? 'transition-all duration-200 -mb-6 sm:-mb-5 md:-mb-4 lg:-mb-3'
+          : '-mb-6 sm:-mb-5 md:-mb-4 lg:-mb-3',
       )}
     >
       <div className="relative flex h-full flex-1 items-stretch md:flex-col">
@@ -248,7 +248,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           <div
             onClick={handleContainerClick}
             className={cn(
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-1 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-0',
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-1 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-0 mt-4 min-w-full shadow-xl',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
                 : 'bg-blue-25 border-border-light dark:bg-surface-chat',
@@ -263,7 +263,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             />
             <FileFormChat disableInputs={disableInputs} />
             {endpoint && (
-              <div className={cn('flex', isRTL ? 'flex-row-reverse' : 'flex-row')}>
+              <div className={cn('flex w-full', isRTL ? 'flex-row-reverse' : 'flex-row')}>
                 <TextareaAutosize
                   {...registerProps}
                   ref={(e) => {
@@ -294,8 +294,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     'placeholder:text-gray-500 placeholder:dark:text-gray-400',
                     'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
                     'dynamic-placeholder dynamic-placeholder-transition',
-                    // Responsive textarea styling
-                    'min-h-[60px] max-h-[180px] sm:max-h-[300px] text-lg'
+                    // Responsive textarea styling - increased by 25%
+                    'min-h-[75px] max-h-[225px] sm:max-h-[375px] text-lg w-full'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
