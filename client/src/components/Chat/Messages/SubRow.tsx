@@ -5,12 +5,17 @@ type TSubRowProps = {
   classes?: string;
   subclasses?: string;
   onClick?: () => void;
+  isUserMessage?: boolean;
 };
 
-export default function SubRow({ children, classes = '', onClick }: TSubRowProps) {
+export default function SubRow({ children, classes = '', onClick, isUserMessage = false }: TSubRowProps) {
   return (
     <div
-      className={cn('mt-1 flex justify-start gap-3 empty:hidden lg:flex', classes)}
+      className={cn(
+        'mt-1 flex justify-start gap-3 empty:hidden lg:flex',
+        isUserMessage ? 'opacity-0 group-hover:opacity-100 transition-opacity duration-200' : '',
+        classes
+      )}
       onClick={onClick}
     >
       {children}

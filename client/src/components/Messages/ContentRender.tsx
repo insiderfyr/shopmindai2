@@ -159,7 +159,7 @@ const ContentRender = memo(
             {(isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0) ? (
               <PlaceholderRow isCard={isCard} />
             ) : (
-              <SubRow classes="text-xs">
+              <SubRow classes="text-xs" isUserMessage={msg.isCreatedByUser}>
                 <SiblingSwitch
                   siblingIdx={siblingIdx}
                   siblingCount={siblingCount}

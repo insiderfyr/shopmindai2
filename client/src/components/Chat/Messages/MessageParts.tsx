@@ -113,7 +113,7 @@ export default function Message(props: TMessageProps) {
                 {isLast && isSubmitting ? (
                   <div className="mt-1 h-[27px] bg-transparent" />
                 ) : (
-                  <SubRow classes="text-xs">
+                  <SubRow classes="text-xs" isUserMessage={isCreatedByUser}>
                     <SiblingSwitch
                       siblingIdx={siblingIdx}
                       siblingCount={siblingCount}

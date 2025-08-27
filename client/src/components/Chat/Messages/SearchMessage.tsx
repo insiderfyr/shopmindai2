@@ -25,7 +25,7 @@ const MessageBody = ({ message, messageLabel, fontSize }) => (
     className={cn('relative flex flex-col', message.isCreatedByUser ? 'user-turn' : 'agent-turn')}
   >
     <SearchContent message={message} />
-    <SubRow classes="text-xs">
+    <SubRow classes="text-xs" isUserMessage={message.isCreatedByUser}>
       <MinimalHoverButtons message={message} />
       <SearchButtons message={message} />
     </SubRow>

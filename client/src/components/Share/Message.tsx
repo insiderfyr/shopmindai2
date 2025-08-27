@@ -104,7 +104,7 @@ export default function Message(props: TMessageProps) {
                   </MessageContext.Provider>
                 </div>
               </div>
-              <SubRow classes="text-xs">
+              <SubRow classes="text-xs" isUserMessage={isCreatedByUser}>
                 <SiblingSwitch
                   siblingIdx={siblingIdx}
                   siblingCount={siblingCount}
