@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, memo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { type TMessage } from 'librechat-data-provider';
-import type { TMessageProps, TMessageIcon } from '~/common';
+import type { TMessageProps } from '~/common';
 import MessageContent from '~/components/Chat/Messages/Content/MessageContent';
 import PlaceholderRow from '~/components/Chat/Messages/ui/PlaceholderRow';
 import SiblingSwitch from '~/components/Chat/Messages/SiblingSwitch';
 import HoverButtons from '~/components/Chat/Messages/HoverButtons';
-import MessageIcon from '~/components/Chat/Messages/MessageIcon';
+
 import { Plugin } from '~/components/Messages/Content';
 import SubRow from '~/components/Chat/Messages/SubRow';
 import { MessageContext } from '~/Providers';
@@ -71,24 +71,7 @@ const MessageRender = memo(
     const showCardRender = isLast && !isSubmittingFamily && isCard;
     const isLatestCard = isCard && !isSubmittingFamily && isLatestMessage;
 
-    const iconData: TMessageIcon = useMemo(
-      () => ({
-        endpoint: msg?.endpoint ?? conversation?.endpoint,
-        model: msg?.model ?? conversation?.model,
-        iconURL: msg?.iconURL,
-        modelLabel: messageLabel,
-        isCreatedByUser: msg?.isCreatedByUser,
-      }),
-      [
-        messageLabel,
-        conversation?.endpoint,
-        conversation?.model,
-        msg?.model,
-        msg?.iconURL,
-        msg?.endpoint,
-        msg?.isCreatedByUser,
-      ],
-    );
+
 
     const clickHandler = useMemo(
       () =>
@@ -145,11 +128,7 @@ const MessageRender = memo(
           <div className="absolute right-0 top-0 m-2 h-3 w-3 rounded-full bg-text-primary" />
         )}
 
-        <div className="relative flex flex-shrink-0 flex-col items-center">
-          <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-            <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
-          </div>
-        </div>
+
 
         <div
           className={cn(

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import type { TMessageContentParts } from 'librechat-data-provider';
-import type { TMessageProps, TMessageIcon } from '~/common';
+import type { TMessageProps } from '~/common';
 import { useMessageActions, useLocalize, useAttachments } from '~/hooks';
-import MessageIcon from '~/components/Chat/Messages/MessageIcon';
+
 import ContentParts from './Content/ContentParts';
 import SiblingSwitch from './SiblingSwitch';
 
@@ -60,25 +60,7 @@ export default function Message(props: TMessageProps) {
     return result;
   }, [assistant, agent, isCreatedByUser, localize]);
 
-  const iconData: TMessageIcon = useMemo(
-    () => ({
-      endpoint: message?.endpoint ?? conversation?.endpoint,
-      model: message?.model ?? conversation?.model,
-      iconURL: message?.iconURL ?? conversation?.iconURL,
-      modelLabel: name,
-      isCreatedByUser: message?.isCreatedByUser,
-    }),
-    [
-      name,
-      conversation?.endpoint,
-      conversation?.iconURL,
-      conversation?.model,
-      message?.model,
-      message?.iconURL,
-      message?.endpoint,
-      message?.isCreatedByUser,
-    ],
-  );
+
 
   if (!message) {
     return null;
@@ -104,11 +86,7 @@ export default function Message(props: TMessageProps) {
             aria-label={`message-${message.depth}-${messageId}`}
             className={cn(baseClasses.common, baseClasses.chat, 'message-render')}
           >
-            <div className="relative flex flex-shrink-0 flex-col items-center mt-2">
-              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-1">
-                <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
-              </div>
-            </div>
+
             <div
               className={cn(
                 'relative flex w-11/12 flex-col',
