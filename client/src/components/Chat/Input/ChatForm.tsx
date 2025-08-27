@@ -198,9 +198,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const baseClasses = useMemo(
     () =>
       cn(
-        'md:py-3 m-0 w-full resize-none py-[12px] placeholder-black/50 bg-white dark:bg-gray-800 dark:placeholder-white/50',
+        'md:py-4 m-0 w-full resize-none py-[15px] placeholder-black/50 bg-white dark:bg-gray-800 dark:placeholder-white/50',
         'text-base md:text-lg font-light leading-relaxed font-["DM Sans"]', // DM Sans for e-commerce
-        isCollapsed ? 'max-h-[50px]' : 'max-h-[40vh] md:max-h-[50vh]',
+        isCollapsed ? 'max-h-[62px]' : 'max-h-[50vh] md:max-h-[62vh]',
         isMoreThanThreeRows ? 'pl-5' : 'px-5',
         'shadow-inner',
       ),
@@ -213,10 +213,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       className={cn(
         // Responsive width and layout
         'mx-auto flex flex-row gap-2 sm:gap-3 transition-all duration-300 ease-in-out',
-        // Mobile-first responsive design - fixed
-        'w-full px-2 sm:w-11/12 sm:px-3 md:w-11/12 md:px-4 lg:w-11/12',
-        // Responsive max-width - reduced by 10%
-        'max-w-full sm:max-w-4xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-8xl',
+        // Mobile-first responsive design - slightly wider
+        'w-full px-2 sm:w-12/12 sm:px-3 md:w-12/12 md:px-4 lg:w-12/12',
+        // Responsive max-width - slightly wider for better UX
+        'max-w-full sm:max-w-5xl md:max-w-6xl lg:max-w-7xl xl:max-w-8xl 2xl:max-w-9xl',
         // Responsive margins - fixed for mobile
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
@@ -295,8 +295,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     'placeholder:text-gray-500 placeholder:dark:text-gray-400',
                     'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
                     'dynamic-placeholder dynamic-placeholder-transition',
-                    // Responsive textarea styling - compact size
-                    'min-h-[60px] max-h-[180px] sm:max-h-[300px] text-lg w-full'
+                    // Responsive textarea styling - 25% larger size
+                    'min-h-[75px] max-h-[225px] sm:max-h-[375px] text-lg w-full'
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
@@ -310,11 +310,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             )}
             <div
               className={cn(
-                'items-between flex gap-2 bg-white pb-1 dark:bg-gray-800',
+                'items-between flex gap-2 bg-white pb-1.5 dark:bg-gray-800',
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
-              <div className={`${isRTL ? 'mr-2' : 'ml-2'} flex items-center gap-1.5 sm:gap-2`}>
+              <div className={`${isRTL ? 'mr-2.5' : 'ml-2.5'} flex items-center gap-2 sm:gap-2.5`}>
                 <AttachFileChat disableInputs={disableInputs} />
                 
                 {/* Premium Shopping Buttons - Separate Components */}
@@ -332,7 +332,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               />
               <div className="mx-auto flex" />
 
-              <div className={`${isRTL ? 'ml-2' : 'mr-2'}`}>
+              <div className={`${isRTL ? 'ml-2.5' : 'mr-2.5'}`}>
                 {(isSubmitting || isSubmittingAdded) && (showStopButton || showStopAdded) ? (
                   <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
                 ) : (
