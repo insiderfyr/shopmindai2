@@ -112,22 +112,7 @@ export type IconsRecord = {
 
 export type AgentIconMapProps = IconMapProps & { agentName?: string };
 
-export type NavLink = {
-  title: TranslationKeys;
-  label?: string;
-  icon: LucideIcon | React.FC;
-  Component?: React.ComponentType;
-  onClick?: (e?: React.MouseEvent) => void;
-  variant?: 'default' | 'ghost';
-  id: string;
-};
 
-export interface NavProps {
-  isCollapsed: boolean;
-  links: NavLink[];
-  resize?: (size: number) => void;
-  defaultActive?: string;
-}
 
 export interface DataColumnMeta {
   meta:
