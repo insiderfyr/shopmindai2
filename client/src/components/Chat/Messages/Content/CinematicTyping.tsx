@@ -6,6 +6,7 @@ import store from '~/store';
 import Markdown from './Markdown';
 import MarkdownLite from './MarkdownLite';
 import { useTypingAnimation } from '~/hooks/useTypingAnimation';
+import { useTypingAnimationConfigSync } from '~/hooks/useTypingAnimationConfig';
 import './TypingAnimation.css';
 
 interface CinematicTypingProps {
@@ -26,6 +27,9 @@ const CinematicTyping = memo(({
   const { isSubmitting, latestMessage } = useChatContext();
   const enableUserMsgMarkdown = useRecoilValue(store.enableUserMsgMarkdown);
   
+  // 🚀 Get synchronized typing animation configuration
+  const typingConfig = useTypingAnimationConfigSync();
+  
   const showCursorState = useMemo(() => showCursor && isSubmitting, [showCursor, isSubmitting]);
   const isLatestMessage = useMemo(
     () => message.messageId === latestMessage?.messageId,
@@ -37,7 +41,7 @@ const CinematicTyping = memo(({
     return !isCreatedByUser && showCursorState && text.length > 0;
   }, [isCreatedByUser, showCursorState, text.length]);
 
-  // Use the advanced typing animation hook
+  // 🚀 Use the enhanced typing animation hook with user configuration
   const {
     displayText,
     isTyping,
@@ -45,19 +49,30 @@ const CinematicTyping = memo(({
     phase,
     animationClasses,
     progress,
+    refreshRate,
+    characterCount,
+    estimatedDuration,
+    performanceMetrics,
   } = useTypingAnimation(
     text,
     shouldAnimate,
     false, // isComplete parameter - will be managed by the hook
     {
-      baseDelay: 15,
-      spaceDelay: 5,
-      punctuationDelay: 150,
-      newlineDelay: 300,
-      codeDelay: 25,
-      mathDelay: 40,
-      breathingEffect: true,
-      smartPausing: true,
+      // 🚀 Use user configuration
+      baseDelay: typingConfig.baseDelay,
+      spaceDelay: typingConfig.spaceDelay,
+      punctuationDelay: typingConfig.punctuationDelay,
+      newlineDelay: typingConfig.newlineDelay,
+      codeDelay: typingConfig.codeDelay,
+      mathDelay: typingConfig.mathDelay,
+      breathingEffect: typingConfig.breathingEffect,
+      smartPausing: typingConfig.smartPausing,
+      adaptiveSpeed: typingConfig.adaptiveSpeed,
+      highRefreshRate: typingConfig.highRefreshRate,
+      predictiveGrouping: typingConfig.predictiveGrouping,
+      smoothScrolling: typingConfig.smoothScrolling,
+      microInteractions: typingConfig.microInteractions,
+      emojiSupport: typingConfig.emojiSupport,
     }
   );
 
@@ -85,7 +100,7 @@ const CinematicTyping = memo(({
     }
   }, [isCreatedByUser, enableUserMsgMarkdown, finalText, isLatestMessage]);
 
-  // Determine CSS classes
+  // 🚀 Enhanced CSS classes with performance indicators and user preferences
   const containerClasses = useMemo(() => {
     const baseClasses = [
       'cinematic-typing-container',
@@ -107,22 +122,59 @@ const CinematicTyping = memo(({
       baseClasses.push('submitting');
     }
 
-    return cn(baseClasses, className);
-  }, [shouldAnimate, animationClasses, isTyping, isSubmitting, className]);
+    // 🚀 Add performance-based classes
+    if (refreshRate > 90) {
+      baseClasses.push('high-refresh-rate');
+    }
 
-  // Progress indicator for long messages
+    // 🚀 Add user preference classes
+    if (typingConfig.highContrast) {
+      baseClasses.push('high-contrast');
+    }
+
+    if (typingConfig.reduceMotion) {
+      baseClasses.push('reduced-motion');
+    }
+
+    return cn(baseClasses, className);
+  }, [shouldAnimate, animationClasses, isTyping, isSubmitting, className, refreshRate, typingConfig]);
+
+  // 🚀 Enhanced progress indicator for long messages
   const showProgress = useMemo(() => {
-    return shouldAnimate && text.length > 200 && progress > 0.1;
+    return shouldAnimate && text.length > 150 && progress > 0.05;
   }, [shouldAnimate, text.length, progress]);
+
+  // 🚀 Performance metrics display (optional, for debugging)
+  const showPerformanceMetrics = useMemo(() => {
+    return shouldAnimate && process.env.NODE_ENV === 'development';
+  }, [shouldAnimate]);
+
+  // 🚀 Calculate typing speed for user feedback
+  const typingSpeed = useMemo(() => {
+    if (!shouldAnimate || !isTyping) return null;
+    
+    const charsPerSecond = Math.round((1000 / typingConfig.baseDelay) * 10) / 10;
+    return `${charsPerSecond} chars/sec`;
+  }, [shouldAnimate, isTyping, typingConfig.baseDelay]);
 
   return (
     <div className={containerClasses}>
-      {/* Progress indicator */}
+      {/* 🚀 Enhanced progress indicator */}
       {showProgress && (
         <div 
           className="typing-progress"
           style={{ width: `${progress * 100}%` }}
         />
+      )}
+      
+      {/* 🚀 Performance metrics (development only) */}
+      {showPerformanceMetrics && (
+        <div className="absolute top-0 right-0 text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded opacity-75 z-10">
+          <div>{refreshRate}Hz</div>
+          <div>{Math.round(performanceMetrics.smoothness)}% smooth</div>
+          <div>{characterCount} chars</div>
+          {typingSpeed && <div>{typingSpeed}</div>}
+        </div>
       )}
       
       {/* Main content */}
@@ -137,11 +189,29 @@ const CinematicTyping = memo(({
         {content}
       </div>
 
-      {/* Micro-interactions overlay */}
-      {shouldAnimate && (
+      {/* 🚀 Enhanced micro-interactions overlay */}
+      {shouldAnimate && typingConfig.microInteractions && (
         <div className="absolute inset-0 pointer-events-none">
           {/* Hover effect area */}
           <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200" />
+          
+          {/* 🚀 Performance indicator line */}
+          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+        </div>
+      )}
+      
+      {/* 🚀 Typing speed indicator */}
+      {shouldAnimate && isTyping && typingConfig.microInteractions && (
+        <div className="absolute bottom-0 left-0 text-xs text-gray-400 opacity-60">
+          {Math.round(progress * 100)}% complete
+          {typingSpeed && ` • ${typingSpeed}`}
+        </div>
+      )}
+      
+      {/* 🚀 Accessibility indicator for screen readers */}
+      {shouldAnimate && typingConfig.screenReaderSupport && (
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {isTyping ? `Typing message: ${Math.round(progress * 100)}% complete` : 'Message complete'}
         </div>
       )}
     </div>
