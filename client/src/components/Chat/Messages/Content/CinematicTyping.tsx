@@ -55,6 +55,9 @@ const CinematicTyping = memo(({
 
   // Determine if this message should have cinematic typing
   const shouldAnimate = useMemo(() => {
+    // 🚀 TEMPORARILY DISABLED for debugging - show messages immediately
+    return false;
+    
     // 🚀 Enhanced logic: animate during streaming OR for latest AI message (for testing)
     const isAIMessage = !isCreatedByUser;
     const hasContent = text.length > 0;

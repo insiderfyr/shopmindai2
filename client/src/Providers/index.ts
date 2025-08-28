@@ -13,6 +13,7 @@ export * from './MessageContext';
 export * from './DashboardContext';
 export * from './AssistantsContext';
 export * from './AssistantsMapContext';
+export * from './AgentsMapContext';
 export * from './AnnouncerContext';
 
 export * from './ArtifactContext';
