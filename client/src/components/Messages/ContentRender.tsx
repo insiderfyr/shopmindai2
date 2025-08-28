@@ -8,7 +8,7 @@ import SiblingSwitch from '~/components/Chat/Messages/SiblingSwitch';
 import HoverButtons from '~/components/Chat/Messages/HoverButtons';
 
 import { useAttachments, useMessageActions } from '~/hooks';
-import SubRow from '~/components/Chat/Messages/SubRow';
+import MessageContainer from '~/components/common/MessageContainer';
 import { cn, logger } from '~/utils';
 import store from '~/store';
 
@@ -38,7 +38,9 @@ const ContentRender = memo(
       messageId: msg?.messageId,
       attachments: msg?.attachments,
     });
+    
     const {
+      ask,
       edit,
       index,
       agent,
@@ -55,25 +57,23 @@ const ContentRender = memo(
       handleFeedback,
     } = useMessageActions({
       message: msg,
-      searchResults,
       currentEditId,
       isMultiMessage,
       setCurrentEditId,
+      searchResults,
     });
     const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
     const fontSize = useRecoilValue(store.fontSize);
 
     const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
+    const hasNoChildren = !(msg?.children?.length ?? 0);
     const isLast = useMemo(
-      () =>
-        !(msg?.children?.length ?? 0) && (msg?.depth === latestMessage?.depth || msg?.depth === -1),
-      [msg?.children, msg?.depth, latestMessage?.depth],
+      () => hasNoChildren && (msg?.depth === latestMessage?.depth || msg?.depth === -1),
+      [hasNoChildren, msg?.depth, latestMessage?.depth],
     );
     const isLatestMessage = msg?.messageId === latestMessage?.messageId;
     const showCardRender = isLast && !isSubmittingFamily && isCard;
     const isLatestCard = isCard && !isSubmittingFamily && isLatestMessage;
-
-
 
     const clickHandler = useMemo(
       () =>
@@ -105,6 +105,103 @@ const ContentRender = memo(
       focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
     };
 
+    // Helper function to determine if SubRow should be shown
+    const shouldShowSubRow = useMemo(() => {
+      return !((isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0));
+    }, [isSubmittingFamily, isSubmitting, msg.children?.length]);
+
+    // SubRow content for user messages
+    const userSubRowContent = useMemo(() => {
+      if (!shouldShowSubRow) return null;
+      
+      return (
+        <>
+          <SiblingSwitch
+            siblingIdx={siblingIdx}
+            siblingCount={siblingCount}
+            setSiblingIdx={setSiblingIdx}
+          />
+          <HoverButtons
+            index={index}
+            isEditing={edit}
+            message={msg}
+            enterEdit={enterEdit}
+            isSubmitting={isSubmitting}
+            conversation={conversation ?? null}
+            regenerate={handleRegenerateMessage}
+            copyToClipboard={copyToClipboard}
+            handleContinue={handleContinue}
+            latestMessage={latestMessage}
+            handleFeedback={handleFeedback}
+            isLast={isLast}
+          />
+        </>
+      );
+    }, [
+      shouldShowSubRow,
+      siblingIdx,
+      siblingCount,
+      setSiblingIdx,
+      index,
+      edit,
+      msg,
+      enterEdit,
+      isSubmitting,
+      conversation,
+      handleRegenerateMessage,
+      copyToClipboard,
+      handleContinue,
+      latestMessage,
+      handleFeedback,
+      isLast,
+    ]);
+
+    // SubRow content for agent messages
+    const agentSubRowContent = useMemo(() => {
+      if (!shouldShowSubRow) return null;
+      
+      return (
+        <>
+          <SiblingSwitch
+            siblingIdx={siblingIdx}
+            siblingCount={siblingCount}
+            setSiblingIdx={setSiblingIdx}
+          />
+          <HoverButtons
+            index={index}
+            isEditing={edit}
+            message={msg}
+            enterEdit={enterEdit}
+            isSubmitting={isSubmitting}
+            conversation={conversation ?? null}
+            regenerate={handleRegenerateMessage}
+            copyToClipboard={copyToClipboard}
+            handleContinue={handleContinue}
+            latestMessage={latestMessage}
+            handleFeedback={handleFeedback}
+            isLast={isLast}
+          />
+        </>
+      );
+    }, [
+      shouldShowSubRow,
+      siblingIdx,
+      siblingCount,
+      setSiblingIdx,
+      index,
+      edit,
+      msg,
+      enterEdit,
+      isSubmitting,
+      conversation,
+      handleRegenerateMessage,
+      copyToClipboard,
+      handleContinue,
+      latestMessage,
+      handleFeedback,
+      isLast,
+    ]);
+
     return (
       <div
         id={msg.messageId}
@@ -130,119 +227,42 @@ const ContentRender = memo(
           <div className="absolute right-0 top-0 m-2 h-3 w-3 rounded-full bg-text-primary" />
         )}
 
-
-
-        {msg.isCreatedByUser ? (
-          <div className="flex flex-col gap-2 w-full">
-            <div
-              className={cn(
-                'relative flex flex-col ml-auto',
-                'user-turn',
-              )}
-            >
-              <div className="flex flex-col gap-1">
-                <div className="flex max-w-full flex-grow flex-col gap-0">
-                  <ContentParts
-                    edit={edit}
-                    isLast={isLast}
-                    enterEdit={enterEdit}
-                    siblingIdx={siblingIdx}
-                    messageId={msg.messageId}
-                    attachments={attachments}
-                    isSubmitting={isSubmitting}
-                    searchResults={searchResults}
-                    setSiblingIdx={setSiblingIdx}
-                    isCreatedByUser={msg.isCreatedByUser}
-                    conversationId={conversation?.conversationId}
-                    content={msg.content as Array<TMessageContentParts | undefined>}
-                  />
-                </div>
-
-                {(isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0) ? (
-                  <PlaceholderRow isCard={isCard} />
-                ) : null}
-              </div>
+        <MessageContainer
+          isCreatedByUser={msg.isCreatedByUser}
+          showSubRow={shouldShowSubRow}
+          isSubmitting={isSubmitting}
+          hasActions={true}
+          isCard={isCard}
+          subRowContent={msg.isCreatedByUser ? userSubRowContent : agentSubRowContent}
+        >
+          <div className="flex flex-col gap-1">
+            <div className="flex max-w-full flex-grow flex-col gap-0">
+              <ContentParts
+                edit={edit}
+                isLast={isLast}
+                enterEdit={enterEdit}
+                siblingIdx={siblingIdx}
+                messageId={msg.messageId}
+                attachments={attachments}
+                isSubmitting={isSubmitting}
+                searchResults={searchResults}
+                setSiblingIdx={setSiblingIdx}
+                isCreatedByUser={msg.isCreatedByUser}
+                conversationId={conversation?.conversationId}
+                content={msg.content as Array<TMessageContentParts | undefined>}
+              />
             </div>
-            {!((isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0)) && (
-              <SubRow classes="text-xs" isUserMessage={true}>
-                <SiblingSwitch
-                  siblingIdx={siblingIdx}
-                  siblingCount={siblingCount}
-                  setSiblingIdx={setSiblingIdx}
-                />
-                <HoverButtons
-                  index={index}
-                  isEditing={edit}
-                  message={msg}
-                  enterEdit={enterEdit}
-                  isSubmitting={isSubmitting}
-                  conversation={conversation ?? null}
-                  regenerate={handleRegenerateMessage}
-                  copyToClipboard={copyToClipboard}
-                  handleContinue={handleContinue}
-                  latestMessage={latestMessage}
-                  handleFeedback={handleFeedback}
-                  isLast={isLast}
-                />
-              </SubRow>
-            )}
-          </div>
-        ) : (
-          <div
-            className={cn(
-              'relative flex flex-col',
-              'agent-turn',
-            )}
-          >
-            <div className="flex flex-col gap-1">
-              <div className="flex max-w-full flex-grow flex-col gap-0">
-                <ContentParts
-                  edit={edit}
-                  isLast={isLast}
-                  enterEdit={enterEdit}
-                  siblingIdx={siblingIdx}
-                  messageId={msg.messageId}
-                  attachments={attachments}
-                  isSubmitting={isSubmitting}
-                  searchResults={searchResults}
-                  setSiblingIdx={setSiblingIdx}
-                  isCreatedByUser={msg.isCreatedByUser}
-                  conversationId={conversation?.conversationId}
-                  content={msg.content as Array<TMessageContentParts | undefined>}
-                />
-              </div>
 
-              {(isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0) ? (
-                <PlaceholderRow isCard={isCard} />
-              ) : (
-                <SubRow classes="text-xs" isUserMessage={false}>
-                  <SiblingSwitch
-                    siblingIdx={siblingIdx}
-                    siblingCount={siblingCount}
-                    setSiblingIdx={setSiblingIdx}
-                  />
-                  <HoverButtons
-                    index={index}
-                    isEditing={edit}
-                    message={msg}
-                    enterEdit={enterEdit}
-                    isSubmitting={isSubmitting}
-                    conversation={conversation ?? null}
-                    regenerate={handleRegenerateMessage}
-                    copyToClipboard={copyToClipboard}
-                    handleContinue={handleContinue}
-                    latestMessage={latestMessage}
-                    handleFeedback={handleFeedback}
-                    isLast={isLast}
-                  />
-                </SubRow>
-              )}
-            </div>
+            {(isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0) ? (
+              <PlaceholderRow isCard={isCard} />
+            ) : null}
           </div>
-        )}
+        </MessageContainer>
       </div>
     );
   },
 );
+
+ContentRender.displayName = 'ContentRender';
 
 export default ContentRender;

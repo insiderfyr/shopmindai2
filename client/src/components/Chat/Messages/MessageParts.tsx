@@ -9,7 +9,7 @@ import SiblingSwitch from './SiblingSwitch';
 
 import MultiMessage from './MultiMessage';
 import HoverButtons from './HoverButtons';
-import SubRow from './SubRow';
+import MessageContainer from '~/components/common/MessageContainer';
 import { cn } from '~/utils';
 import store from '~/store';
 
@@ -60,8 +60,6 @@ export default function Message(props: TMessageProps) {
     return result;
   }, [assistant, agent, isCreatedByUser, localize]);
 
-
-
   if (!message) {
     return null;
   }
@@ -72,6 +70,57 @@ export default function Message(props: TMessageProps) {
       ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
       : 'md:max-w-[47rem] xl:max-w-[55rem]',
   };
+
+  // Helper function to determine if SubRow should be shown
+  const shouldShowSubRow = useMemo(() => {
+    return !(isLast && isSubmitting);
+  }, [isLast, isSubmitting]);
+
+  // SubRow content
+  const subRowContent = useMemo(() => {
+    if (!shouldShowSubRow) return null;
+    
+    return (
+      <>
+        <SiblingSwitch
+          siblingIdx={siblingIdx}
+          siblingCount={siblingCount}
+          setSiblingIdx={setSiblingIdx}
+        />
+        <HoverButtons
+          index={index}
+          isEditing={edit}
+          message={message}
+          enterEdit={enterEdit}
+          isSubmitting={isSubmitting}
+          conversation={conversation ?? null}
+          regenerate={() => regenerateMessage()}
+          copyToClipboard={copyToClipboard}
+          handleContinue={handleContinue}
+          latestMessage={latestMessage}
+          isLast={isLast}
+          handleFeedback={handleFeedback}
+        />
+      </>
+    );
+  }, [
+    shouldShowSubRow,
+    siblingIdx,
+    siblingCount,
+    setSiblingIdx,
+    index,
+    edit,
+    message,
+    enterEdit,
+    isSubmitting,
+    conversation,
+    regenerateMessage,
+    copyToClipboard,
+    handleContinue,
+    latestMessage,
+    isLast,
+    handleFeedback,
+  ]);
 
   return (
     <>
@@ -86,12 +135,12 @@ export default function Message(props: TMessageProps) {
             aria-label={`message-${message.depth}-${messageId}`}
             className={cn(baseClasses.common, baseClasses.chat, 'message-render')}
           >
-
-            <div
-              className={cn(
-                'relative flex flex-col',
-                isCreatedByUser ? 'user-turn' : 'agent-turn',
-              )}
+            <MessageContainer
+              isCreatedByUser={isCreatedByUser}
+              showSubRow={shouldShowSubRow}
+              isSubmitting={isSubmitting}
+              hasActions={true}
+              subRowContent={subRowContent}
             >
               <div className="flex flex-col gap-1">
                 <div className="flex max-w-full flex-grow flex-col gap-0">
@@ -112,31 +161,9 @@ export default function Message(props: TMessageProps) {
                 </div>
                 {isLast && isSubmitting ? (
                   <div className="mt-1 h-[27px] bg-transparent" />
-                ) : (
-                  <SubRow classes="text-xs" isUserMessage={isCreatedByUser}>
-                    <SiblingSwitch
-                      siblingIdx={siblingIdx}
-                      siblingCount={siblingCount}
-                      setSiblingIdx={setSiblingIdx}
-                    />
-                    <HoverButtons
-                      index={index}
-                      isEditing={edit}
-                      message={message}
-                      enterEdit={enterEdit}
-                      isSubmitting={isSubmitting}
-                      conversation={conversation ?? null}
-                      regenerate={() => regenerateMessage()}
-                      copyToClipboard={copyToClipboard}
-                      handleContinue={handleContinue}
-                      latestMessage={latestMessage}
-                      isLast={isLast}
-                      handleFeedback={handleFeedback}
-                    />
-                  </SubRow>
-                )}
+                ) : null}
               </div>
-            </div>
+            </MessageContainer>
           </div>
         </div>
       </div>

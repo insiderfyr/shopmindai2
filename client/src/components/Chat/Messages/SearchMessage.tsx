@@ -6,7 +6,7 @@ import MinimalHoverButtons from '~/components/Chat/Messages/MinimalHoverButtons'
 import Icon from '~/components/Chat/Messages/MessageIcon';
 import SearchContent from './Content/SearchContent';
 import SearchButtons from './SearchButtons';
-import SubRow from './SubRow';
+import MessageContainer from '~/components/common/MessageContainer';
 import { cn } from '~/utils';
 import store from '~/store';
 
@@ -20,17 +20,28 @@ const MessageAvatar = ({ iconData }: { iconData: TMessageIcon }) => (
   </div>
 );
 
-const MessageBody = ({ message, messageLabel, fontSize }) => (
-  <div
-    className={cn('relative flex flex-col', message.isCreatedByUser ? 'user-turn' : 'agent-turn')}
-  >
-    <SearchContent message={message} />
-    <SubRow classes="text-xs" isUserMessage={message.isCreatedByUser}>
-      <MinimalHoverButtons message={message} />
-      <SearchButtons message={message} />
-    </SubRow>
-  </div>
-);
+const MessageBody = ({ message, messageLabel, fontSize }) => {
+  // SubRow content for search messages
+  const subRowContent = useMemo(() => {
+    return (
+      <>
+        <MinimalHoverButtons message={message} />
+        <SearchButtons message={message} />
+      </>
+    );
+  }, [message]);
+
+  return (
+    <MessageContainer
+      isCreatedByUser={message.isCreatedByUser}
+      showSubRow={true}
+      hasActions={true}
+      subRowContent={subRowContent}
+    >
+      <SearchContent message={message} />
+    </MessageContainer>
+  );
+};
 
 export default function SearchMessage({ message }: Pick<TMessageProps, 'message'>) {
   const UsernameDisplay = useRecoilValue<boolean>(store.UsernameDisplay);

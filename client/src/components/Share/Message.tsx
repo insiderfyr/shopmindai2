@@ -5,7 +5,7 @@ import MessageContent from '~/components/Chat/Messages/Content/MessageContent';
 import SearchContent from '~/components/Chat/Messages/Content/SearchContent';
 import SiblingSwitch from '~/components/Chat/Messages/SiblingSwitch';
 import { Plugin } from '~/components/Messages/Content';
-import SubRow from '~/components/Chat/Messages/SubRow';
+import MessageContainer from '~/components/common/MessageContainer';
 import { MessageContext } from '~/Providers';
 import { useAttachments } from '~/hooks';
 
@@ -14,6 +14,7 @@ import { cn } from '~/utils';
 import store from '~/store';
 
 import Icon from './MessageIcon';
+
 export default function Message(props: TMessageProps) {
   const fontSize = useRecoilValue(store.fontSize);
   const {
@@ -51,6 +52,18 @@ export default function Message(props: TMessageProps) {
     messageLabel = message.sender ?? '';
   }
 
+  // SubRow content for share messages
+  const subRowContent = (
+    <>
+      <SiblingSwitch
+        siblingIdx={siblingIdx}
+        siblingCount={siblingCount}
+        setSiblingIdx={setSiblingIdx}
+      />
+      <MinimalHoverButtons message={message} searchResults={searchResults} />
+    </>
+  );
+
   return (
     <>
       <div className="text-token-text-primary w-full border-0 bg-transparent dark:border-0 dark:bg-transparent">
@@ -65,8 +78,11 @@ export default function Message(props: TMessageProps) {
                 </div>
               </div>
             </div>
-            <div
-              className={cn('relative flex flex-col', isCreatedByUser ? 'user-turn' : 'agent-turn')}
+            <MessageContainer
+              isCreatedByUser={isCreatedByUser}
+              showSubRow={true}
+              hasActions={true}
+              subRowContent={subRowContent}
             >
               <div className="flex-col gap-1 md:gap-3">
                 <div className="flex max-w-full flex-grow flex-col gap-0">
@@ -104,21 +120,14 @@ export default function Message(props: TMessageProps) {
                   </MessageContext.Provider>
                 </div>
               </div>
-              <SubRow classes="text-xs" isUserMessage={isCreatedByUser}>
-                <SiblingSwitch
-                  siblingIdx={siblingIdx}
-                  siblingCount={siblingCount}
-                  setSiblingIdx={setSiblingIdx}
-                />
-                <MinimalHoverButtons message={message} searchResults={searchResults} />
-              </SubRow>
-            </div>
+            </MessageContainer>
           </div>
         </div>
       </div>
       <MultiMessage
         key={messageId}
         messageId={messageId}
+        conversation={conversation}
         messagesTree={children ?? []}
         currentEditId={currentEditId}
         setCurrentEditId={setCurrentEditId}

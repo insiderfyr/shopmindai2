@@ -8,7 +8,7 @@ import SiblingSwitch from '~/components/Chat/Messages/SiblingSwitch';
 import HoverButtons from '~/components/Chat/Messages/HoverButtons';
 
 import { Plugin } from '~/components/Messages/Content';
-import SubRow from '~/components/Chat/Messages/SubRow';
+import MessageContainer from '~/components/common/MessageContainer';
 import { MessageContext } from '~/Providers';
 import { useMessageActions } from '~/hooks';
 import { cn, logger } from '~/utils';
@@ -71,8 +71,6 @@ const MessageRender = memo(
     const showCardRender = isLast && !isSubmittingFamily && isCard;
     const isLatestCard = isCard && !isSubmittingFamily && isLatestMessage;
 
-
-
     const clickHandler = useMemo(
       () =>
         showCardRender && !isLatestMessage
@@ -103,6 +101,103 @@ const MessageRender = memo(
       focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
     };
 
+    // Helper function to determine if SubRow should be shown
+    const shouldShowSubRow = useMemo(() => {
+      return !hasNoChildren && !(isSubmittingFamily === true || isSubmitting);
+    }, [hasNoChildren, isSubmittingFamily, isSubmitting]);
+
+    // SubRow content for user messages
+    const userSubRowContent = useMemo(() => {
+      if (!shouldShowSubRow) return null;
+      
+      return (
+        <>
+          <SiblingSwitch
+            siblingIdx={siblingIdx}
+            siblingCount={siblingCount}
+            setSiblingIdx={setSiblingIdx}
+          />
+          <HoverButtons
+            index={index}
+            isEditing={edit}
+            message={msg}
+            enterEdit={enterEdit}
+            isSubmitting={isSubmitting}
+            conversation={conversation ?? null}
+            regenerate={handleRegenerateMessage}
+            copyToClipboard={copyToClipboard}
+            handleContinue={handleContinue}
+            latestMessage={latestMessage}
+            handleFeedback={handleFeedback}
+            isLast={isLast}
+          />
+        </>
+      );
+    }, [
+      shouldShowSubRow,
+      siblingIdx,
+      siblingCount,
+      setSiblingIdx,
+      index,
+      edit,
+      msg,
+      enterEdit,
+      isSubmitting,
+      conversation,
+      handleRegenerateMessage,
+      copyToClipboard,
+      handleContinue,
+      latestMessage,
+      handleFeedback,
+      isLast,
+    ]);
+
+    // SubRow content for agent messages
+    const agentSubRowContent = useMemo(() => {
+      if (!shouldShowSubRow) return null;
+      
+      return (
+        <>
+          <SiblingSwitch
+            siblingIdx={siblingIdx}
+            siblingCount={siblingCount}
+            setSiblingIdx={setSiblingIdx}
+          />
+          <HoverButtons
+            index={index}
+            isEditing={edit}
+            message={msg}
+            enterEdit={enterEdit}
+            isSubmitting={isSubmitting}
+            conversation={conversation ?? null}
+            regenerate={handleRegenerateMessage}
+            copyToClipboard={copyToClipboard}
+            handleContinue={handleContinue}
+            latestMessage={latestMessage}
+            handleFeedback={handleFeedback}
+            isLast={isLast}
+          />
+        </>
+      );
+    }, [
+      shouldShowSubRow,
+      siblingIdx,
+      siblingCount,
+      setSiblingIdx,
+      index,
+      edit,
+      msg,
+      enterEdit,
+      isSubmitting,
+      conversation,
+      handleRegenerateMessage,
+      copyToClipboard,
+      handleContinue,
+      latestMessage,
+      handleFeedback,
+      isLast,
+    ]);
+
     return (
       <div
         id={msg.messageId}
@@ -128,137 +223,51 @@ const MessageRender = memo(
           <div className="absolute right-0 top-0 m-2 h-3 w-3 rounded-full bg-text-primary" />
         )}
 
-
-
-        {msg.isCreatedByUser ? (
-          <div className="flex flex-col gap-2 w-full">
-            <div
-              className={cn(
-                'relative flex flex-col ml-auto',
-                'user-turn',
-              )}
-            >
-              <div className="flex flex-col gap-1">
-                <div className="flex max-w-full flex-grow flex-col gap-0">
-                  <MessageContext.Provider
-                    value={{
-                      messageId: msg.messageId,
-                      conversationId: conversation?.conversationId,
-                      isExpanded: false,
-                    }}
-                  >
-                    {msg.plugin && <Plugin plugin={msg.plugin} />}
-                    <MessageContent
-                      ask={ask}
-                      edit={edit}
-                      isLast={isLast}
-                      text={msg.text || ''}
-                      message={msg}
-                      enterEdit={enterEdit}
-                      error={!!(msg.error ?? false)}
-                      isSubmitting={isSubmitting}
-                      unfinished={msg.unfinished ?? false}
-                      isCreatedByUser={msg.isCreatedByUser ?? true}
-                      siblingIdx={siblingIdx ?? 0}
-                      setSiblingIdx={setSiblingIdx ?? (() => ({}))}
-                    />
-                  </MessageContext.Provider>
-                </div>
-
-                {hasNoChildren && (isSubmittingFamily === true || isSubmitting) ? (
-                  <PlaceholderRow isCard={isCard} />
-                ) : null}
-              </div>
-            </div>
-            {!hasNoChildren && !(isSubmittingFamily === true || isSubmitting) && (
-              <SubRow classes="text-xs" isUserMessage={true}>
-                <SiblingSwitch
-                  siblingIdx={siblingIdx}
-                  siblingCount={siblingCount}
-                  setSiblingIdx={setSiblingIdx}
-                />
-                <HoverButtons
-                  index={index}
-                  isEditing={edit}
+        <MessageContainer
+          isCreatedByUser={msg.isCreatedByUser}
+          showSubRow={shouldShowSubRow}
+          isSubmitting={isSubmitting}
+          hasActions={true}
+          isCard={isCard}
+          subRowContent={msg.isCreatedByUser ? userSubRowContent : agentSubRowContent}
+        >
+          <div className="flex flex-col gap-1">
+            <div className="flex max-w-full flex-grow flex-col gap-0">
+              <MessageContext.Provider
+                value={{
+                  messageId: msg.messageId,
+                  conversationId: conversation?.conversationId,
+                  isExpanded: false,
+                }}
+              >
+                {msg.plugin && <Plugin plugin={msg.plugin} />}
+                <MessageContent
+                  ask={ask}
+                  edit={edit}
+                  isLast={isLast}
+                  text={msg.text || ''}
                   message={msg}
                   enterEdit={enterEdit}
+                  error={!!(msg.error ?? false)}
                   isSubmitting={isSubmitting}
-                  conversation={conversation ?? null}
-                  regenerate={handleRegenerateMessage}
-                  copyToClipboard={copyToClipboard}
-                  handleContinue={handleContinue}
-                  latestMessage={latestMessage}
-                  handleFeedback={handleFeedback}
-                  isLast={isLast}
+                  unfinished={msg.unfinished ?? false}
+                  isCreatedByUser={msg.isCreatedByUser ?? true}
+                  siblingIdx={siblingIdx ?? 0}
+                  setSiblingIdx={setSiblingIdx ?? (() => ({}))}
                 />
-              </SubRow>
-            )}
-          </div>
-        ) : (
-          <div
-            className={cn(
-              'relative flex flex-col',
-              'agent-turn',
-            )}
-          >
-            <div className="flex flex-col gap-1">
-              <div className="flex max-w-full flex-grow flex-col gap-0">
-                <MessageContext.Provider
-                  value={{
-                    messageId: msg.messageId,
-                    conversationId: conversation?.conversationId,
-                    isExpanded: false,
-                  }}
-                >
-                  {msg.plugin && <Plugin plugin={msg.plugin} />}
-                  <MessageContent
-                    ask={ask}
-                    edit={edit}
-                    isLast={isLast}
-                    text={msg.text || ''}
-                    message={msg}
-                    enterEdit={enterEdit}
-                    error={!!(msg.error ?? false)}
-                    isSubmitting={isSubmitting}
-                    unfinished={msg.unfinished ?? false}
-                    isCreatedByUser={msg.isCreatedByUser ?? true}
-                    siblingIdx={siblingIdx ?? 0}
-                    setSiblingIdx={setSiblingIdx ?? (() => ({}))}
-                  />
-                </MessageContext.Provider>
-              </div>
-
-              {hasNoChildren && (isSubmittingFamily === true || isSubmitting) ? (
-                <PlaceholderRow isCard={isCard} />
-              ) : (
-                <SubRow classes="text-xs" isUserMessage={false}>
-                  <SiblingSwitch
-                    siblingIdx={siblingIdx}
-                    siblingCount={siblingCount}
-                    setSiblingIdx={setSiblingIdx}
-                  />
-                  <HoverButtons
-                    index={index}
-                    isEditing={edit}
-                    message={msg}
-                    enterEdit={enterEdit}
-                    isSubmitting={isSubmitting}
-                    conversation={conversation ?? null}
-                    regenerate={handleRegenerateMessage}
-                    copyToClipboard={copyToClipboard}
-                    handleContinue={handleContinue}
-                    latestMessage={latestMessage}
-                    handleFeedback={handleFeedback}
-                    isLast={isLast}
-                  />
-                </SubRow>
-              )}
+              </MessageContext.Provider>
             </div>
+
+            {hasNoChildren && (isSubmittingFamily === true || isSubmitting) ? (
+              <PlaceholderRow isCard={isCard} />
+            ) : null}
           </div>
-        )}
+        </MessageContainer>
       </div>
     );
   },
 );
+
+MessageRender.displayName = 'MessageRender';
 
 export default MessageRender;

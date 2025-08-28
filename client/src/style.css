@@ -87,7 +87,7 @@ html {
   --surface-submit-hover: #3a6cd9;
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
-  --surface-chat: rgb(239, 246, 255);
+  --surface-chat: #F5FBFF;
   --border-light: var(--gray-200);
   --border-medium-alt: var(--gray-300);
   --border-medium: var(--gray-300);
