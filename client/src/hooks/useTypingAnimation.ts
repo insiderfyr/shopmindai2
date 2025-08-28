@@ -36,12 +36,12 @@ interface CharacterInfo {
 }
 
 const DEFAULT_CONFIG: TypingAnimationConfig = {
-  baseDelay: 8, // 🚀 Ultra-fast for buttery smooth feel
-  spaceDelay: 2,
-  punctuationDelay: 80, // 🚀 Reduced for better flow
-  newlineDelay: 150,
-  codeDelay: 15,
-  mathDelay: 25,
+  baseDelay: 4, // 🚀 ChatGPT-level ultra-fast for buttery smooth feel
+  spaceDelay: 1, // 🚀 Near-instant spaces
+  punctuationDelay: 40, // 🚀 Half the pause for ChatGPT-like flow
+  newlineDelay: 80, // 🚀 Smoother paragraph breaks
+  codeDelay: 8, // 🚀 Faster code typing
+  mathDelay: 12, // 🚀 Smoother math
   breathingEffect: true,
   smartPausing: true,
   // 🚀 GENIUS FEATURES
@@ -194,7 +194,7 @@ export const useTypingAnimation = (
     return chars;
   }, [finalConfig]);
 
-  // 🚀 GENIUS: Intelligent character grouping based on content flow
+  // 🚀 GENIUS: ChatGPT-level intelligent character grouping for ultra-smooth flow
   const getOptimalGroup = useCallback((startIndex: number): number => {
     if (!finalConfig.predictiveGrouping) return 1;
     
@@ -202,25 +202,31 @@ export const useTypingAnimation = (
     if (startIndex >= chars.length) return 1;
     
     let groupSize = 1;
-    const maxGroupSize = 5; // Increased for better performance
+    const maxGroupSize = 8; // 🚀 Increased for ChatGPT-like smoothness
     
-    // 🚀 Advanced grouping logic
+    // 🚀 Enhanced grouping logic for natural flow
     for (let i = startIndex; i < Math.min(startIndex + maxGroupSize, chars.length); i++) {
       const char = chars[i];
       
-      // Stop grouping at punctuation or special characters
-      if (!char.groupable) break;
+      // 🚀 Special handling for spaces - group them with adjacent text
+      if (char.type === 'space') {
+        groupSize++;
+        continue;
+      }
       
-      // Group similar character types
+      // Stop grouping at punctuation or special characters (but not spaces)
+      if (!char.groupable && char.type !== 'space') break;
+      
+      // 🚀 Group regular characters more aggressively for smoother flow
       const prevChar = chars[i - 1];
-      if (prevChar && char.type === prevChar.type && char.type === 'regular') {
+      if (prevChar && (char.type === 'regular' || char.type === 'space')) {
         groupSize++;
       } else {
         break;
       }
     }
     
-    return groupSize;
+    return Math.min(groupSize, maxGroupSize);
   }, [finalConfig.predictiveGrouping]);
 
   // 🚀 GENIUS: Ultra-smooth animation loop with dynamic frame rate

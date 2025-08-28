@@ -36,15 +36,15 @@ export interface TypingAnimationUserConfig {
   screenReaderSupport: boolean;
 }
 
-// 🚀 Default configuration for ultra-smooth performance
+// 🚀 Default configuration for ChatGPT-level ultra-smooth performance
 export const DEFAULT_TYPING_CONFIG: TypingAnimationUserConfig = {
-  // Basic timing controls (optimized for smoothness)
-  baseDelay: 8,
-  spaceDelay: 2,
-  punctuationDelay: 80,
-  newlineDelay: 150,
-  codeDelay: 15,
-  mathDelay: 25,
+  // Basic timing controls (optimized for ChatGPT-like smoothness)
+  baseDelay: 4, // 🚀 Even faster for true buttery smoothness
+  spaceDelay: 1, // 🚀 Instant spaces like ChatGPT
+  punctuationDelay: 40, // 🚀 Half the pause for better flow
+  newlineDelay: 80, // 🚀 Reduced for smoother paragraph transitions
+  codeDelay: 8, // 🚀 Faster code typing
+  mathDelay: 12, // 🚀 Smoother math rendering
   
   // Advanced features (all enabled for best experience)
   breathingEffect: true,
@@ -56,15 +56,15 @@ export const DEFAULT_TYPING_CONFIG: TypingAnimationUserConfig = {
   microInteractions: true,
   emojiSupport: true,
   
-  // Performance settings
-  maxGroupSize: 5,
-  frameRateLimit: 0, // 0 = auto-detect
+  // Performance settings (enhanced for ChatGPT-level smoothness)
+  maxGroupSize: 8, // 🚀 Larger groups for smoother bursts
+  frameRateLimit: 0, // 0 = auto-detect for highest performance
   memoryOptimization: true,
   
-  // Visual effects
+  // Visual effects (ChatGPT-inspired)
   cursorStyle: 'block',
   cursorColor: 'hsl(var(--primary))',
-  breathingIntensity: 0.0008,
+  breathingIntensity: 0.0012, // 🚀 Slightly more noticeable breathing
   hoverEffects: true,
   
   // Accessibility
@@ -73,30 +73,33 @@ export const DEFAULT_TYPING_CONFIG: TypingAnimationUserConfig = {
   screenReaderSupport: true,
 };
 
-// 🚀 Performance presets for different devices
+// 🚀 Performance presets for different devices (ChatGPT-optimized)
 export const PERFORMANCE_PRESETS = {
-  // Ultra-smooth for high-end devices
+  // ChatGPT-Ultra for high-end devices
   ultra: {
     ...DEFAULT_TYPING_CONFIG,
-    baseDelay: 6,
-    maxGroupSize: 6,
-    breathingIntensity: 0.001,
+    baseDelay: 3, // 🚀 Insanely fast like ChatGPT Plus
+    spaceDelay: 0, // 🚀 Instant spaces
+    maxGroupSize: 10, // 🚀 Large bursts for ultra-smooth flow
+    breathingIntensity: 0.0015,
   },
   
-  // Balanced for most devices
+  // ChatGPT-Standard for most devices
   balanced: {
     ...DEFAULT_TYPING_CONFIG,
-    baseDelay: 8,
-    maxGroupSize: 5,
-    breathingIntensity: 0.0008,
+    baseDelay: 4, // 🚀 ChatGPT-like speed
+    spaceDelay: 1,
+    maxGroupSize: 8,
+    breathingIntensity: 0.0012,
   },
   
-  // Conservative for low-end devices
+  // Conservative for low-end devices (still smooth)
   conservative: {
     ...DEFAULT_TYPING_CONFIG,
-    baseDelay: 12,
-    maxGroupSize: 3,
-    breathingIntensity: 0.0005,
+    baseDelay: 6, // 🚀 Still faster than before
+    spaceDelay: 2,
+    maxGroupSize: 5,
+    breathingIntensity: 0.0008,
     microInteractions: false,
     emojiSupport: false,
   },
@@ -211,22 +214,28 @@ export class TypingAnimationConfigManager {
     this.config = { ...this.config, ...DEVICE_OPTIMIZATIONS[deviceType] };
   }
   
-  // Auto-detect and apply best settings
+  // Auto-detect and apply ChatGPT-level settings
   autoOptimize(): void {
-    // Detect device type
+    // 🚀 Enhanced device detection for optimal performance
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isTablet = /iPad|Android(?=.*\bMobile\b)(?=.*\bSafari\b)/i.test(navigator.userAgent);
+    const isHighEnd = navigator.hardwareConcurrency >= 8; // 8+ CPU cores
+    const hasHighMemory = (navigator as any).deviceMemory >= 8; // 8GB+ RAM
     
-    if (isMobile) {
+    // 🚀 Detect premium devices and apply ultra settings
+    if (!isMobile && !isTablet && (isHighEnd || hasHighMemory)) {
+      this.applyPreset('ultra'); // ChatGPT-Ultra for premium devices
+    } else if (isMobile) {
       this.applyDeviceOptimizations('mobile');
     } else if (isTablet) {
       this.applyDeviceOptimizations('tablet');
     } else {
-      this.applyDeviceOptimizations('desktop');
+      this.applyPreset('balanced'); // ChatGPT-Standard for regular devices
     }
     
-    // Detect high refresh rate
-    if (window.matchMedia('(min-resolution: 120dpi)').matches) {
+    // 🚀 Enhanced high refresh rate detection
+    if (window.matchMedia('(min-resolution: 120dpi)').matches || 
+        window.screen.width >= 2560) { // 4K+ displays
       this.applyDeviceOptimizations('highRefresh');
     }
     

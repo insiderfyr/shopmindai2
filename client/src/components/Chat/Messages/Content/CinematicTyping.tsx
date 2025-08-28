@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useChatContext } from '~/Providers';
 import { cn } from '~/utils';
@@ -7,6 +7,8 @@ import Markdown from './Markdown';
 import MarkdownLite from './MarkdownLite';
 import { useTypingAnimation } from '~/hooks/useTypingAnimation';
 import { useTypingAnimationConfigSync } from '~/hooks/useTypingAnimationConfig';
+import { debugTypingAnimation, logTypingDebug } from '~/utils/typingAnimationDebug';
+import '~/utils/testTypingAnimation'; // Load test utilities
 import './TypingAnimation.css';
 
 interface CinematicTypingProps {
@@ -35,11 +37,38 @@ const CinematicTyping = memo(({
     () => message.messageId === latestMessage?.messageId,
     [message.messageId, latestMessage?.messageId],
   );
+  
+  // 🚀 Debug typing animation (only in development)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' || localStorage.getItem('typing-debug') === 'true') {
+      const debugInfo = debugTypingAnimation(
+        isCreatedByUser,
+        showCursor,
+        isSubmitting,
+        text,
+        isLatestMessage,
+        typingConfig
+      );
+      logTypingDebug(debugInfo, message.messageId || 'unknown');
+    }
+  }, [isCreatedByUser, showCursor, isSubmitting, text, isLatestMessage, typingConfig, message.messageId]);
 
   // Determine if this message should have cinematic typing
   const shouldAnimate = useMemo(() => {
-    return !isCreatedByUser && showCursorState && text.length > 0;
-  }, [isCreatedByUser, showCursorState, text.length]);
+    // 🚀 Enhanced logic: animate during streaming OR for latest AI message (for testing)
+    const isAIMessage = !isCreatedByUser;
+    const hasContent = text.length > 0;
+    const isActivelyStreaming = showCursorState;
+    const isLatestAIMessage = isLatestMessage && isAIMessage;
+    const forceAnimation = localStorage.getItem('force-typing-animation') === 'true';
+    
+    // Force animation for all AI messages when debugging
+    if (forceAnimation && isAIMessage && hasContent) {
+      return true;
+    }
+    
+    return isAIMessage && hasContent && (isActivelyStreaming || isLatestAIMessage);
+  }, [isCreatedByUser, showCursorState, text.length, isLatestMessage]);
 
   // 🚀 Use the enhanced typing animation hook with user configuration
   const {
