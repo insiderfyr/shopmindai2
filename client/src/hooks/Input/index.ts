@@ -9,4 +9,3 @@ export { default as useRequiresKey } from './useRequiresKey';
 export { default as useMultipleKeys } from './useMultipleKeys';
 
 export { default as useTextToSpeech } from './useTextToSpeech';
-

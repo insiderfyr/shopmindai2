@@ -28,7 +28,7 @@ const PromptVariables = ({
   }, [promptText]);
 
   return (
-          <div className="rounded-2xl border border-border-light bg-transparent p-4 shadow-md">
+    <div className="rounded-2xl border border-border-light bg-transparent p-4 shadow-md">
       <h3 className="flex items-center gap-2 py-2 text-lg font-semibold text-text-primary">
         <Variable className="icon-sm" aria-hidden="true" />
         {localize('com_ui_variables')}

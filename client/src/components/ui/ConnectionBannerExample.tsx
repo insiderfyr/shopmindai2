@@ -6,7 +6,7 @@ export default function ConnectionBannerExample() {
   const [retryCount, setRetryCount] = useState(0);
 
   const handleRetry = () => {
-    setRetryCount(prev => prev + 1);
+    setRetryCount((prev) => prev + 1);
     // Simulează o încercare de reconectare
     setTimeout(() => {
       if (retryCount >= 2) {
@@ -43,10 +43,10 @@ export default function ConnectionBannerExample() {
         title="Not Connected"
         message="Connection not established."
         steps={[
-          "Check your connection settings",
-          "Verify network connectivity",
-          "Try refreshing the page",
-          "Contact support if issues persist"
+          'Check your connection settings',
+          'Verify network connectivity',
+          'Try refreshing the page',
+          'Contact support if issues persist',
         ]}
       />
 

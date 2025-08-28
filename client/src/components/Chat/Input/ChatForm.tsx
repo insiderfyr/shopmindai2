@@ -48,7 +48,6 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
   const [backupBadges, setBackupBadges] = useState<Pick<BadgeItem, 'id'>[]>([]);
 
-
   const TextToSpeech = useRecoilValue(store.textToSpeech);
   const chatDirection = useRecoilValue(store.chatDirection);
   const automaticPlayback = useRecoilValue(store.automaticPlayback);
@@ -212,17 +211,17 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       onSubmit={methods.handleSubmit(submitMessage)}
       className={cn(
         // Responsive width and layout
-        'mx-auto flex flex-row gap-2 sm:gap-3 transition-all duration-300 ease-in-out',
+        'mx-auto flex flex-row gap-2 transition-all duration-300 ease-in-out sm:gap-3',
         // Mobile-first responsive design - slightly wider
-        'w-full px-2 sm:w-12/12 sm:px-3 md:w-12/12 md:px-4 lg:w-12/12',
+        'sm:w-12/12 md:w-12/12 lg:w-12/12 w-full px-2 sm:px-3 md:px-4',
         // Responsive max-width - slightly wider for better UX
-        'max-w-full sm:max-w-5xl md:max-w-6xl lg:max-w-7xl xl:max-w-8xl 2xl:max-w-9xl',
+        'xl:max-w-8xl 2xl:max-w-9xl max-w-full sm:max-w-5xl md:max-w-6xl lg:max-w-7xl',
         // Responsive margins - fixed for mobile
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 -mb-6 sm:-mb-5 md:-mb-4 lg:-mb-3'
+          ? '-mb-6 transition-all duration-200 sm:-mb-5 md:-mb-4 lg:-mb-3'
           : '-mb-6 sm:-mb-5 md:-mb-4 lg:-mb-3',
       )}
     >
@@ -249,10 +248,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           <div
             onClick={handleContainerClick}
             className={cn(
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-2 text-text-primary transition-all duration-200 sm:rounded-3xl sm:pb-1 mt-4 min-w-full shadow-md dark:shadow-gray-900/30',
+              'relative mt-4 flex w-full min-w-full flex-grow flex-col overflow-hidden rounded-t-3xl border pb-2 text-text-primary shadow-md transition-all duration-200 dark:shadow-gray-900/30 sm:rounded-3xl sm:pb-1',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
-                : 'bg-white border-border-light dark:bg-gray-800',
+                : 'border-border-light bg-white dark:bg-gray-800',
             )}
           >
             <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />
@@ -290,13 +289,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   className={cn(
                     baseClasses,
                     removeFocusRings,
-                    'transition-[max-height] duration-200 disabled:cursor-not-allowed',
+                    'transition-[max-height,opacity] duration-150 ease-out disabled:cursor-not-allowed disabled:opacity-60',
                     // Add special styling for dynamic placeholder with smooth appearance animation
                     'placeholder:text-gray-500 placeholder:dark:text-gray-400',
-                    'placeholder:transition-all placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)]',
+                    'placeholder:duration-800 placeholder:ease-[cubic-bezier(0.4,0,0.2,1)] placeholder:transition-all',
                     'dynamic-placeholder dynamic-placeholder-transition',
                     // Responsive textarea styling - 25% larger size
-                    'min-h-[75px] max-h-[225px] sm:max-h-[375px] text-lg w-full'
+                    'max-h-[225px] min-h-[75px] w-full text-lg sm:max-h-[375px]',
                   )}
                 />
                 <div className="flex flex-col items-start justify-start pt-1.5">
@@ -316,7 +315,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             >
               <div className={`${isRTL ? 'mr-2.5' : 'ml-2.5'} flex items-center gap-2 sm:gap-2.5`}>
                 <AttachFileChat disableInputs={disableInputs} />
-                
+
                 {/* Premium Shopping Buttons - Separate Components */}
                 <DailyDealsButton />
                 <DiscountHunterButton />

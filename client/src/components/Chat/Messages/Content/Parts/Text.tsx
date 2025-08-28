@@ -5,6 +5,7 @@ import Markdown from '~/components/Chat/Messages/Content/Markdown';
 import { useChatContext, useMessageContext } from '~/Providers';
 import { cn } from '~/utils';
 import store from '~/store';
+import CinematicTyping from '../CinematicTyping';
 
 type TextPartProps = {
   text: string;
@@ -27,18 +28,18 @@ const TextPart = memo(({ text, isCreatedByUser, showCursor }: TextPartProps) => 
     [messageId, latestMessage?.messageId],
   );
 
-  const content: ContentType = useMemo(() => {
-    if (!isCreatedByUser) {
-      return <Markdown content={text} isLatestMessage={isLatestMessage} />;
-    } else if (enableUserMsgMarkdown) {
-      return <MarkdownLite content={text} />;
-    } else {
-      return <>{text}</>;
-    }
-  }, [isCreatedByUser, enableUserMsgMarkdown, text, isLatestMessage]);
+  // Create a mock message object for the CinematicTyping component
+  const message = useMemo(() => ({
+    messageId,
+    isCreatedByUser,
+  }), [messageId, isCreatedByUser]);
 
   return (
-    <div
+    <CinematicTyping
+      text={text}
+      isCreatedByUser={isCreatedByUser}
+      message={message}
+      showCursor={showCursor}
       className={cn(
         isSubmitting ? 'submitting' : '',
         showCursorState && !!text.length ? 'result-streaming' : '',
@@ -46,9 +47,7 @@ const TextPart = memo(({ text, isCreatedByUser, showCursor }: TextPartProps) => 
         isCreatedByUser && !enableUserMsgMarkdown && 'whitespace-pre-wrap',
         isCreatedByUser ? 'dark:text-gray-20' : 'dark:text-gray-100',
       )}
-    >
-      {content}
-    </div>
+    />
   );
 });
 

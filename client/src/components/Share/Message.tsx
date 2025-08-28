@@ -15,6 +15,20 @@ import store from '~/store';
 
 import Icon from './MessageIcon';
 
+// CSS constants for reusability and performance
+const SHARE_MESSAGE_STYLES = {
+  wrapper:
+    'text-token-text-primary w-full border-0 bg-transparent dark:border-0 dark:bg-transparent',
+  container: 'm-auto justify-center p-4 py-2 md:gap-6',
+  messageRender:
+    'final-completion group mx-auto flex flex-1 gap-3 md:max-w-[47rem] md:px-5 lg:px-1 xl:max-w-[55rem] xl:px-5',
+  avatar: 'relative flex flex-shrink-0 flex-col items-end',
+  avatarInner: 'pt-0.5',
+  avatarIcon: 'flex h-6 w-6 items-center justify-center overflow-hidden rounded-full',
+  content: 'flex-col gap-1 md:gap-3',
+  contentInner: 'flex max-w-full flex-grow flex-col gap-0',
+} as const;
+
 export default function Message(props: TMessageProps) {
   const fontSize = useRecoilValue(store.fontSize);
   const {
@@ -66,13 +80,13 @@ export default function Message(props: TMessageProps) {
 
   return (
     <>
-      <div className="text-token-text-primary w-full border-0 bg-transparent dark:border-0 dark:bg-transparent">
-        <div className="m-auto justify-center p-4 py-2 md:gap-6">
-          <div className="final-completion group mx-auto flex flex-1 gap-3 md:max-w-[47rem] md:px-5 lg:px-1 xl:max-w-[55rem] xl:px-5">
-            <div className="relative flex flex-shrink-0 flex-col items-end">
+      <div className={SHARE_MESSAGE_STYLES.wrapper}>
+        <div className={SHARE_MESSAGE_STYLES.container}>
+          <div className={SHARE_MESSAGE_STYLES.messageRender}>
+            <div className={SHARE_MESSAGE_STYLES.avatar}>
               <div>
-                <div className="pt-0.5">
-                  <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+                <div className={SHARE_MESSAGE_STYLES.avatarInner}>
+                  <div className={SHARE_MESSAGE_STYLES.avatarIcon}>
                     <Icon message={message} conversation={conversation} />
                   </div>
                 </div>
@@ -82,10 +96,11 @@ export default function Message(props: TMessageProps) {
               isCreatedByUser={isCreatedByUser}
               showSubRow={true}
               hasActions={true}
+              messageId={message.messageId}
               subRowContent={subRowContent}
             >
-              <div className="flex-col gap-1 md:gap-3">
-                <div className="flex max-w-full flex-grow flex-col gap-0">
+              <div className={SHARE_MESSAGE_STYLES.content}>
+                <div className={SHARE_MESSAGE_STYLES.contentInner}>
                   <MessageContext.Provider
                     value={{
                       messageId,

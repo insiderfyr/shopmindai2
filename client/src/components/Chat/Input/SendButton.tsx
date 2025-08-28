@@ -23,8 +23,8 @@ const SubmitButton = React.memo(
             aria-label={localize('com_nav_send_message')}
             id="send-button"
             disabled={props.disabled}
-                                 className={cn(
-              'rounded-full bg-[#3b82f6] p-2 text-white outline-offset-4 transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:text-text-secondary disabled:opacity-50 hover:bg-[#2563eb] focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 transform scale-100',
+            className={cn(
+              'scale-100 transform rounded-full bg-[#3b82f6] p-2 text-white outline-offset-4 transition-all duration-300 ease-in-out hover:bg-[#2563eb] focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 disabled:cursor-not-allowed disabled:text-text-secondary disabled:opacity-50',
             )}
             data-testid="send-button"
             type="submit"

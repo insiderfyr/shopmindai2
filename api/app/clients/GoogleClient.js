@@ -679,7 +679,7 @@ class GoogleClient extends BaseClient {
           };
         }
 
-        const delay = modelName.includes('flash') ? 8 : 15;
+        const delay = modelName.includes('flash') ? 6 : 8;
         /** @type {GenAIUsageMetadata} */
         let usageMetadata;
 
@@ -737,10 +737,10 @@ class GoogleClient extends BaseClient {
 
       if (!this.options.streamRate) {
         if (this.isGenerativeModel) {
-          delay = 15;
+          delay = 8;
         }
         if (modelName.includes('flash')) {
-          delay = 5;
+          delay = 6;
         }
       }
 

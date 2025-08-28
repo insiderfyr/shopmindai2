@@ -83,23 +83,29 @@ const MessageRender = memo(
       [showCardRender, isLatestMessage, msg, setLatestMessage],
     );
 
+    const baseClasses = useMemo(
+      () => ({
+        common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ',
+        card: 'relative w-full gap-1 rounded-lg border border-border-medium bg-surface-primary-alt p-2 md:w-1/2 md:gap-3 md:p-4',
+        chat: maximizeChatSpace
+          ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
+          : 'md:max-w-[47rem] xl:max-w-[55rem]',
+      }),
+      [maximizeChatSpace],
+    );
+
     if (!msg) {
       return null;
     }
 
-    const baseClasses = {
-      common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ',
-      card: 'relative w-full gap-1 rounded-lg border border-border-medium bg-surface-primary-alt p-2 md:w-1/2 md:gap-3 md:p-4',
-      chat: maximizeChatSpace
-        ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
-        : 'md:max-w-[47rem] xl:max-w-[55rem]',
-    };
-
-    const conditionalClasses = {
-      latestCard: isLatestCard ? 'bg-surface-secondary' : '',
-      cardRender: showCardRender ? 'cursor-pointer transition-colors duration-300' : '',
-      focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
-    };
+    const conditionalClasses = useMemo(
+      () => ({
+        latestCard: isLatestCard ? 'bg-surface-secondary' : '',
+        cardRender: showCardRender ? 'cursor-pointer transition-colors duration-300' : '',
+        focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
+      }),
+      [isLatestCard, showCardRender],
+    );
 
     // Helper function to determine if SubRow should be shown
     const shouldShowSubRow = useMemo(() => {
@@ -109,7 +115,7 @@ const MessageRender = memo(
     // SubRow content for user messages
     const userSubRowContent = useMemo(() => {
       if (!shouldShowSubRow) return null;
-      
+
       return (
         <>
           <SiblingSwitch
@@ -155,7 +161,7 @@ const MessageRender = memo(
     // SubRow content for agent messages
     const agentSubRowContent = useMemo(() => {
       if (!shouldShowSubRow) return null;
-      
+
       return (
         <>
           <SiblingSwitch
@@ -229,6 +235,7 @@ const MessageRender = memo(
           isSubmitting={isSubmitting}
           hasActions={true}
           isCard={isCard}
+          messageId={msg.messageId}
           subRowContent={msg.isCreatedByUser ? userSubRowContent : agentSubRowContent}
         >
           <div className="flex flex-col gap-1">

@@ -8,7 +8,6 @@ import { Spinner } from '~/components/svg';
 import MessagesView from './MessagesView';
 import { buildTree } from '~/utils';
 
-
 function SharedView() {
   const localize = useLocalize();
   const { data: config } = useGetStartupConfig();
@@ -68,7 +67,6 @@ function SharedView() {
         <div className="transition-width relative flex h-full w-full flex-1 flex-col items-stretch overflow-hidden pt-0 dark:bg-surface-secondary">
           <div className="flex h-full flex-col text-text-primary" role="presentation">
             {content}
-
           </div>
         </div>
       </main>

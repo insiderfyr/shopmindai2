@@ -22,7 +22,6 @@ const toggleSwitchConfigs = [
     hoverCardText: undefined,
     key: 'autoScroll',
   },
-
 ];
 
 export const ThemeSelector = ({

@@ -50,7 +50,7 @@ export const useResponsive = (): ResponsiveConfig => {
   const updateConfig = useCallback(() => {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    
+
     // Determine device type
     let deviceType: DeviceType = 'desktop';
     if (width < DEVICE_THRESHOLDS.mobile) {
@@ -93,14 +93,14 @@ export const useResponsive = (): ResponsiveConfig => {
 
   useEffect(() => {
     updateConfig();
-    
+
     const handleResize = () => {
       updateConfig();
     };
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
@@ -129,13 +129,9 @@ export const useOrientation = () => {
 };
 
 // Utility hook for responsive values
-export const useResponsiveValue = <T>(
-  mobile: T,
-  tablet: T,
-  desktop: T
-): T => {
+export const useResponsiveValue = <T>(mobile: T, tablet: T, desktop: T): T => {
   const { deviceType } = useResponsive();
-  
+
   switch (deviceType) {
     case 'mobile':
       return mobile;
@@ -151,7 +147,7 @@ export const useResponsiveValue = <T>(
 // Utility hook for responsive spacing
 export const useResponsiveSpacing = () => {
   const { deviceType } = useResponsive();
-  
+
   const spacing = {
     mobile: {
       container: 'px-2 py-1',
@@ -182,7 +178,7 @@ export const useResponsiveSpacing = () => {
 // Utility hook for responsive sizing
 export const useResponsiveSizing = () => {
   const { deviceType } = useResponsive();
-  
+
   const sizing = {
     mobile: {
       text: 'text-sm',

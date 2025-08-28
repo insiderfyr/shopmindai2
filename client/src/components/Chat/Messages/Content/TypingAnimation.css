@@ -1,0 +1,309 @@
+/* 🎬 CINEMATIC TYPING ANIMATION SYSTEM */
+
+/* ===== PRE-ANIMATION STATE ===== */
+.typing-animation.pre-animation {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  filter: blur(1px) brightness(0.9);
+  transition: none;
+  will-change: transform, opacity, filter;
+}
+
+/* ===== ENTRANCE ANIMATION ===== */
+.typing-animation.entrance-animation {
+  animation: message-entrance 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes message-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    filter: blur(1px) brightness(0.9);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(2px) scale(0.99);
+    filter: blur(0.3px) brightness(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0) brightness(1);
+  }
+}
+
+/* ===== TYPING ACTIVE STATE ===== */
+.typing-animation.typing-active {
+  position: relative;
+  will-change: transform;
+}
+
+/* Breathing effect during typing */
+.typing-animation.typing-active.breathing-effect {
+  animation: message-breathing 2s ease-in-out infinite;
+}
+
+@keyframes message-breathing {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.001);
+  }
+}
+
+/* ===== CURSOR ANIMATION ===== */
+.typing-animation.typing-active .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+.typing-animation.typing-active .result-streaming > pre:last-child code:after {
+  display: inline-block;
+  content: '█';
+  width: auto;
+  height: auto;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  line-height: normal;
+  margin-left: 0.1rem;
+  vertical-align: baseline;
+  font-size: 0.9em;
+  color: hsl(var(--primary));
+  animation: cursor-pulse 1.2s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@supports (selector(:has(*))) {
+  .typing-animation.typing-active .result-streaming > :is(ul, ol):last-child > li:last-child:not(:has(> :is(ul, ol, pre))):after {
+    content: '█';
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    line-height: normal;
+    margin-left: 0.1rem;
+    vertical-align: baseline;
+    font-size: 0.9em;
+    display: inline-block;
+    width: auto;
+    height: auto;
+    color: hsl(var(--primary));
+    animation: cursor-pulse 1.2s ease-in-out infinite;
+    will-change: opacity;
+  }
+}
+
+@supports not (selector(:has(*))) {
+  .typing-animation.typing-active .result-streaming > ol:last-child > li:last-child:after,
+  .typing-animation.typing-active .result-streaming > ul:last-child > li:last-child:after {
+    content: '█';
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    line-height: normal;
+    margin-left: 0.1rem;
+    vertical-align: baseline;
+    font-size: 0.9em;
+    display: inline-block;
+    width: auto;
+    height: auto;
+    color: hsl(var(--primary));
+    animation: cursor-pulse 1.2s ease-in-out infinite;
+    will-change: opacity;
+  }
+}
+
+@keyframes cursor-pulse {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0.3;
+  }
+}
+
+/* ===== COMPLETION ANIMATION ===== */
+.typing-animation.completion-animation {
+  animation: completion-settle 500ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  will-change: transform, box-shadow;
+}
+
+@keyframes completion-settle {
+  0% {
+    transform: scale(1.001);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+  }
+  50% {
+    transform: scale(1.0005);
+    box-shadow: 0 0 10px rgba(var(--primary-rgb, 59, 130, 246), 0.05);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0px rgba(var(--primary-rgb, 59, 130, 246), 0);
+  }
+}
+
+/* Cursor fade out on completion */
+.typing-animation.completion-animation .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+.typing-animation.completion-animation .result-streaming > pre:last-child code:after {
+  animation: cursor-fade-out 300ms ease-out forwards;
+}
+
+@keyframes cursor-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ===== SETTLED STATE ===== */
+.typing-animation.settled {
+  animation: final-polish 600ms ease-out forwards;
+  will-change: filter, letter-spacing;
+}
+
+@keyframes final-polish {
+  0% {
+    filter: contrast(1);
+    letter-spacing: normal;
+  }
+  100% {
+    filter: contrast(1.02);
+    letter-spacing: -0.5px;
+  }
+}
+
+/* ===== CONTEXTUAL ADAPTATIONS ===== */
+
+/* Code blocks - faster typing, thinner cursor */
+.typing-animation.typing-active .result-streaming pre code {
+  animation: code-typing 1.5s ease-in-out infinite;
+}
+
+@keyframes code-typing {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.002);
+  }
+}
+
+.typing-animation.typing-active .result-streaming pre code:after {
+  font-size: 0.8em;
+  color: hsl(var(--primary));
+  animation: cursor-pulse 0.8s ease-in-out infinite;
+}
+
+/* Mathematics - slower typing, larger cursor */
+.typing-animation.typing-active .result-streaming .math {
+  animation: math-typing 2.5s ease-in-out infinite;
+}
+
+@keyframes math-typing {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.003);
+  }
+}
+
+.typing-animation.typing-active .result-streaming .math:after {
+  font-size: 1.1em;
+  color: hsl(var(--primary));
+  animation: cursor-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== MICRO-INTERACTIONS ===== */
+
+/* Hover during typing */
+.typing-animation.typing-active:hover {
+  animation: hover-during-typing 0.3s ease-out forwards;
+}
+
+@keyframes hover-during-typing {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.002);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb, 59, 130, 246), 0.08);
+  }
+}
+
+.typing-animation.typing-active:hover .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+.typing-animation.typing-active:hover .result-streaming > pre:last-child code:after {
+  animation: cursor-pulse 0.8s ease-in-out infinite;
+  opacity: 1;
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* Hardware acceleration */
+.typing-animation {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .typing-animation {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .typing-animation .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+  .typing-animation .result-streaming > pre:last-child code:after {
+    animation: none !important;
+  }
+}
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 768px) {
+  .typing-animation.typing-active.breathing-effect {
+    animation: message-breathing-mobile 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes message-breathing-mobile {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.0005);
+    }
+  }
+  
+  .typing-animation.typing-active .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+  .typing-animation.typing-active .result-streaming > pre:last-child code:after {
+    font-size: 0.8em;
+    animation: cursor-pulse 1s ease-in-out infinite;
+  }
+}
+
+/* ===== DARK MODE ADAPTATIONS ===== */
+.dark .typing-animation.typing-active .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+.dark .typing-animation.typing-active .result-streaming > pre:last-child code:after {
+  color: hsl(var(--primary));
+  text-shadow: 0 0 2px rgba(var(--primary-rgb, 59, 130, 246), 0.3);
+}
+
+/* ===== PROGRESS INDICATOR (Optional) ===== */
+.typing-progress {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.5) 100%);
+  border-radius: 1px;
+  transition: width 0.1s ease-out;
+  will-change: width;
+}
+
+/* ===== SOUND DESIGN (CSS-only visual feedback) ===== */
+.typing-animation.typing-active .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
+.typing-animation.typing-active .result-streaming > pre:last-child code:after {
+  transition: all 0.1s ease-out;
+}
+
+.typing-animation.typing-active .result-streaming > :not(ol):not(ul):not(pre):last-child:after:hover,
+.typing-animation.typing-active .result-streaming > pre:last-child code:after:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+

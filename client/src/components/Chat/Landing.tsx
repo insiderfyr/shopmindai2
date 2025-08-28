@@ -6,8 +6,6 @@ import { useLocalize, useAuthContext } from '~/hooks';
 import { getIconEndpoint, getEntity } from '~/utils';
 import LogoIcon from '~/components/svg/LogoIcon';
 
-
-
 export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: boolean }) {
   const { conversation } = useChatContext();
   const agentsMap = useAgentsMapContext();
@@ -16,8 +14,6 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { user } = useAuthContext();
   const localize = useLocalize();
-
-
 
   const endpointType = useMemo(() => {
     let ep = conversation?.endpoint ?? '';
@@ -49,21 +45,18 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
 
   return (
     <div
-      className={`flex h-full transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 -mt-16 ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'}`}
+      className={`-mt-16 flex h-full transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'}`}
     >
       <div className="flex flex-col items-center gap-0 p-2">
         {/* Logo + ShopMindAI - exact ca în pagina de login */}
         <div className="flex items-center justify-center gap-4">
-          <LogoIcon
-            size={64}
-            className="text-[#4d8eff]"
-          />
+          <LogoIcon size={64} className="text-[#4d8eff]" />
           <h1 className="text-4xl font-bold text-foreground">
             {localize('com_ui_shopmind')}
             <span className="text-[#4d8eff]">{localize('com_ui_ai')}</span>
           </h1>
         </div>
-        
+
         {description && (
           <div className="animate-fadeIn mt-4 max-w-md text-center text-sm font-normal text-text-primary">
             {description}

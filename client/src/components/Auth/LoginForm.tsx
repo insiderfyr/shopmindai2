@@ -123,13 +123,13 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
               id="password"
               autoComplete="current-password"
               aria-label={localize('com_auth_password')}
-                                                             {...register('password', {
-                   required: localize('com_auth_password_required'),
-                   minLength: { value: 8, message: localize('com_auth_password_min_length') },
-                   maxLength: { value: 128, message: localize('com_auth_password_max_length') },
-                 })}
-                 aria-invalid={!!errors.password}
-                 className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] bg-blue-50 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
+              {...register('password', {
+                required: localize('com_auth_password_required'),
+                minLength: { value: 8, message: localize('com_auth_password_min_length') },
+                maxLength: { value: 128, message: localize('com_auth_password_max_length') },
+              })}
+              aria-invalid={!!errors.password}
+              className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] bg-blue-50 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
               placeholder=" "
             />
             <label

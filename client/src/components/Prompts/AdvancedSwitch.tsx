@@ -11,7 +11,7 @@ const AdvancedSwitch = () => {
   const setAlwaysMakeProd = useSetRecoilState(alwaysMakeProd);
 
   return (
-          <div className="relative flex h-10 items-center justify-center rounded-2xl border border-border-light bg-surface-primary transition-all duration-300">
+    <div className="relative flex h-10 items-center justify-center rounded-2xl border border-border-light bg-surface-primary transition-all duration-300">
       <div className="relative flex w-48 items-stretch md:w-64">
         <div
           className="absolute rounded-xl bg-surface-hover shadow-lg transition-all duration-300 ease-in-out"

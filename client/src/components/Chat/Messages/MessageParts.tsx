@@ -13,6 +13,20 @@ import MessageContainer from '~/components/common/MessageContainer';
 import { cn } from '~/utils';
 import store from '~/store';
 
+// CSS constants for reusability and performance
+const MESSAGE_STYLES = {
+  wrapper: 'w-full border-0 bg-transparent dark:border-0 dark:bg-transparent',
+  container: 'm-auto justify-center p-4 py-2 md:gap-6',
+  messageRender: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu',
+  chat: {
+    full: 'w-full max-w-full md:px-5 lg:px-1 xl:px-5',
+    limited: 'md:max-w-[47rem] xl:max-w-[55rem]',
+  },
+  content: 'flex flex-col gap-1',
+  contentInner: 'flex max-w-full flex-grow flex-col gap-0',
+  placeholder: 'mt-1 h-[27px] bg-transparent',
+} as const;
+
 export default function Message(props: TMessageProps) {
   const localize = useLocalize();
   const { message, siblingIdx, siblingCount, setSiblingIdx, currentEditId, setCurrentEditId } =
@@ -60,16 +74,13 @@ export default function Message(props: TMessageProps) {
     return result;
   }, [assistant, agent, isCreatedByUser, localize]);
 
-  if (!message) {
-    return null;
-  }
-
-  const baseClasses = {
-    common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu',
-    chat: maximizeChatSpace
-      ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
-      : 'md:max-w-[47rem] xl:max-w-[55rem]',
-  };
+  const baseClasses = useMemo(
+    () => ({
+      common: MESSAGE_STYLES.messageRender,
+      chat: maximizeChatSpace ? MESSAGE_STYLES.chat.full : MESSAGE_STYLES.chat.limited,
+    }),
+    [maximizeChatSpace],
+  );
 
   // Helper function to determine if SubRow should be shown
   const shouldShowSubRow = useMemo(() => {
@@ -79,7 +90,7 @@ export default function Message(props: TMessageProps) {
   // SubRow content
   const subRowContent = useMemo(() => {
     if (!shouldShowSubRow) return null;
-    
+
     return (
       <>
         <SiblingSwitch
@@ -122,14 +133,14 @@ export default function Message(props: TMessageProps) {
     handleFeedback,
   ]);
 
+  if (!message) {
+    return null;
+  }
+
   return (
     <>
-      <div
-        className="w-full border-0 bg-transparent dark:border-0 dark:bg-transparent"
-        onWheel={handleScroll}
-        onTouchMove={handleScroll}
-      >
-        <div className="m-auto justify-center p-4 py-2 md:gap-6">
+      <div className={MESSAGE_STYLES.wrapper} onWheel={handleScroll} onTouchMove={handleScroll}>
+        <div className={MESSAGE_STYLES.container}>
           <div
             id={messageId ?? ''}
             aria-label={`message-${message.depth}-${messageId}`}
@@ -140,10 +151,11 @@ export default function Message(props: TMessageProps) {
               showSubRow={shouldShowSubRow}
               isSubmitting={isSubmitting}
               hasActions={true}
+              messageId={message.messageId}
               subRowContent={subRowContent}
             >
-              <div className="flex flex-col gap-1">
-                <div className="flex max-w-full flex-grow flex-col gap-0">
+              <div className={MESSAGE_STYLES.content}>
+                <div className={MESSAGE_STYLES.contentInner}>
                   <ContentParts
                     edit={edit}
                     isLast={isLast}
@@ -159,9 +171,7 @@ export default function Message(props: TMessageProps) {
                     content={message.content as Array<TMessageContentParts | undefined>}
                   />
                 </div>
-                {isLast && isSubmitting ? (
-                  <div className="mt-1 h-[27px] bg-transparent" />
-                ) : null}
+                {isLast && isSubmitting ? <div className={MESSAGE_STYLES.placeholder} /> : null}
               </div>
             </MessageContainer>
           </div>

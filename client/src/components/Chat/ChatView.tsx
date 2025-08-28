@@ -92,7 +92,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                   {content}
                   <div
                     className={cn(
-                      'w-full sm:w-4/5 mx-auto pb-4 sm:pb-6',
+                      'mx-auto w-full pb-4 sm:w-4/5 sm:pb-6',
                       'max-w-4xl transition-all duration-200',
                       '-mt-4',
                     )}

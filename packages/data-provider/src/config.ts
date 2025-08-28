@@ -1405,7 +1405,7 @@ export enum Constants {
   /** Max length for commands */
   COMMANDS_MAX_LENGTH = 56,
   /** Default Stream Rate (ms) */
-  DEFAULT_STREAM_RATE = 1,
+  DEFAULT_STREAM_RATE = 5,
   /** Saved Tag */
   SAVED_TAG = 'Saved',
   /** Max number of Conversation starters for Agents/Assistants */

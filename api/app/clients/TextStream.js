@@ -6,8 +6,8 @@ class TextStream extends Readable {
     super(options);
     this.text = text;
     this.currentIndex = 0;
-    this.minChunkSize = options.minChunkSize ?? 2;
-    this.maxChunkSize = options.maxChunkSize ?? 4;
+    this.minChunkSize = options.minChunkSize ?? 1;
+    this.maxChunkSize = options.maxChunkSize ?? 3;
     this.delay = options.delay ?? 20; // Time in milliseconds
   }
 

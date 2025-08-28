@@ -18,7 +18,6 @@ import NewChat from './NewChat';
 import { cn } from '~/utils';
 import store from '~/store';
 
-
 const AccountSettings = lazy(() => import('./AccountSettings'));
 
 const NAV_WIDTH_DESKTOP = '260px';
@@ -60,8 +59,6 @@ const Nav = memo(
     const [newUser, setNewUser] = useLocalStorage('newUser', true);
     const [showLoading, setShowLoading] = useState(false);
     const [tags, setTags] = useState<string[]>([]);
-
-
 
     const search = useRecoilValue(store.search);
 
@@ -151,10 +148,7 @@ const Nav = memo(
       [search.enabled, isSmallScreen],
     );
 
-    const headerButtons = useMemo(
-      () => null,
-      [],
-    );
+    const headerButtons = useMemo(() => null, []);
 
     const [isSearchLoading, setIsSearchLoading] = useState(
       !!search.query && (search.isTyping || isLoading || isFetching),
@@ -175,7 +169,7 @@ const Nav = memo(
         <div
           data-testid="nav"
           className={cn(
-            'nav active max-w-[320px] flex-shrink-0 transform overflow-x-hidden bg-surface-primary-alt transition-all duration-200 ease-in-out nav-scroll-container',
+            'nav active nav-scroll-container max-w-[320px] flex-shrink-0 transform overflow-x-hidden bg-surface-primary-alt transition-all duration-200 ease-in-out',
             'md:max-w-[260px]',
           )}
           style={{
@@ -183,18 +177,21 @@ const Nav = memo(
             transform: navVisible ? 'translateX(0)' : 'translateX(-100%)',
           }}
         >
-          <div className="h-full w-[320px] md:w-[260px] nav-scroll-container">
+          <div className="nav-scroll-container h-full w-[320px] md:w-[260px]">
             <div className="flex h-full flex-col">
               <div
                 className={`flex h-full flex-col transition-opacity duration-200 ease-in-out ${navVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                <div className="flex h-full flex-col nav-scroll-container">
+                <div className="nav-scroll-container flex h-full flex-col">
                   <nav
                     id="chat-history-nav"
                     aria-label={localize('com_ui_chat_history')}
-                    className="flex h-full flex-col bg-blue-100/60 px-2 pb-3.5 dark:bg-[#0f1a2a] md:px-3 nav-scroll-container"
+                    className="nav-scroll-container flex h-full flex-col bg-blue-100/60 px-2 pb-3.5 dark:bg-[#0f1a2a] md:px-3"
                   >
-                    <div className="flex flex-1 flex-col nav-scroll-container" ref={outerContainerRef}>
+                    <div
+                      className="nav-scroll-container flex flex-1 flex-col"
+                      ref={outerContainerRef}
+                    >
                       <MemoNewChat
                         subHeaders={subHeaders}
                         toggleNav={toggleNavVisible}

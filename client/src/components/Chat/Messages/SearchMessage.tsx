@@ -10,10 +10,21 @@ import MessageContainer from '~/components/common/MessageContainer';
 import { cn } from '~/utils';
 import store from '~/store';
 
+// CSS constants for reusability and performance
+const SEARCH_MESSAGE_STYLES = {
+  wrapper: 'text-token-text-primary w-full bg-transparent',
+  container: 'm-auto p-4 py-2 md:gap-6',
+  messageRender:
+    'final-completion group mx-auto flex flex-1 gap-3 md:max-w-3xl md:px-5 lg:max-w-[40rem] lg:px-1 xl:max-w-[48rem] xl:px-5',
+  avatar: 'relative flex flex-shrink-0 flex-col items-end',
+  avatarInner: 'pt-0.5',
+  avatarIcon: 'flex h-6 w-6 items-center justify-center overflow-hidden rounded-full',
+} as const;
+
 const MessageAvatar = ({ iconData }: { iconData: TMessageIcon }) => (
-  <div className="relative flex flex-shrink-0 flex-col items-end">
-    <div className="pt-0.5">
-      <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+  <div className={SEARCH_MESSAGE_STYLES.avatar}>
+    <div className={SEARCH_MESSAGE_STYLES.avatarInner}>
+      <div className={SEARCH_MESSAGE_STYLES.avatarIcon}>
         <Icon iconData={iconData} />
       </div>
     </div>
@@ -36,6 +47,7 @@ const MessageBody = ({ message, messageLabel, fontSize }) => {
       isCreatedByUser={message.isCreatedByUser}
       showSubRow={true}
       hasActions={true}
+      messageId={message.messageId}
       subRowContent={subRowContent}
     >
       <SearchContent message={message} />
@@ -80,9 +92,9 @@ export default function SearchMessage({ message }: Pick<TMessageProps, 'message'
   }
 
   return (
-    <div className="text-token-text-primary w-full bg-transparent">
-      <div className="m-auto p-4 py-2 md:gap-6">
-        <div className="final-completion group mx-auto flex flex-1 gap-3 md:max-w-3xl md:px-5 lg:max-w-[40rem] lg:px-1 xl:max-w-[48rem] xl:px-5">
+    <div className={SEARCH_MESSAGE_STYLES.wrapper}>
+      <div className={SEARCH_MESSAGE_STYLES.container}>
+        <div className={SEARCH_MESSAGE_STYLES.messageRender}>
           <MessageAvatar iconData={iconData} />
           <MessageBody message={message} messageLabel={messageLabel} fontSize={fontSize} />
         </div>

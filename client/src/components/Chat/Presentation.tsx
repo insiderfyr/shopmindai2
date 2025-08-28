@@ -48,9 +48,9 @@ export default function Presentation({ children }: { children: React.ReactNode }
 
   return (
     <DragDropWrapper className="relative flex w-full grow overflow-hidden bg-presentation">
-      <div className="flex w-full h-full">
+      <div className="flex h-full w-full">
         <main
-          className="flex h-full flex-col overflow-y-auto bg-[#F5FBFF] dark:bg-[#182533] w-full"
+          className="flex h-full w-full flex-col overflow-y-auto bg-[#F5FBFF] dark:bg-[#182533]"
           role="main"
         >
           {children}

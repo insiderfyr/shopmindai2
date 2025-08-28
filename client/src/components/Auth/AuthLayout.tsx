@@ -60,20 +60,17 @@ function AuthLayout({
   return (
     <div
       className="relative flex min-h-screen flex-col bg-[#F5FBFF] dark:bg-[#182533]"
-              style={
-          {
-            '--page-bg': '#F5FBFF',
-            '--page-bg-dark': '#182533',
-          } as React.CSSProperties
-        }
+      style={
+        {
+          '--page-bg': '#F5FBFF',
+          '--page-bg-dark': '#182533',
+        } as React.CSSProperties
+      }
     >
       <Banner />
       <BlinkAnimation active={isFetching}>
         <div className="-ml-20 mt-4 flex h-14 items-center justify-center gap-3">
-          <LogoIcon
-            size={56}
-            className="text-[#4d8eff]"
-          />
+          <LogoIcon size={56} className="text-[#4d8eff]" />
           <h1 className="text-2xl font-bold text-foreground">
             {localize('com_ui_shopmind')}
             <span className="text-[#4d8eff]">{localize('com_ui_ai')}</span>

@@ -22,6 +22,52 @@ type ContentRenderProps = {
   'currentEditId' | 'setCurrentEditId' | 'siblingIdx' | 'setSiblingIdx' | 'siblingCount'
 >;
 
+// Helper function to create SubRow content - extracted to reduce duplication
+const createSubRowContent = (
+  shouldShowSubRow: boolean,
+  siblingIdx: number | undefined,
+  siblingCount: number | undefined,
+  setSiblingIdx: ((value: number) => void) | null | undefined,
+  index: number,
+  edit: boolean,
+  msg: TMessage,
+  enterEdit: (cancel?: boolean) => void,
+  isSubmitting: boolean,
+  conversation: any,
+  handleRegenerateMessage: () => void,
+  copyToClipboard: (setIsCopied: React.Dispatch<React.SetStateAction<boolean>>) => void,
+  handleContinue: (e: React.MouseEvent<HTMLButtonElement>) => void,
+  latestMessage: TMessage | null,
+  handleFeedback: ({ feedback }: { feedback: any }) => void,
+  isLast: boolean,
+) => {
+  if (!shouldShowSubRow) return null;
+
+  return (
+    <>
+      <SiblingSwitch
+        siblingIdx={siblingIdx}
+        siblingCount={siblingCount}
+        setSiblingIdx={setSiblingIdx}
+      />
+      <HoverButtons
+        index={index}
+        isEditing={edit}
+        message={msg}
+        enterEdit={enterEdit}
+        isSubmitting={isSubmitting}
+        conversation={conversation ?? null}
+        regenerate={handleRegenerateMessage}
+        copyToClipboard={copyToClipboard}
+        handleContinue={handleContinue}
+        latestMessage={latestMessage}
+        handleFeedback={handleFeedback}
+        isLast={isLast}
+      />
+    </>
+  );
+};
+
 const ContentRender = memo(
   ({
     message: msg,
@@ -38,7 +84,7 @@ const ContentRender = memo(
       messageId: msg?.messageId,
       attachments: msg?.attachments,
     });
-    
+
     const {
       ask,
       edit,
@@ -87,101 +133,54 @@ const ContentRender = memo(
       [showCardRender, isLatestMessage, msg, setLatestMessage],
     );
 
+    const baseClasses = useMemo(
+      () => ({
+        common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ',
+        card: 'relative w-full gap-1 rounded-2xl border border-border-medium bg-surface-primary-alt p-2 md:w-1/2 md:gap-3 md:p-4',
+        chat: maximizeChatSpace
+          ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
+          : 'md:max-w-[47rem] xl:max-w-[55rem]',
+      }),
+      [maximizeChatSpace],
+    );
+
     if (!msg) {
       return null;
     }
 
-    const baseClasses = {
-      common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ',
-      card: 'relative w-full gap-1 rounded-2xl border border-border-medium bg-surface-primary-alt p-2 md:w-1/2 md:gap-3 md:p-4',
-      chat: maximizeChatSpace
-        ? 'w-full max-w-full md:px-5 lg:px-1 xl:px-5'
-        : 'md:max-w-[47rem] xl:max-w-[55rem]',
-    };
-
-    const conditionalClasses = {
-      latestCard: isLatestCard ? 'bg-surface-secondary' : '',
-      cardRender: showCardRender ? 'cursor-pointer transition-colors duration-300' : '',
-      focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
-    };
+    const conditionalClasses = useMemo(
+      () => ({
+        latestCard: isLatestCard ? 'bg-surface-secondary' : '',
+        cardRender: showCardRender ? 'cursor-pointer transition-colors duration-300' : '',
+        focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
+      }),
+      [isLatestCard, showCardRender],
+    );
 
     // Helper function to determine if SubRow should be shown
     const shouldShowSubRow = useMemo(() => {
       return !((isSubmittingFamily || isSubmitting) && !(msg.children?.length ?? 0));
     }, [isSubmittingFamily, isSubmitting, msg.children?.length]);
 
-    // SubRow content for user messages
-    const userSubRowContent = useMemo(() => {
-      if (!shouldShowSubRow) return null;
-      
-      return (
-        <>
-          <SiblingSwitch
-            siblingIdx={siblingIdx}
-            siblingCount={siblingCount}
-            setSiblingIdx={setSiblingIdx}
-          />
-          <HoverButtons
-            index={index}
-            isEditing={edit}
-            message={msg}
-            enterEdit={enterEdit}
-            isSubmitting={isSubmitting}
-            conversation={conversation ?? null}
-            regenerate={handleRegenerateMessage}
-            copyToClipboard={copyToClipboard}
-            handleContinue={handleContinue}
-            latestMessage={latestMessage}
-            handleFeedback={handleFeedback}
-            isLast={isLast}
-          />
-        </>
-      );
-    }, [
-      shouldShowSubRow,
-      siblingIdx,
-      siblingCount,
-      setSiblingIdx,
-      index,
-      edit,
-      msg,
-      enterEdit,
-      isSubmitting,
-      conversation,
-      handleRegenerateMessage,
-      copyToClipboard,
-      handleContinue,
-      latestMessage,
-      handleFeedback,
-      isLast,
-    ]);
-
-    // SubRow content for agent messages
-    const agentSubRowContent = useMemo(() => {
-      if (!shouldShowSubRow) return null;
-      
-      return (
-        <>
-          <SiblingSwitch
-            siblingIdx={siblingIdx}
-            siblingCount={siblingCount}
-            setSiblingIdx={setSiblingIdx}
-          />
-          <HoverButtons
-            index={index}
-            isEditing={edit}
-            message={msg}
-            enterEdit={enterEdit}
-            isSubmitting={isSubmitting}
-            conversation={conversation ?? null}
-            regenerate={handleRegenerateMessage}
-            copyToClipboard={copyToClipboard}
-            handleContinue={handleContinue}
-            latestMessage={latestMessage}
-            handleFeedback={handleFeedback}
-            isLast={isLast}
-          />
-        </>
+    // SubRow content - using the helper function
+    const subRowContent = useMemo(() => {
+      return createSubRowContent(
+        shouldShowSubRow,
+        siblingIdx,
+        siblingCount,
+        setSiblingIdx,
+        index,
+        edit,
+        msg,
+        enterEdit,
+        isSubmitting,
+        conversation,
+        handleRegenerateMessage,
+        copyToClipboard,
+        handleContinue,
+        latestMessage,
+        handleFeedback,
+        isLast,
       );
     }, [
       shouldShowSubRow,
@@ -233,7 +232,8 @@ const ContentRender = memo(
           isSubmitting={isSubmitting}
           hasActions={true}
           isCard={isCard}
-          subRowContent={msg.isCreatedByUser ? userSubRowContent : agentSubRowContent}
+          messageId={msg.messageId}
+          subRowContent={subRowContent}
         >
           <div className="flex flex-col gap-1">
             <div className="flex max-w-full flex-grow flex-col gap-0">

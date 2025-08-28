@@ -16,17 +16,12 @@ const SUBROW_STYLES = {
   agent: 'justify-start',
 } as const;
 
-const SubRow = React.memo(({ 
-  children, 
-  classes = '', 
-  onClick, 
-  isCreatedByUser 
-}: TSubRowProps) => {
+const SubRow = React.memo(({ children, classes = '', onClick, isCreatedByUser }: TSubRowProps) => {
   const containerClasses = useMemo(() => {
     return cn(
       SUBROW_STYLES.base,
       isCreatedByUser ? SUBROW_STYLES.user : SUBROW_STYLES.agent,
-      classes
+      classes,
     );
   }, [isCreatedByUser, classes]);
 
@@ -35,7 +30,7 @@ const SubRow = React.memo(({
       className={containerClasses}
       onClick={onClick}
       role="toolbar"
-      aria-label={isCreatedByUser ? "User message actions" : "Assistant message actions"}
+      aria-label={isCreatedByUser ? 'User message actions' : 'Assistant message actions'}
     >
       {children}
     </div>

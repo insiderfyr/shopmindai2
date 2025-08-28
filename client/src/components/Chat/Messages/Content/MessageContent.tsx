@@ -1,73 +1,41 @@
-import { memo, Suspense, useMemo } from 'react';
+import React, { memo, useMemo, Suspense } from 'react';
 import { useRecoilValue } from 'recoil';
-import type { TMessage } from 'librechat-data-provider';
-import type { TMessageContentProps, TDisplayProps } from '~/common';
-import Error from '~/components/Messages/Content/Error';
-import Thinking from '~/components/Artifacts/Thinking';
-import { DelayedRender } from '~/components/ui';
 import { useChatContext } from '~/Providers';
-import MarkdownLite from './MarkdownLite';
-import EditMessage from './EditMessage';
-import { useLocalize } from '~/hooks';
-import Container from './Container';
-import Markdown from './Markdown';
 import { cn } from '~/utils';
 import store from '~/store';
+import Markdown from './Markdown';
+import MarkdownLite from './MarkdownLite';
+import Container from './Container';
+import { DelayedRender } from '~/components/ui';
+import type { TMessageContentProps, TDisplayProps } from '~/common';
+import type { TMessage } from 'librechat-data-provider';
+import EditMessage from './EditMessage';
+import CinematicTyping from './CinematicTyping';
 
-export const ErrorMessage = ({
-  text,
-  message,
-  className = '',
-}: Pick<TDisplayProps, 'text' | 'className'> & {
-  message?: TMessage;
-}) => {
-  const localize = useLocalize();
-  if (text === 'Error connecting to server, try refreshing the page.') {
-    console.log('error message', message);
-    return (
-      <Suspense
-        fallback={
-          <div className="text-message mb-[0.625rem] flex min-h-[20px] flex-col items-start gap-3 overflow-visible">
-            <div className="markdown prose dark:prose-invert light w-full break-words dark:text-gray-100">
-              <div className="absolute">
-                <p className="submitting relative">
-                  <span className="result-thinking" />
-                </p>
-              </div>
-            </div>
-          </div>
-        }
-      >
-        <DelayedRender delay={5500}>
-          <Container message={message}>
-            <div
-              className={cn(
-                'rounded-md border border-red-500 bg-red-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200',
-                className,
-              )}
-            >
-              {localize('com_ui_error_connection')}
-            </div>
-          </Container>
-        </DelayedRender>
-      </Suspense>
-    );
-  }
-  return (
-    <Container message={message}>
-      <div
-        role="alert"
-        aria-live="assertive"
-        className={cn(
-          'rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm text-gray-600 dark:text-gray-200',
-          className,
-        )}
-      >
-        <Error text={text} />
+export const ErrorMessage = ({ message, text }: { message: TMessage; text: string }) => (
+  <Container message={message}>
+    <div className="markdown prose dark:prose-invert light w-full break-words">
+      <div className="flex items-center gap-2 text-red-500">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white">
+          <svg
+            stroke="currentColor"
+            fill="none"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+          </svg>
+        </div>
+        <span className="text-sm font-medium">Error: {text}</span>
       </div>
-    </Container>
-  );
-};
+    </div>
+  </Container>
+);
 
 const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplayProps) => {
   const { isSubmitting, latestMessage } = useChatContext();
@@ -81,18 +49,13 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
     [message.messageId, latestMessage?.messageId],
   );
 
-  let content: React.ReactElement;
-  if (!isCreatedByUser) {
-    content = <Markdown content={text} isLatestMessage={isLatestMessage} />;
-  } else if (enableUserMsgMarkdown) {
-    content = <MarkdownLite content={text} />;
-  } else {
-    content = <>{text}</>;
-  }
-
   return (
     <Container message={message}>
-      <div
+      <CinematicTyping
+        text={text}
+        isCreatedByUser={isCreatedByUser}
+        message={message}
+        showCursor={showCursor ?? false}
         className={cn(
           isSubmitting ? 'submitting' : '',
           showCursorState && !!text.length ? 'result-streaming' : '',
@@ -100,19 +63,36 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
           isCreatedByUser && !enableUserMsgMarkdown && 'whitespace-pre-wrap',
           isCreatedByUser ? 'dark:text-gray-20' : 'dark:text-gray-100',
         )}
-      >
-        {content}
-      </div>
+      />
     </Container>
   );
 };
 
 // Unfinished Message Component
 export const UnfinishedMessage = ({ message }: { message: TMessage }) => (
-  <ErrorMessage
-    message={message}
-    text="The response is incomplete; it's either still processing, was cancelled, or censored. Refresh or try a different prompt."
-  />
+  <Container message={message}>
+    <div className="markdown prose dark:prose-invert light w-full break-words">
+      <div className="flex items-center gap-2 text-gray-500">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-500 text-white">
+          <svg
+            stroke="currentColor"
+            fill="none"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+        </div>
+        <span className="text-sm font-medium">Message was cut off</span>
+      </div>
+    </div>
+  </Container>
 );
 
 const MessageContent = ({
@@ -158,7 +138,9 @@ const MessageContent = ({
   return (
     <>
       {thinkingContent.length > 0 && (
-        <Thinking key={`thinking-${messageId}`}>{thinkingContent}</Thinking>
+        <div key={`thinking-${messageId}`} className="text-gray-500 italic">
+          {thinkingContent}
+        </div>
       )}
       <DisplayMessage
         key={`display-${messageId}`}

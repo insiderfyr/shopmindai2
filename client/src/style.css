@@ -4,6 +4,8 @@
 
 /* Custom Variables */
 :root {
+  --primary: 217 91% 60%;
+  --primary-rgb: 59 130 246;
   --white: #fff;
   --black: #000;
   --gray-20: #ececf1;
@@ -809,6 +811,20 @@ pre {
     opacity: 0;
   }
   100% {
+    opacity: 1;
+  }
+}
+
+/* Smooth text appearance animation for streaming content */
+.result-streaming {
+  animation: smoothTextAppear 0.15s ease-out;
+}
+
+@keyframes smoothTextAppear {
+  from {
+    opacity: 0.9;
+  }
+  to {
     opacity: 1;
   }
 }
@@ -2051,9 +2067,9 @@ html {
 .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
 .result-streaming > pre:last-child code:after {
   display: inline-block;
-  content: '⬤';
-  width: 12px;
-  height: 12px;
+  content: '|';
+  width: auto;
+  height: auto;
   font-family:
     system-ui,
     Inter,
@@ -2066,14 +2082,15 @@ html {
     Noto Sans,
     sans-serif;
   line-height: normal;
-  margin-left: 0.25rem;
-  vertical-align: middle;
-  font-size: 0.5rem;
+  margin-left: 0.1rem;
+  vertical-align: baseline;
+  font-size: 0.9em;
+  animation: blink 1.5s linear infinite;
 }
 
 @supports (selector(:has(*))) {
   .result-streaming > :is(ul, ol):last-child > li:last-child:not(:has(> :is(ul, ol, pre))):after {
-    content: '⬤';
+    content: '|';
     font-family:
       system-ui,
       Inter,
@@ -2086,19 +2103,20 @@ html {
       Noto Sans,
       sans-serif;
     line-height: normal;
-    margin-left: 0.25rem;
-    vertical-align: middle;
-    font-size: 0.5rem;
+    margin-left: 0.1rem;
+    vertical-align: baseline;
+    font-size: 0.9em;
     display: inline-block;
-    width: 12px;
-    height: 12px;
+    width: auto;
+    height: auto;
+    animation: blink 1.5s linear infinite;
   }
 }
 
 @supports not (selector(:has(*))) {
   .result-streaming > ol:last-child > li:last-child:after,
   .result-streaming > ul:last-child > li:last-child:after {
-    content: '⬤';
+    content: '|';
     font-family:
       system-ui,
       Inter,
@@ -2111,12 +2129,13 @@ html {
       Noto Sans,
       sans-serif;
     line-height: normal;
-    margin-left: 0.25rem;
-    vertical-align: middle;
-    font-size: 0.5rem;
+    margin-left: 0.1rem;
+    vertical-align: baseline;
+    font-size: 0.9em;
     display: inline-block;
-    width: 12px;
-    height: 12px;
+    width: auto;
+    height: auto;
+    animation: blink 1.5s linear infinite;
   }
 
   .result-streaming > ol:last-child > li:last-child > :is(ul, ol, pre) ~ :after,
