@@ -106,7 +106,7 @@ const AppService = async (app) => {
   if (!Object.keys(config).length) {
     app.locals = {
       ...defaultLocals,
-      [EModelEndpoint.agents]: agentsDefaults,
+      // Only xAI is enabled - no agents endpoint
     };
     return;
   }
@@ -117,53 +117,15 @@ const AppService = async (app) => {
   const endpointLocals = {};
   const endpoints = config?.endpoints;
 
-  if (endpoints?.[EModelEndpoint.azureOpenAI]) {
-    endpointLocals[EModelEndpoint.azureOpenAI] = azureConfigSetup(config);
-    checkAzureVariables();
-  }
-
-  if (endpoints?.[EModelEndpoint.azureOpenAI]?.assistants) {
-    endpointLocals[EModelEndpoint.azureAssistants] = azureAssistantsDefaults();
-  }
-
-  if (endpoints?.[EModelEndpoint.azureAssistants]) {
-    endpointLocals[EModelEndpoint.azureAssistants] = assistantsConfigSetup(
-      config,
-      EModelEndpoint.azureAssistants,
-      endpointLocals[EModelEndpoint.azureAssistants],
-    );
-  }
-
-  if (endpoints?.[EModelEndpoint.assistants]) {
-    endpointLocals[EModelEndpoint.assistants] = assistantsConfigSetup(
-      config,
-      EModelEndpoint.assistants,
-      endpointLocals[EModelEndpoint.assistants],
-    );
-  }
-
-  endpointLocals[EModelEndpoint.agents] = agentsConfigSetup(config, agentsDefaults);
-
-  const endpointKeys = [
-    EModelEndpoint.openAI,
-    EModelEndpoint.google,
-    EModelEndpoint.bedrock,
-    EModelEndpoint.anthropic,
-    EModelEndpoint.gptPlugins,
-  ];
-
-  endpointKeys.forEach((key) => {
-    if (endpoints?.[key]) {
-      endpointLocals[key] = endpoints[key];
-    }
-  });
+  // Only xAI is enabled - all other endpoints are disabled
+  // No endpoint initialization for other endpoints
 
   app.locals = {
     ...defaultLocals,
     fileConfig: config?.fileConfig,
     secureImageLinks: config?.secureImageLinks,
     modelSpecs: processModelSpecs(endpoints, config.modelSpecs, interfaceConfig),
-    ...endpointLocals,
+    // Only xAI endpoints are available
   };
 };
 

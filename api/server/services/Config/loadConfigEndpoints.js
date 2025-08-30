@@ -17,6 +17,7 @@ async function loadConfigEndpoints(req) {
   const { endpoints = {} } = customConfig ?? {};
   const endpointsConfig = {};
 
+  // Only process xAI custom endpoints - ignore all others
   if (Array.isArray(endpoints[EModelEndpoint.custom])) {
     const customEndpoints = endpoints[EModelEndpoint.custom].filter(
       (endpoint) =>
@@ -24,7 +25,8 @@ async function loadConfigEndpoints(req) {
         endpoint.apiKey &&
         endpoint.name &&
         endpoint.models &&
-        (endpoint.models.fetch || endpoint.models.default),
+        (endpoint.models.fetch || endpoint.models.default) &&
+        endpoint.name.toLowerCase() === 'xai', // Only xAI
     );
 
     for (let i = 0; i < customEndpoints.length; i++) {
@@ -53,20 +55,7 @@ async function loadConfigEndpoints(req) {
     }
   }
 
-  if (req.app.locals[EModelEndpoint.azureOpenAI]) {
-    /** @type {Omit<TConfig, 'order'>} */
-    endpointsConfig[EModelEndpoint.azureOpenAI] = {
-      userProvide: false,
-    };
-  }
-
-  if (req.app.locals[EModelEndpoint.azureOpenAI]?.assistants) {
-    /** @type {Omit<TConfig, 'order'>} */
-    endpointsConfig[EModelEndpoint.azureAssistants] = {
-      userProvide: false,
-    };
-  }
-
+  // All other endpoints are disabled
   return endpointsConfig;
 }
 

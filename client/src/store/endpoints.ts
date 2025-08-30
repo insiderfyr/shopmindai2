@@ -3,6 +3,8 @@ import { EModelEndpoint } from 'librechat-data-provider';
 import type { TEndpointsConfig } from 'librechat-data-provider';
 
 const defaultConfig: TEndpointsConfig = {
+  // Only xAI is enabled - all other endpoints are disabled
+  xAI: null, // xAI will be loaded from server
   [EModelEndpoint.azureOpenAI]: null,
   [EModelEndpoint.azureAssistants]: null,
   [EModelEndpoint.assistants]: null,

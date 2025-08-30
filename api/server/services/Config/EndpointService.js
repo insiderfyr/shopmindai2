@@ -25,29 +25,20 @@ const userProvidedOpenAI = useAzurePlugins
 
 module.exports = {
   config: {
-    openAIApiKey,
-    azureOpenAIApiKey,
-    useAzurePlugins,
-    userProvidedOpenAI,
-    googleKey,
-    [EModelEndpoint.anthropic]: generateConfig(anthropicApiKey),
-    [EModelEndpoint.chatGPTBrowser]: generateConfig(chatGPTToken),
-    [EModelEndpoint.openAI]: generateConfig(openAIApiKey, OPENAI_REVERSE_PROXY),
-    [EModelEndpoint.azureOpenAI]: generateConfig(azureOpenAIApiKey, AZURE_OPENAI_BASEURL),
-    [EModelEndpoint.assistants]: generateConfig(
-      assistantsApiKey,
-      ASSISTANTS_BASE_URL,
-      EModelEndpoint.assistants,
-    ),
-    [EModelEndpoint.azureAssistants]: generateConfig(
-      azureAssistantsApiKey,
-      AZURE_ASSISTANTS_BASE_URL,
-      EModelEndpoint.azureAssistants,
-    ),
-    [EModelEndpoint.bedrock]: generateConfig(
-      process.env.BEDROCK_AWS_SECRET_ACCESS_KEY ?? process.env.BEDROCK_AWS_DEFAULT_REGION,
-    ),
-    /* key will be part of separate config */
-    [EModelEndpoint.agents]: generateConfig('true', undefined, EModelEndpoint.agents),
+    // Disable all endpoints except xAI
+    openAIApiKey: null,
+    azureOpenAIApiKey: null,
+    useAzurePlugins: false,
+    userProvidedOpenAI: false,
+    googleKey: null,
+    [EModelEndpoint.anthropic]: null,
+    [EModelEndpoint.chatGPTBrowser]: null,
+    [EModelEndpoint.openAI]: null,
+    [EModelEndpoint.azureOpenAI]: null,
+    [EModelEndpoint.assistants]: null,
+    [EModelEndpoint.azureAssistants]: null,
+    [EModelEndpoint.bedrock]: null,
+    /* Disable agents endpoint to prevent "Agent not found" errors */
+    [EModelEndpoint.agents]: null,
   },
 };
