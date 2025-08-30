@@ -60,7 +60,8 @@
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
+  --font-size-xl: 1rem;
+  --markdown-font-size: 0.875rem;
 }
 html {
   --presentation: var(--white);
@@ -833,6 +834,7 @@ pre {
   color: var(--tw-prose-body);
   max-width: 65ch;
   font-size: var(--markdown-font-size, var(--font-size-base));
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   line-height: calc(
     22px * var(--markdown-font-size, var(--font-size-base)) / var(--font-size-base)
   );
@@ -1514,6 +1516,7 @@ html {
 .markdown {
   max-width: none;
   font-size: var(--markdown-font-size, var(--font-size-base));
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   line-height: calc(
     22px * var(--markdown-font-size, var(--font-size-base)) / var(--font-size-base)
   );
@@ -2515,7 +2518,15 @@ html {
 
 .message-content {
   font-size: var(--markdown-font-size, var(--font-size-base));
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.4;
+}
+
+/* Override text-xl for chat components to make text smaller */
+.message-content .text-xl,
+.prose .text-xl,
+.markdown .text-xl {
+  font-size: var(--font-size-base) !important;
 }
 
 .message-content pre code {
