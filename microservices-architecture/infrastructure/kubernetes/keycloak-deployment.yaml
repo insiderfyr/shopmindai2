@@ -1,0 +1,408 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: librechat
+  labels:
+    app: keycloak
+    version: v26.3.3
+    environment: production
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+        version: v26.3.3
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: keycloak-sa
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:26.3.3
+        imagePullPolicy: IfNotPresent
+        args:
+        - "start"
+        - "--optimized"
+        - "--cache=ispn"
+        - "--cache-stack=kubernetes"
+        - "--db=postgres"
+        - "--features=token-exchange,admin-fine-grained-authz"
+        - "--hostname-strict=false"
+        - "--proxy=edge"
+        - "--http-enabled=true"
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        - containerPort: 7800
+          name: jgroups
+          protocol: TCP
+        env:
+        - name: KEYCLOAK_ADMIN
+          value: "admin"
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: admin-password
+        - name: KC_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: database-url
+        - name: KC_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: database-username
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: database-password
+        - name: KC_HOSTNAME
+          value: "auth.librechat.example.com"
+        - name: KC_HOSTNAME_ADMIN
+          value: "auth-admin.librechat.example.com"
+        - name: KC_HTTP_RELATIVE_PATH
+          value: "/auth"
+        - name: KC_PROXY
+          value: "edge"
+        - name: KC_CACHE
+          value: "ispn"
+        - name: KC_CACHE_STACK
+          value: "kubernetes"
+        - name: JAVA_OPTS_APPEND
+          value: "-Djgroups.dns.query=keycloak-headless.librechat.svc.cluster.local"
+        - name: KC_LOG_LEVEL
+          value: "INFO"
+        - name: KC_METRICS_ENABLED
+          value: "true"
+        - name: KC_HEALTH_ENABLED
+          value: "true"
+        - name: KC_HTTP_ENABLED
+          value: "true"
+        - name: KC_HTTPS_CERTIFICATE_FILE
+          value: "/opt/keycloak/conf/tls.crt"
+        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+          value: "/opt/keycloak/conf/tls.key"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /auth/health/live
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /auth/health/ready
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /auth/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 60
+        volumeMounts:
+        - name: keycloak-config
+          mountPath: /opt/keycloak/conf/keycloak.conf
+          subPath: keycloak.conf
+          readOnly: true
+        - name: tls-certs
+          mountPath: /opt/keycloak/conf/tls.crt
+          subPath: tls.crt
+          readOnly: true
+        - name: tls-certs
+          mountPath: /opt/keycloak/conf/tls.key
+          subPath: tls.key
+          readOnly: true
+        - name: keycloak-themes
+          mountPath: /opt/keycloak/themes/librechat
+          readOnly: true
+      volumes:
+      - name: keycloak-config
+        configMap:
+          name: keycloak-config
+      - name: tls-certs
+        secret:
+          secretName: keycloak-tls-certs
+      - name: keycloak-themes
+        configMap:
+          name: keycloak-themes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - keycloak
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: librechat
+  labels:
+    app: keycloak
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  - port: 8443
+    targetPort: 8443
+    protocol: TCP
+    name: https
+  selector:
+    app: keycloak
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-headless
+  namespace: librechat
+  labels:
+    app: keycloak
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 7800
+    targetPort: 7800
+    protocol: TCP
+    name: jgroups
+  selector:
+    app: keycloak
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-config
+  namespace: librechat
+  labels:
+    app: keycloak
+data:
+  keycloak.conf: |
+    # Database configuration
+    db=postgres
+    
+    # HTTP/HTTPS configuration
+    http-enabled=true
+    hostname-strict=false
+    proxy=edge
+    
+    # Cache configuration
+    cache=ispn
+    cache-stack=kubernetes
+    
+    # Metrics and health
+    metrics-enabled=true
+    health-enabled=true
+    
+    # Logging
+    log-level=INFO
+    log-console-format=%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n
+    
+    # Features
+    features=token-exchange,admin-fine-grained-authz,recovery-codes,update-email
+    
+    # Security
+    spi-connections-jpa-legacy-initialize-empty=false
+    spi-connections-jpa-legacy-migration-strategy=update
+    
+    # Performance tuning
+    spi-connections-jpa-legacy-migration-export=false
+    spi-theme-static-max-age=2592000
+    spi-theme-cache-themes=true
+    spi-theme-cache-templates=true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-secrets
+  namespace: librechat
+  labels:
+    app: keycloak
+type: Opaque
+data:
+  # Base64 encoded values - replace with actual values
+  admin-password: <base64-encoded-admin-password>
+  database-url: <base64-encoded-database-url>
+  database-username: <base64-encoded-database-username>
+  database-password: <base64-encoded-database-password>
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-tls-certs
+  namespace: librechat
+  labels:
+    app: keycloak
+type: kubernetes.io/tls
+data:
+  tls.crt: <base64-encoded-tls-certificate>
+  tls.key: <base64-encoded-tls-private-key>
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: keycloak-sa
+  namespace: librechat
+  labels:
+    app: keycloak
+secrets:
+- name: keycloak-secrets
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: keycloak-hpa
+  namespace: librechat
+  labels:
+    app: keycloak
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: keycloak
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 15
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-themes
+  namespace: librechat
+  labels:
+    app: keycloak
+data:
+  theme.properties: |
+    parent=keycloak.v2
+    import=common/keycloak
+    
+    styles=css/librechat.css
+    
+    locales=en,es,fr,de,pt,it,ja,ko,zh-CN,ro
+  
+  librechat.css: |
+    /* LibreChat Custom Theme */
+    .login-pf body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .card-pf {
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        border: none;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    
+    .login-pf-page .card-pf {
+        margin-top: 10vh;
+        max-width: 400px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .login-pf-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .login-pf-header h1 {
+        color: #1a202c;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-pf-header p {
+        color: #718096;
+        font-size: 1rem;
+    }

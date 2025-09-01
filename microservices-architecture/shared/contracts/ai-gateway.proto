@@ -1,0 +1,414 @@
+syntax = "proto3";
+
+package librechat.aigateway;
+
+option go_package = "github.com/librechat/microservices/shared/contracts/aigateway";
+option csharp_namespace = "LibreChat.Shared.Contracts.AIGateway";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// AI Gateway Service - High-performance AI model routing and management
+service AIGatewayService {
+  // Chat Completions
+  rpc CreateChatCompletion(CreateChatCompletionRequest) returns (ChatCompletionResponse);
+  rpc CreateChatCompletionStream(CreateChatCompletionRequest) returns (stream ChatCompletionChunk);
+  
+  // Text Completions
+  rpc CreateTextCompletion(CreateTextCompletionRequest) returns (TextCompletionResponse);
+  rpc CreateTextCompletionStream(CreateTextCompletionRequest) returns (stream TextCompletionChunk);
+  
+  // Image Generation
+  rpc CreateImage(CreateImageRequest) returns (ImageResponse);
+  rpc CreateImageEdit(CreateImageEditRequest) returns (ImageResponse);
+  rpc CreateImageVariation(CreateImageVariationRequest) returns (ImageResponse);
+  
+  // Embeddings
+  rpc CreateEmbedding(CreateEmbeddingRequest) returns (EmbeddingResponse);
+  
+  // Model Management
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
+  rpc GetModel(GetModelRequest) returns (Model);
+  
+  // Usage and Analytics
+  rpc GetUsage(GetUsageRequest) returns (UsageResponse);
+  rpc GetModelMetrics(GetModelMetricsRequest) returns (ModelMetrics);
+  
+  // Health and Status
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+  rpc GetEndpointStatus(GetEndpointStatusRequest) returns (EndpointStatus);
+}
+
+// Chat Completion Messages
+message CreateChatCompletionRequest {
+  string model = 1;
+  repeated ChatMessage messages = 2;
+  float temperature = 3;
+  float top_p = 4;
+  int32 max_tokens = 5;
+  float presence_penalty = 6;
+  float frequency_penalty = 7;
+  repeated string stop = 8;
+  bool stream = 9;
+  string user = 10;
+  map<string, string> metadata = 11;
+  repeated Tool tools = 12;
+  ToolChoice tool_choice = 13;
+  FunctionCall function_call = 14;
+  string response_format = 15;
+  int32 seed = 16;
+  repeated LogitBias logit_bias = 17;
+  string endpoint = 18;
+  string api_key = 19;
+  string organization = 20;
+}
+
+message ChatCompletionResponse {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created = 3;
+  string model = 4;
+  repeated Choice choices = 5;
+  Usage usage = 6;
+  string system_fingerprint = 7;
+  map<string, string> metadata = 8;
+}
+
+message ChatCompletionChunk {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created = 3;
+  string model = 4;
+  repeated ChoiceDelta choices = 5;
+  string system_fingerprint = 6;
+}
+
+message ChatMessage {
+  string role = 1;
+  string content = 2;
+  repeated MessageContent content_parts = 3;
+  string name = 4;
+  FunctionCall function_call = 5;
+  repeated ToolCall tool_calls = 6;
+}
+
+message MessageContent {
+  string type = 1;
+  string text = 2;
+  ImageUrl image_url = 3;
+  map<string, string> attributes = 4;
+}
+
+message ImageUrl {
+  string url = 1;
+  string detail = 2;
+}
+
+message Choice {
+  int32 index = 1;
+  ChatMessage message = 2;
+  string finish_reason = 3;
+  map<string, string> metadata = 4;
+}
+
+message ChoiceDelta {
+  int32 index = 1;
+  ChatMessage delta = 2;
+  string finish_reason = 3;
+}
+
+message FunctionCall {
+  string name = 1;
+  string arguments = 2;
+}
+
+message Tool {
+  string type = 1;
+  Function function = 2;
+}
+
+message Function {
+  string name = 1;
+  string description = 2;
+  map<string, object> parameters = 3;
+}
+
+message ToolCall {
+  string id = 1;
+  string type = 2;
+  FunctionCall function = 3;
+}
+
+message ToolChoice {
+  string type = 1;
+  Function function = 2;
+}
+
+message LogitBias {
+  int32 token_id = 1;
+  float bias = 2;
+}
+
+// Text Completion Messages
+message CreateTextCompletionRequest {
+  string model = 1;
+  string prompt = 2;
+  float temperature = 3;
+  float top_p = 4;
+  int32 max_tokens = 5;
+  float presence_penalty = 6;
+  float frequency_penalty = 7;
+  repeated string stop = 8;
+  bool stream = 9;
+  string user = 10;
+  int32 n = 11;
+  bool echo = 12;
+  float logprobs = 13;
+  bool logit_bias = 14;
+  string suffix = 15;
+  string endpoint = 16;
+  string api_key = 17;
+}
+
+message TextCompletionResponse {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created = 3;
+  string model = 4;
+  repeated TextChoice choices = 5;
+  Usage usage = 6;
+}
+
+message TextCompletionChunk {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created = 3;
+  string model = 4;
+  repeated TextChoiceDelta choices = 5;
+}
+
+message TextChoice {
+  int32 index = 1;
+  string text = 2;
+  int32 logprobs = 3;
+  string finish_reason = 4;
+}
+
+message TextChoiceDelta {
+  int32 index = 1;
+  string text = 2;
+  int32 logprobs = 3;
+  string finish_reason = 4;
+}
+
+// Image Generation Messages
+message CreateImageRequest {
+  string prompt = 1;
+  int32 n = 2;
+  string size = 3;
+  string quality = 4;
+  string response_format = 5;
+  string style = 6;
+  string user = 7;
+  string model = 8;
+  string endpoint = 9;
+  string api_key = 10;
+}
+
+message CreateImageEditRequest {
+  bytes image = 1;
+  string prompt = 2;
+  bytes mask = 3;
+  int32 n = 4;
+  string size = 5;
+  string response_format = 6;
+  string user = 7;
+  string endpoint = 8;
+  string api_key = 9;
+}
+
+message CreateImageVariationRequest {
+  bytes image = 1;
+  int32 n = 2;
+  string size = 3;
+  string response_format = 4;
+  string user = 5;
+  string endpoint = 6;
+  string api_key = 7;
+}
+
+message ImageResponse {
+  repeated ImageData data = 1;
+  Usage usage = 2;
+}
+
+message ImageData {
+  string url = 1;
+  bytes b64_json = 2;
+  string revised_prompt = 3;
+}
+
+// Embedding Messages
+message CreateEmbeddingRequest {
+  string model = 1;
+  repeated string input = 2;
+  string user = 3;
+  string encoding_format = 4;
+  int32 dimensions = 5;
+  string endpoint = 6;
+  string api_key = 7;
+}
+
+message EmbeddingResponse {
+  repeated Embedding data = 1;
+  string model = 2;
+  Usage usage = 3;
+}
+
+message Embedding {
+  int32 index = 1;
+  repeated float embedding = 2;
+  string object = 3;
+}
+
+// Model Management Messages
+message ListModelsRequest {
+  string endpoint = 1;
+  string api_key = 2;
+}
+
+message ListModelsResponse {
+  repeated Model data = 1;
+  string object = 2;
+}
+
+message GetModelRequest {
+  string model = 1;
+  string endpoint = 2;
+  string api_key = 3;
+}
+
+message Model {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created = 3;
+  string owned_by = 4;
+  repeated Permission permission = 5;
+  string root = 6;
+  string parent = 7;
+  ModelStatus status = 8;
+  map<string, string> metadata = 9;
+}
+
+message Permission {
+  string id = 1;
+  string object = 2;
+  google.protobuf.Timestamp created = 3;
+  bool allow_create_engine = 4;
+  bool allow_sampling = 5;
+  bool allow_logprobs = 6;
+  bool allow_search_indices = 7;
+  bool allow_view = 8;
+  bool allow_fine_tuning = 9;
+  string organization = 10;
+  string group = 11;
+  bool is_blocking = 12;
+}
+
+enum ModelStatus {
+  MODEL_STATUS_UNSPECIFIED = 0;
+  MODEL_STATUS_ACTIVE = 1;
+  MODEL_STATUS_INACTIVE = 2;
+  MODEL_STATUS_DEPRECATED = 3;
+  MODEL_STATUS_ERROR = 4;
+}
+
+// Usage and Analytics Messages
+message GetUsageRequest {
+  string user_id = 1;
+  google.protobuf.Timestamp from_date = 2;
+  google.protuf.Timestamp to_date = 3;
+  string model = 4;
+  string endpoint = 5;
+}
+
+message UsageResponse {
+  repeated UsageRecord usage = 1;
+  UsageSummary summary = 2;
+}
+
+message UsageRecord {
+  string user_id = 1;
+  string model = 2;
+  string endpoint = 3;
+  int64 prompt_tokens = 4;
+  int64 completion_tokens = 5;
+  int64 total_tokens = 6;
+  float cost = 7;
+  google.protobuf.Timestamp timestamp = 8;
+  map<string, string> metadata = 9;
+}
+
+message UsageSummary {
+  int64 total_prompt_tokens = 1;
+  int64 total_completion_tokens = 2;
+  int64 total_tokens = 3;
+  float total_cost = 4;
+  int32 total_requests = 5;
+  map<string, UsageSummary> by_model = 6;
+  map<string, UsageSummary> by_endpoint = 7;
+}
+
+message GetModelMetricsRequest {
+  string model = 1;
+  string endpoint = 2;
+  google.protobuf.Timestamp from_date = 3;
+  google.protobuf.Timestamp to_date = 4;
+}
+
+message ModelMetrics {
+  string model = 1;
+  string endpoint = 2;
+  float average_response_time = 3;
+  float success_rate = 4;
+  int32 total_requests = 5;
+  int32 error_count = 6;
+  float average_tokens_per_request = 7;
+  float cost_per_request = 8;
+  repeated LatencyBucket latency_distribution = 9;
+  map<string, int32> error_types = 10;
+}
+
+message LatencyBucket {
+  float min_latency = 1;
+  float max_latency = 2;
+  int32 request_count = 3;
+}
+
+// Health and Status Messages
+message HealthCheckRequest {
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  string status = 1;
+  string version = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  map<string, string> details = 4;
+}
+
+message GetEndpointStatusRequest {
+  string endpoint = 1;
+}
+
+message EndpointStatus {
+  string endpoint = 1;
+  string status = 2;
+  float response_time = 3;
+  float success_rate = 4;
+  int32 active_connections = 5;
+  int32 queue_length = 6;
+  google.protobuf.Timestamp last_check = 7;
+  repeated string available_models = 8;
+  map<string, string> metadata = 9;
+}

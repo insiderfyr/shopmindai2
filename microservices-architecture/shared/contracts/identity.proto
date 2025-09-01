@@ -1,0 +1,219 @@
+syntax = "proto3";
+
+package librechat.identity;
+
+option go_package = "github.com/librechat/microservices/shared/contracts/identity";
+option csharp_namespace = "LibreChat.Shared.Contracts.Identity";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// Identity Service - Authentication and Authorization
+service IdentityService {
+  // User Management
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc RevokeToken(RevokeTokenRequest) returns (google.protobuf.Empty);
+  rpc GetUserProfile(GetUserProfileRequest) returns (UserProfile);
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UserProfile);
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+  
+  // Role Management
+  rpc GetUserRoles(GetUserRolesRequest) returns (GetUserRolesResponse);
+  rpc AssignRole(AssignRoleRequest) returns (google.protobuf.Empty);
+  rpc RemoveRole(RemoveRoleRequest) returns (google.protobuf.Empty);
+  
+  // Session Management
+  rpc CreateSession(CreateSessionRequest) returns (Session);
+  rpc GetSession(GetSessionRequest) returns (Session);
+  rpc InvalidateSession(InvalidateSessionRequest) returns (google.protobuf.Empty);
+  
+  // Two-Factor Authentication
+  rpc Enable2FA(Enable2FARequest) returns (Enable2FAResponse);
+  rpc Verify2FA(Verify2FARequest) returns (google.protobuf.Empty);
+  rpc Disable2FA(Disable2FARequest) returns (google.protobuf.Empty);
+}
+
+// User Management Messages
+message RegisterUserRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string avatar_url = 6;
+  string invite_token = 7;
+}
+
+message RegisterUserResponse {
+  string user_id = 1;
+  string email = 2;
+  string username = 3;
+  google.protobuf.Timestamp created_at = 4;
+  bool email_verified = 5;
+}
+
+message AuthenticateUserRequest {
+  string email = 1;
+  string password = 2;
+  string two_factor_code = 3;
+  string device_id = 4;
+  string ip_address = 5;
+  string user_agent = 6;
+}
+
+message AuthenticateUserResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  string token_type = 3;
+  int32 expires_in = 4;
+  UserProfile user = 5;
+  bool requires_2fa = 6;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+  string device_id = 2;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  string token_type = 3;
+  int32 expires_in = 4;
+}
+
+message RevokeTokenRequest {
+  string token = 1;
+  string device_id = 2;
+}
+
+message GetUserProfileRequest {
+  string user_id = 1;
+}
+
+message UpdateUserProfileRequest {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string avatar_url = 4;
+  string bio = 5;
+  map<string, string> preferences = 6;
+}
+
+message DeleteUserRequest {
+  string user_id = 1;
+  string password = 2;
+}
+
+// User Profile
+message UserProfile {
+  string user_id = 1;
+  string email = 2;
+  string username = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string avatar_url = 6;
+  string bio = 7;
+  bool email_verified = 8;
+  bool two_factor_enabled = 9;
+  repeated string roles = 10;
+  map<string, string> preferences = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Timestamp last_login_at = 14;
+  UserStatus status = 15;
+}
+
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_SUSPENDED = 2;
+  USER_STATUS_BANNED = 3;
+  USER_STATUS_DELETED = 4;
+}
+
+// Role Management Messages
+message GetUserRolesRequest {
+  string user_id = 1;
+}
+
+message GetUserRolesResponse {
+  repeated Role roles = 1;
+}
+
+message AssignRoleRequest {
+  string user_id = 1;
+  string role_name = 2;
+  string assigned_by = 3;
+}
+
+message RemoveRoleRequest {
+  string user_id = 1;
+  string role_name = 2;
+  string removed_by = 3;
+}
+
+message Role {
+  string role_id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string permissions = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+// Session Management Messages
+message CreateSessionRequest {
+  string user_id = 1;
+  string device_id = 2;
+  string ip_address = 3;
+  string user_agent = 4;
+  map<string, string> metadata = 5;
+}
+
+message GetSessionRequest {
+  string session_id = 1;
+}
+
+message InvalidateSessionRequest {
+  string session_id = 1;
+  string reason = 2;
+}
+
+message Session {
+  string session_id = 1;
+  string user_id = 2;
+  string device_id = 3;
+  string ip_address = 4;
+  string user_agent = 5;
+  map<string, string> metadata = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp expires_at = 8;
+  google.protobuf.Timestamp last_activity = 9;
+  bool is_active = 10;
+}
+
+// Two-Factor Authentication Messages
+message Enable2FARequest {
+  string user_id = 1;
+  string password = 2;
+}
+
+message Enable2FAResponse {
+  string secret_key = 1;
+  string qr_code_url = 2;
+  repeated string backup_codes = 3;
+}
+
+message Verify2FARequest {
+  string user_id = 1;
+  string code = 2;
+  string backup_code = 3;
+}
+
+message Disable2FARequest {
+  string user_id = 1;
+  string password = 2;
+  string two_factor_code = 3;
+}

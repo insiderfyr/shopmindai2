@@ -1,0 +1,393 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-gateway-service
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+    version: v1.0.0
+    environment: production
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: ai-gateway-service
+  template:
+    metadata:
+      labels:
+        app: ai-gateway-service
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: ai-gateway-service-sa
+      containers:
+      - name: ai-gateway-service
+        image: librechat/ai-gateway-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 9090
+          name: grpc
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: LOG_FORMAT
+          value: "json"
+        - name: HTTP_PORT
+          value: "8080"
+        - name: GRPC_PORT
+          value: "9090"
+        - name: REDIS_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: redis-addr
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: redis-password
+        - name: REDIS_DB
+          value: "0"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: database-url
+        - name: RATE_LIMIT_REQUESTS_PER_SECOND
+          value: "1000"
+        - name: RATE_LIMIT_BURST
+          value: "2000"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: anthropic-api-key
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: google-api-key
+        - name: AZURE_OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: azure-openai-api-key
+        - name: AZURE_OPENAI_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: azure-openai-endpoint
+        - name: OLLAMA_BASE_URL
+          value: "http://ollama-service.librechat:11434"
+        - name: MEILISEARCH_URL
+          value: "http://meilisearch.librechat:7700"
+        - name: MEILISEARCH_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-gateway-service-secrets
+              key: meilisearch-master-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 30
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: tmp-volume
+          mountPath: /tmp
+      volumes:
+      - name: config-volume
+        configMap:
+          name: ai-gateway-service-config
+      - name: logs-volume
+        emptyDir: {}
+      - name: tmp-volume
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ai-gateway-service
+              topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        node-role: worker
+      tolerations:
+      - key: "node-role"
+        operator: "Equal"
+        value: "worker"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-gateway-service
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: grpc
+  selector:
+    app: ai-gateway-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-gateway-service-config
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+data:
+  config.yaml: |
+    logging:
+      level: info
+      format: json
+      output: console
+    
+    http:
+      port: 8080
+      read_timeout: 30s
+      write_timeout: 30s
+      idle_timeout: 120s
+    
+    grpc:
+      port: 9090
+      max_concurrent_streams: 1000
+      max_connection_idle: 300s
+      max_connection_age: 600s
+    
+    redis:
+      pool_size: 100
+      min_idle_conns: 10
+      max_retries: 3
+      dial_timeout: 5s
+      read_timeout: 3s
+      write_timeout: 3s
+    
+    database:
+      max_open_conns: 100
+      max_idle_conns: 25
+      conn_max_lifetime: 300s
+    
+    rate_limit:
+      requests_per_second: 1000
+      burst: 2000
+      window: 1s
+    
+    ai_providers:
+      openai:
+        base_url: "https://api.openai.com/v1"
+        timeout: 60s
+        max_retries: 3
+      anthropic:
+        base_url: "https://api.anthropic.com"
+        timeout: 60s
+        max_retries: 3
+      google:
+        base_url: "https://generativelanguage.googleapis.com"
+        timeout: 60s
+        max_retries: 3
+      azure:
+        timeout: 60s
+        max_retries: 3
+      ollama:
+        base_url: "http://ollama-service:11434"
+        timeout: 120s
+        max_retries: 2
+    
+    monitoring:
+      metrics_enabled: true
+      tracing_enabled: true
+      health_check_interval: 30s
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ai-gateway-service-secrets
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+type: Opaque
+data:
+  # Base64 encoded values - replace with actual values
+  redis-addr: <base64-encoded-redis-addr>
+  redis-password: <base64-encoded-redis-password>
+  database-url: <base64-encoded-database-url>
+  openai-api-key: <base64-encoded-openai-api-key>
+  anthropic-api-key: <base64-encoded-anthropic-api-key>
+  google-api-key: <base64-encoded-google-api-key>
+  azure-openai-api-key: <base64-encoded-azure-openai-api-key>
+  azure-openai-endpoint: <base64-encoded-azure-openai-endpoint>
+  meilisearch-master-key: <base64-encoded-meilisearch-master-key>
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ai-gateway-service-sa
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+secrets:
+- name: ai-gateway-service-secrets
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ai-gateway-service-hpa
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ai-gateway-service
+  minReplicas: 5
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Object
+    object:
+      metric:
+        name: requests-per-second
+      describedObject:
+        apiVersion: v1
+        kind: Service
+        name: ai-gateway-service
+      target:
+        type: AverageValue
+        averageValue: 500
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ai-gateway-service-network-policy
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+spec:
+  podSelector:
+    matchLabels:
+      app: ai-gateway-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: librechat
+    ports:
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9090
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: librechat-infrastructure
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 5432
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: librechat-monitoring
+    ports:
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 9200
+  - ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80

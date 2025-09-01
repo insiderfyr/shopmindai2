@@ -1,0 +1,392 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: librechat-vs
+  namespace: librechat
+  labels:
+    app: librechat
+    istio: enabled
+spec:
+  hosts:
+  - "librechat.example.com"
+  - "api.librechat.example.com"
+  - "ai.librechat.example.com"
+  gateways:
+  - librechat-gateway
+  http:
+  # Main API routing
+  - name: "api-routes"
+    match:
+    - uri:
+        prefix: "/api/v1"
+      headers:
+        x-service:
+          exact: "conversation"
+    route:
+    - destination:
+        host: conversation-service
+        port:
+          number: 80
+      weight: 100
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+    timeout: 30s
+    corsPolicy:
+      allowOrigins:
+      - exact: "https://librechat.example.com"
+      - exact: "https://app.librechat.example.com"
+      allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowHeaders:
+      - "x-api-key"
+      - "authorization"
+      - "content-type"
+      - "x-request-id"
+      maxAge: "24h"
+  
+  # AI Gateway routing
+  - name: "ai-routes"
+    match:
+    - uri:
+        prefix: "/api/v1/ai"
+      headers:
+        x-service:
+          exact: "ai-gateway"
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+      weight: 100
+    retries:
+      attempts: 2
+      perTryTimeout: 5s
+    timeout: 60s
+    fault:
+      delay:
+        percentage:
+          value: 0.1
+        fixedDelay: 100ms
+      abort:
+        percentage:
+          value: 0.05
+        httpStatus: 500
+  
+  # Identity Service routing
+  - name: "identity-routes"
+    match:
+    - uri:
+        prefix: "/api/v1/auth"
+      headers:
+        x-service:
+          exact: "identity"
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
+    timeout: 10s
+  
+  # File Service routing
+  - name: "file-routes"
+    match:
+    - uri:
+        prefix: "/api/v1/files"
+      headers:
+        x-service:
+          exact: "file"
+    route:
+    - destination:
+        host: file-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 120s
+  
+  # Search Service routing
+  - name: "search-routes"
+    match:
+    - uri:
+        prefix: "/api/v1/search"
+      headers:
+        x-service:
+          exact: "search"
+    route:
+    - destination:
+        host: search-service
+        port:
+          number: 8080
+      weight: 100
+    timeout: 15s
+  
+  # Default fallback
+  - name: "default-route"
+    route:
+    - destination:
+        host: conversation-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 30s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ai-gateway-vs
+  namespace: librechat
+  labels:
+    app: ai-gateway-service
+    istio: enabled
+spec:
+  hosts:
+  - "ai.librechat.example.com"
+  - "ai-gateway-service.librechat.svc.cluster.local"
+  gateways:
+  - librechat-gateway
+  http:
+  # Chat completions
+  - name: "chat-completions"
+    match:
+    - uri:
+        exact: "/v1/chat/completions"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+        subset: v1
+      weight: 80
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+        subset: v2
+      weight: 20
+    retries:
+      attempts: 2
+      perTryTimeout: 10s
+    timeout: 60s
+    fault:
+      delay:
+        percentage:
+          value: 0.1
+        fixedDelay: 200ms
+  
+  # Text completions
+  - name: "text-completions"
+    match:
+    - uri:
+        exact: "/v1/completions"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+      weight: 100
+    timeout: 45s
+  
+  # Image generation
+  - name: "image-generation"
+    match:
+    - uri:
+        exact: "/v1/images/generations"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+      weight: 100
+    timeout: 120s
+  
+  # Embeddings
+  - name: "embeddings"
+    match:
+    - uri:
+        exact: "/v1/embeddings"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+      weight: 100
+    timeout: 30s
+  
+  # Models
+  - name: "models"
+    match:
+    - uri:
+        prefix: "/v1/models"
+      method:
+        exact: GET
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+      weight: 100
+    timeout: 10s
+  
+  # Health and metrics
+  - name: "health-metrics"
+    match:
+    - uri:
+        prefix: "/health"
+      method:
+        exact: GET
+    - uri:
+        prefix: "/metrics"
+      method:
+        exact: GET
+    route:
+    - destination:
+        host: ai-gateway-service
+        port:
+          number: 8080
+      weight: 100
+    timeout: 5s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: identity-vs
+  namespace: librechat
+  labels:
+    app: identity-service
+    istio: enabled
+spec:
+  hosts:
+  - "identity.librechat.example.com"
+  - "identity-service.librechat.svc.cluster.local"
+  gateways:
+  - librechat-gateway
+  http:
+  # Authentication endpoints
+  - name: "auth-endpoints"
+    match:
+    - uri:
+        prefix: "/api/v1/auth"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
+    timeout: 10s
+    fault:
+      delay:
+        percentage:
+          value: 0.05
+        fixedDelay: 50ms
+  
+  # User management
+  - name: "user-management"
+    match:
+    - uri:
+        prefix: "/api/v1/users"
+      method:
+        exact: GET
+    - uri:
+        prefix: "/api/v1/users"
+      method:
+        exact: PUT
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 15s
+  
+  # Role management
+  - name: "role-management"
+    match:
+    - uri:
+        prefix: "/api/v1/roles"
+      method:
+        exact: GET
+    - uri:
+        prefix: "/api/v1/roles"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 10s
+  
+  # Session management
+  - name: "session-management"
+    match:
+    - uri:
+        prefix: "/api/v1/sessions"
+      method:
+        exact: GET
+    - uri:
+        prefix: "/api/v1/sessions"
+      method:
+        exact: DELETE
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 5s
+  
+  # Two-factor authentication
+  - name: "2fa-endpoints"
+    match:
+    - uri:
+        prefix: "/api/v1/2fa"
+      method:
+        exact: POST
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 15s
+  
+  # Health and metrics
+  - name: "health-metrics"
+    match:
+    - uri:
+        prefix: "/health"
+      method:
+        exact: GET
+    - uri:
+        prefix: "/metrics"
+      method:
+        exact: GET
+    route:
+    - destination:
+        host: identity-service
+        port:
+          number: 80
+      weight: 100
+    timeout: 5s
