@@ -1,0 +1,516 @@
+version: '3.8'
+
+# 🚀 LibreChat Microservices - Local Development Setup
+# Optimized pentru laptop cu 4-8GB RAM
+# Păstrează arhitectura genius dar cu resource usage minimal
+
+services:
+  # 🔐 Keycloak - Identity Provider
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.0
+    container_name: librechat-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak123
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_LOG_LEVEL: INFO
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+      - ./keycloak/themes:/opt/keycloak/themes:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.5
+
+  # 🗄️ PostgreSQL - Main Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: librechat-postgres
+    environment:
+      POSTGRES_DB: librechat
+      POSTGRES_USER: librechat
+      POSTGRES_PASSWORD: librechat123
+      POSTGRES_MULTIPLE_DATABASES: keycloak,eventstore
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U librechat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.3
+
+  # 🗃️ Redis - Cache & Sessions
+  redis:
+    image: redis:7-alpine
+    container_name: librechat-redis
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.2
+
+  # 📨 Apache Kafka - Event Streaming (Lightweight)
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: librechat-kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_LOG_SEGMENT_BYTES: 104857600
+      KAFKA_NUM_PARTITIONS: 3
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    depends_on:
+      - zookeeper
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.5
+
+  # 🦓 Zookeeper - Kafka Coordinator
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: librechat-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_logs:/var/lib/zookeeper/log
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.2
+
+  # 🔍 Elasticsearch - Search & Logging (Single Node)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: librechat-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.5
+
+  # 🔐 Identity Service (.NET Core)
+  identity-service:
+    build:
+      context: ../services/identity-service
+      dockerfile: Dockerfile.dev
+    container_name: librechat-identity-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=librechat;Username=librechat;Password=librechat123"
+      ConnectionStrings__Redis: "redis:6379"
+      Keycloak__Authority: "http://keycloak:8080/realms/librechat"
+      Keycloak__ClientId: "librechat-backend"
+      Keycloak__ClientSecret: "your-client-secret"
+      Jwt__Issuer: "http://keycloak:8080/realms/librechat"
+      Jwt__Audience: "librechat"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    ports:
+      - "5001:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    volumes:
+      - ../services/identity-service:/app
+      - identity_logs:/app/logs
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.3
+
+  # 💬 Conversation Service (.NET Core)
+  conversation-service:
+    build:
+      context: ../services/conversation-service
+      dockerfile: Dockerfile.dev
+    container_name: librechat-conversation-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=librechat;Username=librechat;Password=librechat123"
+      ConnectionStrings__Redis: "redis:6379"
+      ConnectionStrings__EventStore: "esdb://eventstore:2113?tls=false"
+      Keycloak__Authority: "http://keycloak:8080/realms/librechat"
+      Kafka__BootstrapServers: "kafka:9092"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    ports:
+      - "5002:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      eventstore:
+        condition: service_healthy
+    volumes:
+      - ../services/conversation-service:/app
+      - conversation_logs:/app/logs
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 384m
+    cpus: 0.4
+
+  # 🚀 AI Gateway Service (Go)
+  ai-gateway-service:
+    build:
+      context: ../services/ai-gateway-service
+      dockerfile: Dockerfile.dev
+    container_name: librechat-ai-gateway
+    environment:
+      ENVIRONMENT: development
+      LOG_LEVEL: debug
+      HTTP_PORT: 8080
+      GRPC_PORT: 9090
+      REDIS_ADDR: redis:6379
+      DATABASE_URL: "postgres://librechat:librechat123@postgres:5432/librechat?sslmode=disable"
+      KAFKA_BROKERS: kafka:9092
+      RATE_LIMIT_REQUESTS_PER_SECOND: 100
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-demo-key}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-demo-key}
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    volumes:
+      - ../services/ai-gateway-service:/app
+      - ai_gateway_logs:/app/logs
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.3
+
+  # 📡 EventStore - Event Sourcing Database
+  eventstore:
+    image: eventstore/eventstore:23.10.0-jammy
+    container_name: librechat-eventstore
+    environment:
+      EVENTSTORE_CLUSTER_SIZE: 1
+      EVENTSTORE_RUN_PROJECTIONS: All
+      EVENTSTORE_START_STANDARD_PROJECTIONS: "true"
+      EVENTSTORE_EXT_TCP_PORT: 1113
+      EVENTSTORE_EXT_HTTP_PORT: 2113
+      EVENTSTORE_INSECURE: "true"
+      EVENTSTORE_ENABLE_EXTERNAL_TCP: "true"
+      EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: "true"
+      EVENTSTORE_MEM_DB: "true"  # In-memory for development
+    ports:
+      - "1113:1113"
+      - "2113:2113"
+    volumes:
+      - eventstore_data:/var/lib/eventstore
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:2113/health/live || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.3
+
+  # 🔍 Search Service (Go)
+  search-service:
+    build:
+      context: ../services/search-service
+      dockerfile: Dockerfile.dev
+    container_name: librechat-search-service
+    environment:
+      ENVIRONMENT: development
+      HTTP_PORT: 8081
+      GRPC_PORT: 9091
+      REDIS_ADDR: redis:6379
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      DATABASE_URL: "postgres://librechat:librechat123@postgres:5432/librechat?sslmode=disable"
+    ports:
+      - "8081:8081"
+      - "9091:9091"
+    depends_on:
+      elasticsearch:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../services/search-service:/app
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.2
+
+  # 📊 Monitoring Stack (Lightweight)
+  
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: librechat-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=7d'
+      - '--storage.tsdb.retention.size=512MB'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.2
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: librechat-grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.2
+
+  # Jaeger - Distributed Tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.51
+    container_name: librechat-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+      SPAN_STORAGE_TYPE: memory
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # Jaeger collector
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.2
+
+  # 🌐 API Gateway (Nginx + Lua)
+  api-gateway:
+    image: openresty/openresty:1.21.4.1-alpine
+    container_name: librechat-api-gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./gateway/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./gateway/lua:/usr/local/openresty/nginx/lua:ro
+      - ./gateway/ssl:/etc/ssl/certs:ro
+    depends_on:
+      - identity-service
+      - conversation-service
+      - ai-gateway-service
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.1
+
+  # 📈 Event Store Service (Go)
+  event-store-service:
+    build:
+      context: ../services/event-store-service
+      dockerfile: Dockerfile.dev
+    container_name: librechat-event-store-service
+    environment:
+      ENVIRONMENT: development
+      GRPC_PORT: 9092
+      EVENTSTORE_CONNECTION_STRING: "esdb://eventstore:2113?tls=false"
+      DATABASE_URL: "postgres://librechat:librechat123@postgres:5432/librechat?sslmode=disable"
+      REDIS_ADDR: redis:6379
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "9092:9092"
+    depends_on:
+      eventstore:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    volumes:
+      - ../services/event-store-service:/app
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.2
+
+  # 🎛️ Development Tools
+
+  # Kafka UI
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: librechat-kafka-ui
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    ports:
+      - "8082:8080"
+    depends_on:
+      - kafka
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.1
+
+  # Redis Commander
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: librechat-redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8083:8081"
+    depends_on:
+      - redis
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.1
+
+  # EventStore UI
+  eventstore-ui:
+    image: eventstore/eventstore:23.10.0-jammy
+    container_name: librechat-eventstore-ui
+    command: --run-projections=All --start-standard-projections=true
+    environment:
+      EVENTSTORE_CLUSTER_SIZE: 1
+      EVENTSTORE_EXT_HTTP_PORT: 2113
+      EVENTSTORE_INSECURE: "true"
+    ports:
+      - "2113:2113"
+    networks:
+      - librechat-network
+    restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.1
+
+# Volumes pentru persistență
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  kafka_data:
+    driver: local
+  zookeeper_data:
+    driver: local
+  zookeeper_logs:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  eventstore_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  identity_logs:
+    driver: local
+  conversation_logs:
+    driver: local
+  ai_gateway_logs:
+    driver: local
+
+# Network pentru comunicare inter-container
+networks:
+  librechat-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
