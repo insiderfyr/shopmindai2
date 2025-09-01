@@ -1,0 +1,387 @@
+syntax = "proto3";
+
+package librechat.events;
+
+option go_package = "github.com/librechat/microservices/shared/contracts/events";
+option csharp_namespace = "LibreChat.Shared.Contracts.Events";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+// Event Store Service - Event Sourcing and CQRS
+service EventStoreService {
+  // Event Operations
+  rpc SaveEvent(SaveEventRequest) returns (SaveEventResponse);
+  rpc LoadEvents(LoadEventsRequest) returns (LoadEventsResponse);
+  rpc LoadEventStream(LoadEventStreamRequest) returns (stream Event);
+  
+  // Snapshot Operations
+  rpc SaveSnapshot(SaveSnapshotRequest) returns (SaveSnapshotResponse);
+  rpc LoadSnapshot(LoadSnapshotRequest) returns (LoadSnapshotResponse);
+  
+  // Projection Operations
+  rpc CreateProjection(CreateProjectionRequest) returns (CreateProjectionResponse);
+  rpc UpdateProjection(UpdateProjectionRequest) returns (UpdateProjectionResponse);
+  rpc GetProjection(GetProjectionRequest) returns (GetProjectionResponse);
+  
+  // Stream Operations
+  rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
+  rpc DeleteStream(DeleteStreamRequest) returns (DeleteStreamResponse);
+  rpc GetStreamMetadata(GetStreamMetadataRequest) returns (StreamMetadata);
+  
+  // Subscription Operations
+  rpc SubscribeToStream(SubscribeToStreamRequest) returns (stream Event);
+  rpc SubscribeToCategory(SubscribeToCategoryRequest) returns (stream Event);
+  rpc SubscribeToAll(SubscribeToAllRequest) returns (stream Event);
+}
+
+// Event Messages
+message Event {
+  string event_id = 1;
+  string event_type = 2;
+  string stream_id = 3;
+  string aggregate_id = 4;
+  string aggregate_type = 5;
+  int64 version = 6;
+  google.protobuf.Any data = 7;
+  map<string, string> metadata = 8;
+  google.protobuf.Timestamp timestamp = 9;
+  string correlation_id = 10;
+  string causation_id = 11;
+  string user_id = 12;
+  string tenant_id = 13;
+}
+
+message SaveEventRequest {
+  string stream_id = 1;
+  repeated Event events = 2;
+  int64 expected_version = 3;
+}
+
+message SaveEventResponse {
+  int64 next_expected_version = 1;
+  repeated string event_ids = 2;
+}
+
+message LoadEventsRequest {
+  string stream_id = 1;
+  int64 from_version = 2;
+  int64 to_version = 3;
+  int32 max_count = 4;
+}
+
+message LoadEventsResponse {
+  repeated Event events = 1;
+  int64 next_version = 2;
+  bool is_end_of_stream = 3;
+}
+
+message LoadEventStreamRequest {
+  string stream_id = 1;
+  int64 from_version = 2;
+  bool forward = 3;
+}
+
+// Snapshot Messages
+message Snapshot {
+  string snapshot_id = 1;
+  string stream_id = 2;
+  string aggregate_id = 3;
+  string aggregate_type = 4;
+  int64 version = 5;
+  google.protobuf.Any data = 6;
+  map<string, string> metadata = 7;
+  google.protobuf.Timestamp timestamp = 8;
+}
+
+message SaveSnapshotRequest {
+  Snapshot snapshot = 1;
+}
+
+message SaveSnapshotResponse {
+  string snapshot_id = 1;
+}
+
+message LoadSnapshotRequest {
+  string stream_id = 1;
+  int64 max_version = 2;
+}
+
+message LoadSnapshotResponse {
+  Snapshot snapshot = 1;
+}
+
+// Projection Messages
+message Projection {
+  string projection_id = 1;
+  string name = 2;
+  string query = 3;
+  ProjectionStatus status = 4;
+  int64 last_processed_position = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  map<string, string> state = 8;
+}
+
+message CreateProjectionRequest {
+  string name = 1;
+  string query = 2;
+  bool emit_enabled = 3;
+  bool track_emitted_streams = 4;
+}
+
+message CreateProjectionResponse {
+  string projection_id = 1;
+  ProjectionStatus status = 2;
+}
+
+message UpdateProjectionRequest {
+  string projection_id = 1;
+  string query = 2;
+  bool emit_enabled = 3;
+}
+
+message UpdateProjectionResponse {
+  ProjectionStatus status = 1;
+}
+
+message GetProjectionRequest {
+  string projection_id = 1;
+}
+
+message GetProjectionResponse {
+  Projection projection = 1;
+}
+
+enum ProjectionStatus {
+  PROJECTION_STATUS_UNSPECIFIED = 0;
+  PROJECTION_STATUS_CREATING = 1;
+  PROJECTION_STATUS_RUNNING = 2;
+  PROJECTION_STATUS_STOPPED = 3;
+  PROJECTION_STATUS_FAULTED = 4;
+  PROJECTION_STATUS_COMPLETED = 5;
+}
+
+// Stream Messages
+message CreateStreamRequest {
+  string stream_id = 1;
+  map<string, string> metadata = 2;
+}
+
+message CreateStreamResponse {
+  string stream_id = 1;
+}
+
+message DeleteStreamRequest {
+  string stream_id = 1;
+  bool hard_delete = 2;
+}
+
+message DeleteStreamResponse {
+  bool success = 1;
+}
+
+message GetStreamMetadataRequest {
+  string stream_id = 1;
+}
+
+message StreamMetadata {
+  string stream_id = 1;
+  int64 last_event_number = 2;
+  bool is_deleted = 3;
+  map<string, string> custom_metadata = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+// Subscription Messages
+message SubscribeToStreamRequest {
+  string stream_id = 1;
+  int64 from_version = 2;
+  bool resolve_links = 3;
+}
+
+message SubscribeToCategoryRequest {
+  string category = 1;
+  int64 from_position = 2;
+  bool resolve_links = 3;
+}
+
+message SubscribeToAllRequest {
+  int64 from_position = 1;
+  bool resolve_links = 2;
+  repeated string filter_include_types = 3;
+  repeated string filter_exclude_types = 4;
+}
+
+// Domain Events for LibreChat
+
+// User Events
+message UserRegisteredEvent {
+  string user_id = 1;
+  string email = 2;
+  string username = 3;
+  string first_name = 4;
+  string last_name = 5;
+  google.protobuf.Timestamp registered_at = 6;
+  string registration_source = 7;
+  string invite_token = 8;
+}
+
+message UserEmailVerifiedEvent {
+  string user_id = 1;
+  string email = 2;
+  google.protobuf.Timestamp verified_at = 3;
+  string verification_method = 4;
+}
+
+message UserProfileUpdatedEvent {
+  string user_id = 1;
+  map<string, string> updated_fields = 2;
+  map<string, string> previous_values = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  string updated_by = 5;
+}
+
+message UserLoggedInEvent {
+  string user_id = 1;
+  string session_id = 2;
+  string device_id = 3;
+  string ip_address = 4;
+  string user_agent = 5;
+  string location = 6;
+  float risk_score = 7;
+  google.protobuf.Timestamp logged_in_at = 8;
+}
+
+message UserLoggedOutEvent {
+  string user_id = 1;
+  string session_id = 2;
+  string reason = 3;
+  google.protobuf.Timestamp logged_out_at = 4;
+}
+
+// Conversation Events
+message ConversationCreatedEvent {
+  string conversation_id = 1;
+  string user_id = 2;
+  string title = 3;
+  string model = 4;
+  string endpoint = 5;
+  map<string, string> metadata = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message MessageAddedEvent {
+  string message_id = 1;
+  string conversation_id = 2;
+  string user_id = 3;
+  string role = 4;
+  string content = 5;
+  repeated MessageContent content_parts = 6;
+  string parent_message_id = 7;
+  map<string, string> metadata = 8;
+  google.protobuf.Timestamp added_at = 9;
+  bool is_streaming = 10;
+}
+
+message MessageUpdatedEvent {
+  string message_id = 1;
+  string conversation_id = 2;
+  string user_id = 3;
+  map<string, string> updated_fields = 4;
+  map<string, string> previous_values = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  string updated_by = 7;
+}
+
+message ConversationSharedEvent {
+  string conversation_id = 1;
+  string user_id = 2;
+  string share_id = 3;
+  ShareSettings share_settings = 4;
+  google.protobuf.Timestamp shared_at = 5;
+  google.protobuf.Timestamp expires_at = 6;
+}
+
+// AI Events
+message AIInferenceRequestedEvent {
+  string request_id = 1;
+  string user_id = 2;
+  string conversation_id = 3;
+  string message_id = 4;
+  string model = 5;
+  string provider = 6;
+  repeated string input_messages = 7;
+  map<string, string> parameters = 8;
+  google.protobuf.Timestamp requested_at = 9;
+  float estimated_cost = 10;
+}
+
+message AIInferenceCompletedEvent {
+  string request_id = 1;
+  string response_id = 2;
+  string model = 3;
+  string provider = 4;
+  string response_content = 5;
+  int64 input_tokens = 6;
+  int64 output_tokens = 7;
+  float actual_cost = 8;
+  float latency_ms = 9;
+  google.protobuf.Timestamp completed_at = 10;
+  bool cached_response = 11;
+}
+
+message AIInferenceFailedEvent {
+  string request_id = 1;
+  string model = 2;
+  string provider = 3;
+  string error_code = 4;
+  string error_message = 5;
+  float latency_ms = 6;
+  google.protobuf.Timestamp failed_at = 7;
+  int32 retry_count = 8;
+}
+
+// System Events
+message ServiceStartedEvent {
+  string service_name = 1;
+  string service_version = 2;
+  string instance_id = 3;
+  string host = 4;
+  map<string, string> configuration = 5;
+  google.protobuf.Timestamp started_at = 6;
+}
+
+message ServiceStoppedEvent {
+  string service_name = 1;
+  string instance_id = 2;
+  string reason = 3;
+  google.protobuf.Timestamp stopped_at = 4;
+  int64 uptime_seconds = 5;
+}
+
+message HealthCheckFailedEvent {
+  string service_name = 1;
+  string instance_id = 2;
+  string health_check_type = 3;
+  string error_message = 4;
+  google.protobuf.Timestamp failed_at = 5;
+  int32 consecutive_failures = 6;
+}
+
+// Supporting Messages
+message MessageContent {
+  string type = 1;
+  string value = 2;
+  map<string, string> attributes = 3;
+  repeated string file_ids = 4;
+}
+
+message ShareSettings {
+  bool public = 1;
+  bool allow_comments = 2;
+  bool allow_edits = 3;
+  repeated string allowed_users = 4;
+  repeated string allowed_domains = 5;
+}
