@@ -1,0 +1,377 @@
+syntax = "proto3";
+
+package librechat.conversation;
+
+option go_package = "github.com/librechat/microservices/shared/contracts/conversation";
+option csharp_namespace = "LibreChat.Shared.Contracts.Conversation";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// Conversation Service - Manages conversations and messages
+service ConversationService {
+  // Conversation Management
+  rpc CreateConversation(CreateConversationRequest) returns (Conversation);
+  rpc GetConversation(GetConversationRequest) returns (Conversation);
+  rpc ListConversations(ListConversationsRequest) returns (ListConversationsResponse);
+  rpc UpdateConversation(UpdateConversationRequest) returns (Conversation);
+  rpc DeleteConversation(DeleteConversationRequest) returns (google.protobuf.Empty);
+  rpc ArchiveConversation(ArchiveConversationRequest) returns (google.protobuf.Empty);
+  
+  // Message Management
+  rpc CreateMessage(CreateMessageRequest) returns (Message);
+  rpc GetMessage(GetMessageRequest) returns (Message);
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse);
+  rpc UpdateMessage(UpdateMessageRequest) returns (Message);
+  rpc DeleteMessage(DeleteMessageRequest) returns (google.protobuf.Empty);
+  
+  // Conversation Actions
+  rpc PinConversation(PinConversationRequest) returns (google.protobuf.Empty);
+  rpc UnpinConversation(UnpinConversationRequest) returns (google.protobuf.Empty);
+  rpc ShareConversation(ShareConversationRequest) returns (ShareConversationResponse);
+  rpc ExportConversation(ExportConversationRequest) returns (ExportConversationResponse);
+  
+  // Search and Filtering
+  rpc SearchConversations(SearchConversationsRequest) returns (SearchConversationsResponse);
+  rpc SearchMessages(SearchMessagesRequest) returns (SearchMessagesResponse);
+  
+  // Analytics
+  rpc GetConversationStats(GetConversationStatsRequest) returns (ConversationStats);
+  rpc GetUserStats(GetUserStatsRequest) returns (UserStats);
+}
+
+// Conversation Management Messages
+message CreateConversationRequest {
+  string user_id = 1;
+  string title = 2;
+  string model = 3;
+  string endpoint = 4;
+  map<string, string> metadata = 5;
+  repeated string tags = 6;
+  string parent_conversation_id = 7;
+}
+
+message GetConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  bool include_messages = 3;
+  int32 message_limit = 4;
+}
+
+message ListConversationsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  string sort_by = 4;
+  string sort_order = 5;
+  repeated string tags = 6;
+  bool archived_only = 7;
+  bool pinned_only = 8;
+  google.protobuf.Timestamp from_date = 9;
+  google.protobuf.Timestamp to_date = 10;
+}
+
+message ListConversationsResponse {
+  repeated Conversation conversations = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message UpdateConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  string title = 3;
+  map<string, string> metadata = 4;
+  repeated string tags = 5;
+  bool archived = 6;
+  bool pinned = 7;
+}
+
+message DeleteConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  bool permanent = 3;
+}
+
+message ArchiveConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  bool archive = 3;
+}
+
+// Message Management Messages
+message CreateMessageRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  string role = 3;
+  string content = 4;
+  repeated MessageContent content_parts = 5;
+  string parent_message_id = 6;
+  map<string, string> metadata = 7;
+  repeated string attachments = 8;
+  bool is_streaming = 9;
+}
+
+message GetMessageRequest {
+  string message_id = 1;
+  string user_id = 2;
+}
+
+message ListMessagesRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  string sort_by = 5;
+  string sort_order = 6;
+  string role_filter = 7;
+  google.protobuf.Timestamp from_date = 8;
+  google.protobuf.Timestamp to_date = 9;
+}
+
+message ListMessagesResponse {
+  repeated Message messages = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message UpdateMessageRequest {
+  string message_id = 1;
+  string user_id = 2;
+  string content = 3;
+  repeated MessageContent content_parts = 4;
+  map<string, string> metadata = 5;
+  repeated string attachments = 6;
+}
+
+message DeleteMessageRequest {
+  string message_id = 1;
+  string user_id = 2;
+  bool permanent = 3;
+}
+
+// Conversation Actions Messages
+message PinConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  bool pin = 3;
+}
+
+message UnpinConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+}
+
+message ShareConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  ShareSettings share_settings = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}
+
+message ShareConversationResponse {
+  string share_id = 1;
+  string share_url = 2;
+  string access_code = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}
+
+message ExportConversationRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+  ExportFormat format = 3;
+  bool include_metadata = 4;
+}
+
+message ExportConversationResponse {
+  string export_id = 1;
+  string download_url = 2;
+  string filename = 3;
+  int64 file_size = 4;
+}
+
+// Search Messages
+message SearchConversationsRequest {
+  string user_id = 1;
+  string query = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  repeated string tags = 5;
+  google.protobuf.Timestamp from_date = 6;
+  google.protobuf.Timestamp to_date = 7;
+}
+
+message SearchConversationsResponse {
+  repeated ConversationSearchResult results = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message SearchMessagesRequest {
+  string user_id = 1;
+  string query = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  string conversation_id = 5;
+  string role_filter = 6;
+  google.protobuf.Timestamp from_date = 7;
+  google.protobuf.Timestamp to_date = 8;
+}
+
+message SearchMessagesResponse {
+  repeated MessageSearchResult results = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// Analytics Messages
+message GetConversationStatsRequest {
+  string conversation_id = 1;
+  string user_id = 2;
+}
+
+message GetUserStatsRequest {
+  string user_id = 1;
+  google.protobuf.Timestamp from_date = 2;
+  google.protobuf.Timestamp to_date = 3;
+}
+
+// Data Models
+message Conversation {
+  string conversation_id = 1;
+  string user_id = 2;
+  string title = 3;
+  string model = 4;
+  string endpoint = 5;
+  repeated Message messages = 6;
+  repeated string tags = 7;
+  map<string, string> metadata = 8;
+  bool archived = 9;
+  bool pinned = 10;
+  string parent_conversation_id = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Timestamp last_activity = 14;
+  ConversationStatus status = 15;
+  ShareSettings share_settings = 16;
+}
+
+message Message {
+  string message_id = 1;
+  string conversation_id = 2;
+  string user_id = 3;
+  string role = 4;
+  string content = 5;
+  repeated MessageContent content_parts = 6;
+  string parent_message_id = 7;
+  repeated string children_message_ids = 8;
+  map<string, string> metadata = 9;
+  repeated string attachments = 10;
+  bool is_streaming = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  MessageStatus status = 14;
+  MessageType type = 15;
+}
+
+message MessageContent {
+  string type = 1;
+  string value = 2;
+  map<string, string> attributes = 3;
+  repeated string file_ids = 4;
+}
+
+message ConversationSearchResult {
+  string conversation_id = 1;
+  string title = 2;
+  string snippet = 3;
+  repeated string matched_tags = 4;
+  google.protobuf.Timestamp last_activity = 5;
+  float relevance_score = 6;
+}
+
+message MessageSearchResult {
+  string message_id = 1;
+  string conversation_id = 2;
+  string content_snippet = 3;
+  string role = 4;
+  google.protobuf.Timestamp created_at = 5;
+  float relevance_score = 6;
+}
+
+message ConversationStats {
+  string conversation_id = 1;
+  int32 total_messages = 2;
+  int32 user_messages = 3;
+  int32 assistant_messages = 4;
+  int32 system_messages = 5;
+  int64 total_tokens = 6;
+  int64 user_tokens = 7;
+  int64 assistant_tokens = 8;
+  google.protobuf.Timestamp first_message = 9;
+  google.protobuf.Timestamp last_message = 10;
+  float average_response_time = 11;
+}
+
+message UserStats {
+  string user_id = 1;
+  int32 total_conversations = 2;
+  int32 total_messages = 3;
+  int64 total_tokens = 4;
+  int32 active_conversations = 5;
+  google.protobuf.Timestamp first_conversation = 6;
+  google.protobuf.Timestamp last_activity = 7;
+  map<string, int32> model_usage = 8;
+  map<string, int32> endpoint_usage = 9;
+}
+
+message ShareSettings {
+  bool public = 1;
+  bool allow_comments = 2;
+  bool allow_edits = 3;
+  repeated string allowed_users = 4;
+  repeated string allowed_domains = 5;
+}
+
+// Enums
+enum ConversationStatus {
+  CONVERSATION_STATUS_UNSPECIFIED = 0;
+  CONVERSATION_STATUS_ACTIVE = 1;
+  CONVERSATION_STATUS_ARCHIVED = 2;
+  CONVERSATION_STATUS_DELETED = 3;
+}
+
+enum MessageStatus {
+  MESSAGE_STATUS_UNSPECIFIED = 0;
+  MESSAGE_STATUS_SENT = 1;
+  MESSAGE_STATUS_DELIVERED = 2;
+  MESSAGE_STATUS_READ = 3;
+  MESSAGE_STATUS_EDITED = 4;
+  MESSAGE_STATUS_DELETED = 5;
+  MESSAGE_STATUS_ERROR = 6;
+}
+
+enum MessageType {
+  MESSAGE_TYPE_UNSPECIFIED = 0;
+  MESSAGE_TYPE_TEXT = 1;
+  MESSAGE_TYPE_IMAGE = 2;
+  MESSAGE_TYPE_FILE = 3;
+  MESSAGE_TYPE_CODE = 4;
+  MESSAGE_TYPE_TOOL_CALL = 5;
+  MESSAGE_TYPE_TOOL_RESULT = 6;
+}
+
+enum ExportFormat {
+  EXPORT_FORMAT_UNSPECIFIED = 0;
+  EXPORT_FORMAT_JSON = 1;
+  EXPORT_FORMAT_CSV = 2;
+  EXPORT_FORMAT_PDF = 3;
+  EXPORT_FORMAT_MARKDOWN = 4;
+  EXPORT_FORMAT_HTML = 5;
+}

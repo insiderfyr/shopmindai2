@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: librechat
+  labels:
+    name: librechat
+    app: librechat
+    environment: production
+  annotations:
+    description: "LibreChat Microservices Platform"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: librechat-monitoring
+  labels:
+    name: librechat-monitoring
+    app: librechat
+    environment: production
+  annotations:
+    description: "LibreChat Monitoring and Observability Stack"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: librechat-infrastructure
+  labels:
+    name: librechat-infrastructure
+    app: librechat
+    environment: production
+  annotations:
+    description: "LibreChat Infrastructure Services (Redis, Kafka, etc.)"

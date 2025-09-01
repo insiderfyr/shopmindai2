@@ -1,0 +1,270 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+  namespace: librechat
+  labels:
+    app: identity-service
+    version: v1.0.0
+    environment: production
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: identity-service
+  template:
+    metadata:
+      labels:
+        app: identity-service
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "80"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: identity-service-sa
+      containers:
+      - name: identity-service
+        image: librechat/identity-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 5000
+          name: grpc
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:80;https://+:443"
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: identity-service-secrets
+              key: database-connection
+        - name: ConnectionStrings__Redis
+          valueFrom:
+            secretKeyRef:
+              name: identity-service-secrets
+              key: redis-connection
+        - name: Jwt__SecretKey
+          valueFrom:
+            secretKeyRef:
+              name: identity-service-secrets
+              key: jwt-secret
+        - name: Jwt__Issuer
+          value: "librechat-identity"
+        - name: Jwt__Audience
+          value: "librechat"
+        - name: Jwt__ExpirationMinutes
+          value: "60"
+        - name: Elasticsearch__Uri
+          value: "http://elasticsearch-master.librechat-monitoring:9200"
+        - name: Email__SmtpServer
+          valueFrom:
+            secretKeyRef:
+              name: identity-service-secrets
+              key: smtp-server
+        - name: Email__SmtpPort
+          value: "587"
+        - name: Email__Username
+          valueFrom:
+            secretKeyRef:
+              name: identity-service-secrets
+              key: smtp-username
+        - name: Email__Password
+          valueFrom:
+            secretKeyRef:
+              name: identity-service-secrets
+              key: smtp-password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health/startup
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 30
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+        - name: logs-volume
+          mountPath: /app/logs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: identity-service-config
+      - name: logs-volume
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - identity-service
+              topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        node-role: worker
+      tolerations:
+      - key: "node-role"
+        operator: "Equal"
+        value: "worker"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+  namespace: librechat
+  labels:
+    app: identity-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: grpc
+  selector:
+    app: identity-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-service-config
+  namespace: librechat
+  labels:
+    app: identity-service
+data:
+  appsettings.Production.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },
+      "AllowedHosts": "*",
+      "Cors": {
+        "AllowedOrigins": [
+          "https://librechat.example.com",
+          "https://app.librechat.example.com"
+        ]
+      },
+      "RateLimiting": {
+        "EnableRateLimiting": true,
+        "RequestsPerSecond": 100,
+        "BurstLimit": 200
+      },
+      "HealthChecks": {
+        "EnableDetailedOutput": true,
+        "EvaluationTimeInSeconds": 30
+      }
+    }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: identity-service-secrets
+  namespace: librechat
+  labels:
+    app: identity-service
+type: Opaque
+data:
+  # Base64 encoded values - replace with actual values
+  database-connection: <base64-encoded-connection-string>
+  redis-connection: <base64-encoded-redis-connection>
+  jwt-secret: <base64-encoded-jwt-secret>
+  smtp-server: <base64-encoded-smtp-server>
+  smtp-username: <base64-encoded-smtp-username>
+  smtp-password: <base64-encoded-smtp-password>
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: identity-service-sa
+  namespace: librechat
+  labels:
+    app: identity-service
+secrets:
+- name: identity-service-secrets
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: identity-service-hpa
+  namespace: librechat
+  labels:
+    app: identity-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: identity-service
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
