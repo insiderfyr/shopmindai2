@@ -190,6 +190,80 @@ app.get('/api/files', (req, res) => {
   res.json(mockData.files);
 });
 
+app.get('/api/convos', (req, res) => {
+  console.log('GET /api/convos');
+  res.json(mockData.conversations);
+});
+
+app.get('/api/search/enable', (req, res) => {
+  console.log('GET /api/search/enable');
+  res.json({ enabled: true });
+});
+
+app.get('/api/models', (req, res) => {
+  console.log('GET /api/models');
+  res.json({
+    'openAI': ['gpt-4', 'gpt-3.5-turbo'],
+    'anthropic': ['claude-3-opus', 'claude-3-sonnet'],
+    'google': ['gemini-pro'],
+    'xAI': ['grok-beta']
+  });
+});
+
+app.get('/api/balance', (req, res) => {
+  console.log('GET /api/balance');
+  res.json({
+    balance: 100.0,
+    currency: 'USD',
+    lastUpdated: new Date().toISOString()
+  });
+});
+
+app.get('/api/files/speech/config/get', (req, res) => {
+  console.log('GET /api/files/speech/config/get');
+  res.json({
+    enabled: true,
+    provider: 'openai',
+    voices: [
+      { id: 'alloy', name: 'Alloy' },
+      { id: 'echo', name: 'Echo' },
+      { id: 'fable', name: 'Fable' },
+      { id: 'onyx', name: 'Onyx' },
+      { id: 'nova', name: 'Nova' },
+      { id: 'shimmer', name: 'Shimmer' }
+    ]
+  });
+});
+
+app.get('/api/roles/:roleName', (req, res) => {
+  console.log('GET /api/roles/' + req.params.roleName);
+  const roleName = req.params.roleName;
+  
+  const mockRoles = {
+    'user': {
+      id: 'user',
+      name: 'User',
+      permissions: ['read', 'write', 'chat'],
+      description: 'Standard user role'
+    },
+    'admin': {
+      id: 'admin', 
+      name: 'Admin',
+      permissions: ['read', 'write', 'chat', 'admin', 'manage_users'],
+      description: 'Administrator role'
+    }
+  };
+  
+  const role = mockRoles[roleName];
+  if (role) {
+    res.json(role);
+  } else {
+    res.status(404).json({
+      message: 'Role not found'
+    });
+  }
+});
+
 app.get('/api/health', (req, res) => {
   console.log('GET /api/health');
   res.json(mockData.health);
@@ -385,8 +459,14 @@ app.listen(PORT, () => {
   console.log(`   GET  /api/endpoints`);
   console.log(`   GET  /api/user`);
   console.log(`   GET  /api/conversations`);
+  console.log(`   GET  /api/convos`);
   console.log(`   GET  /api/presets`);
   console.log(`   GET  /api/files`);
+  console.log(`   GET  /api/models`);
+  console.log(`   GET  /api/balance`);
+  console.log(`   GET  /api/search/enable`);
+  console.log(`   GET  /api/files/speech/config/get`);
+  console.log(`   GET  /api/roles/:roleName`);
   console.log(`   GET  /api/health`);
   console.log(`   POST /api/auth/login`);
   console.log(`   POST /api/auth/logout`);
