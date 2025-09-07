@@ -50,6 +50,8 @@ const mockData = {
       enabled: true,
       order: 1,
       userProvide: false,
+      type: 'xAI',
+      iconURL: '/assets/xai.png',
       models: {
         'grok-beta': {
           name: 'Grok Beta',
@@ -61,6 +63,8 @@ const mockData = {
       enabled: true,
       order: 2,
       userProvide: true,
+      type: 'openAI',
+      iconURL: '/assets/openai.svg',
       models: {
         'gpt-4': {
           name: 'GPT-4',
@@ -76,6 +80,8 @@ const mockData = {
       enabled: true,
       order: 3,
       userProvide: true,
+      type: 'anthropic',
+      iconURL: '/assets/anthropic.png',
       models: {
         'claude-3-opus': {
           name: 'Claude 3 Opus',
@@ -91,6 +97,8 @@ const mockData = {
       enabled: true,
       order: 4,
       userProvide: true,
+      type: 'google',
+      iconURL: '/assets/google.svg',
       models: {
         'gemini-pro': {
           name: 'Gemini Pro',
