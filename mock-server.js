@@ -17,6 +17,14 @@ const mockData = {
     appTitle: 'Shop Mind AI',
     appDescription: 'AI-powered shopping assistant',
     socialLogins: [],
+    emailLoginEnabled: true,
+    registrationEnabled: true,
+    passwordResetEnabled: true,
+    openidLoginEnabled: false,
+    openidAutoRedirect: false,
+    openidLabel: '',
+    openidImageUrl: '',
+    serverDomain: '',
     registration: {
       allowed: true,
       socialLogins: []
