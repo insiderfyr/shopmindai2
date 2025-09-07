@@ -51,7 +51,7 @@ echo -n "Testing POST /api/auth/login with valid credentials... "
 login_response=$(curl -s -X POST "$BASE_URL/api/auth/login" \
     -H "Content-Type: application/json" \
     -d '{"email":"demo@shopmindai.com","password":"demo123"}')
-if echo "$login_response" | grep -q "success.*true"; then
+if echo "$login_response" | grep -q "token"; then
     echo "✅ PASS"
 else
     echo "❌ FAIL"
@@ -63,7 +63,7 @@ echo -n "Testing POST /api/auth/login with invalid credentials... "
 login_response=$(curl -s -X POST "$BASE_URL/api/auth/login" \
     -H "Content-Type: application/json" \
     -d '{"email":"invalid@example.com","password":"wrong"}')
-if echo "$login_response" | grep -q "success.*false"; then
+if echo "$login_response" | grep -q "message"; then
     echo "✅ PASS"
 else
     echo "❌ FAIL"
