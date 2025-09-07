@@ -199,9 +199,8 @@ app.get('/api/health', (req, res) => {
 app.post('/api/auth/refresh', (req, res) => {
   console.log('POST /api/auth/refresh');
   res.json({
-    success: true,
-    message: 'Token refreshed successfully',
-    user: mockData.user
+    user: mockData.user,
+    token: 'mock-jwt-token-' + Date.now()
   });
 });
 
@@ -211,14 +210,13 @@ app.post('/api/auth/login', (req, res) => {
   
   if (email === 'demo@shopmindai.com' && password === 'demo123') {
     res.json({
-      success: true,
-      message: 'Login successful',
       user: mockData.user,
-      token: 'mock-jwt-token-' + Date.now()
+      token: 'mock-jwt-token-' + Date.now(),
+      twoFAPending: false,
+      tempToken: null
     });
   } else {
     res.status(401).json({
-      success: false,
       message: 'Invalid credentials'
     });
   }
