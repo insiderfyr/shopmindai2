@@ -125,3 +125,6 @@ helm/**/.values.yaml
 
 # SAML Idp cert
 *.cert
+
+*storybook.log
+storybook-static
