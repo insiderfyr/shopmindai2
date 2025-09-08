@@ -141,14 +141,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
           </div>
           {renderError('password')}
         </div>
-        {startupConfig.passwordResetEnabled && (
-          <a
-            href="/forgot-password"
-            className="inline-flex p-1 text-sm font-medium text-green-600 transition-colors hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
-          >
-            {localize('com_auth_password_forgot')}
-          </a>
-        )}
+        <a
+          href="/forgot-password"
+          className="inline-flex p-1 text-sm font-medium text-green-600 transition-colors hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+        >
+          {localize('com_auth_password_forgot')}
+        </a>
 
         {requireCaptcha && (
           <div className="my-4 flex justify-center">
