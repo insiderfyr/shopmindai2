@@ -1,12 +1,12 @@
 import { forwardRef, ReactNode, Ref } from 'react';
 import {
-  OGDialogTitle,
-  OGDialogClose,
-  OGDialogFooter,
-  OGDialogHeader,
-  OGDialogContent,
-  OGDialogDescription,
-} from './OriginalDialog';
+  DialogTitle,
+  DialogClose,
+  DialogFooter,
+  DialogHeader,
+  DialogContent,
+  DialogDescription,
+} from './Dialog';
 import { useLocalize } from '~/hooks';
 import { Button } from './Button';
 import { Spinner } from '../svg';
@@ -27,7 +27,6 @@ type DialogTemplateProps = {
   leftButtons?: ReactNode;
   selection?: SelectionProps;
   className?: string;
-  overlayClassName?: string;
   headerClassName?: string;
   mainClassName?: string;
   footerClassName?: string;
@@ -50,7 +49,6 @@ const OGDialogTemplate = forwardRef((props: DialogTemplateProps, ref: Ref<HTMLDi
     headerClassName,
     footerClassName,
     showCloseButton,
-    overlayClassName,
     showCancelButton = true,
   } = props;
   const { selectHandler, selectClasses, selectText, isLoading } = selection || {};
@@ -58,23 +56,22 @@ const OGDialogTemplate = forwardRef((props: DialogTemplateProps, ref: Ref<HTMLDi
   const defaultSelect =
     'bg-gray-800 text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-gray-200';
   return (
-    <OGDialogContent
-      overlayClassName={overlayClassName}
+    <DialogContent
       showCloseButton={showCloseButton}
       ref={ref}
       className={cn('w-11/12 border-none bg-background text-foreground', className ?? '')}
       onClick={(e) => e.stopPropagation()}
     >
-      <OGDialogHeader className={cn(headerClassName ?? '')}>
-        <OGDialogTitle>{title}</OGDialogTitle>
+      <DialogHeader className={cn(headerClassName ?? '')}>
+        <DialogTitle>{title}</DialogTitle>
         {description && (
-          <OGDialogDescription className="items-center justify-center">
+          <DialogDescription className="items-center justify-center">
             {description}
-          </OGDialogDescription>
+          </DialogDescription>
         )}
-      </OGDialogHeader>
+      </DialogHeader>
       <div className={cn('px-0 py-2', mainClassName)}>{main != null ? main : null}</div>
-      <OGDialogFooter className={footerClassName}>
+      <DialogFooter className={footerClassName}>
         <div>
           {leftButtons != null ? (
             <div className="mt-3 flex h-auto gap-3 max-sm:w-full max-sm:flex-col sm:mt-0 sm:flex-row">
@@ -84,13 +81,13 @@ const OGDialogTemplate = forwardRef((props: DialogTemplateProps, ref: Ref<HTMLDi
         </div>
         <div className="flex h-auto gap-3 max-sm:w-full max-sm:flex-col sm:flex-row">
           {showCancelButton && (
-            <OGDialogClose asChild>
+            <DialogClose asChild>
               <Button variant="outline">{localize('com_ui_cancel')}</Button>
-            </OGDialogClose>
+            </DialogClose>
           )}
           {buttons != null ? buttons : null}
           {selection ? (
-            <OGDialogClose
+            <DialogClose
               onClick={selectHandler}
               disabled={isLoading}
               className={`${
@@ -98,11 +95,11 @@ const OGDialogTemplate = forwardRef((props: DialogTemplateProps, ref: Ref<HTMLDi
               } flex h-10 items-center justify-center rounded-lg border-none px-4 py-2 text-sm disabled:opacity-80 max-sm:order-first max-sm:w-full sm:order-none`}
             >
               {isLoading === true ? <Spinner className="size-4 text-white" /> : selectText}
-            </OGDialogClose>
+            </DialogClose>
           ) : null}
         </div>
-      </OGDialogFooter>
-    </OGDialogContent>
+      </DialogFooter>
+    </DialogContent>
   );
 });
 

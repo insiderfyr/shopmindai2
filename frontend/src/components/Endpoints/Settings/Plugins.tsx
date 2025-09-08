@@ -12,7 +12,7 @@ import {
   InputNumber,
   SelectDropDown,
   HoverCardTrigger,
-  MultiSelectDropDown,
+  Select,
 } from '~/components/ui';
 import {
   removeFocusOutlines,
@@ -172,7 +172,7 @@ export default function Settings({
         </>
       </div>
       <div className="col-span-5 flex flex-col items-center justify-start gap-6 px-3 sm:col-span-2">
-        <MultiSelectDropDown
+        <Select
           showAbove={false}
           showLabel={false}
           setSelected={setTools}

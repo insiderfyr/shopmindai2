@@ -2,14 +2,13 @@
   "name": "shopmindai-mock-server",
   "version": "1.0.0",
   "description": "Mock server for ShopMindAI frontend development",
-  "main": "mock-server.js",
+  "main": "backend/mock-server.js",
   "scripts": {
-    "start": "node mock-server.js",
-    "dev": "nodemon mock-server.js",
-    "start-dev": "./start-dev.sh",
+    "start": "node backend/mock-server.js",
+    "dev": "nodemon backend/mock-server.js",
     "test-api": "curl -s http://localhost:3080/api/health | jq .",
-    "install-client": "cd client && npm install",
-    "build-client": "cd client && npm run build"
+    "install-client": "cd frontend && npm install",
+    "build-client": "cd frontend && npm run build"
   },
   "dependencies": {
     "express": "^4.18.2",

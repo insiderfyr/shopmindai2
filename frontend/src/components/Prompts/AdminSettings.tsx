@@ -6,10 +6,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { Permissions, SystemRoles, roleDefaults, PermissionTypes } from 'librechat-data-provider';
 import type { Control, UseFormSetValue, UseFormGetValues } from 'react-hook-form';
 import {
-  OGDialog,
-  OGDialogTitle,
-  OGDialogContent,
-  OGDialogTrigger,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogTrigger,
   Button,
   Switch,
   DropdownPopup,
@@ -142,8 +142,8 @@ const AdminSettings = () => {
 
   return (
     <>
-      <OGDialog>
-        <OGDialogTrigger asChild>
+      <Dialog>
+        <DialogTrigger asChild>
           <Button
             size="sm"
             variant="outline"
@@ -152,11 +152,11 @@ const AdminSettings = () => {
             <ShieldEllipsis className="cursor-pointer" aria-hidden="true" />
             <span className="hidden sm:flex">{localize('com_ui_admin')}</span>
           </Button>
-        </OGDialogTrigger>
-        <OGDialogContent className="w-11/12 max-w-lg border-border-light bg-surface-primary text-text-primary">
-          <OGDialogTitle>
+        </DialogTrigger>
+        <DialogContent className="w-11/12 max-w-lg border-border-light bg-surface-primary text-text-primary">
+          <DialogTitle>
             {`${localize('com_ui_admin_settings')} - ${localize('com_ui_prompts')}`}
-          </OGDialogTitle>
+          </DialogTitle>
           <div className="p-2">
             {/* Role selection dropdown */}
             <div className="flex items-center gap-2">
@@ -222,10 +222,10 @@ const AdminSettings = () => {
               </div>
             </form>
           </div>
-        </OGDialogContent>
-      </OGDialog>
+        </DialogContent>
+      </Dialog>
 
-      <OGDialog
+      <Dialog
         open={confirmAdminUseChange !== null}
         onOpenChange={(open) => {
           if (!open) {
@@ -251,7 +251,7 @@ const AdminSettings = () => {
             isLoading: false,
           }}
         />
-      </OGDialog>
+      </Dialog>
     </>
   );
 };

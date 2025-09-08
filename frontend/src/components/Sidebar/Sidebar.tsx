@@ -26,8 +26,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     >
       {/* Logo */}
       <div className="flex flex-col items-center gap-2">
-        <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 transition-transform duration-300 hover:scale-105">
-          <span className="text-sm font-bold text-white">S</span>
+        <div className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-100 transition-all duration-200 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300/70 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 dark:hover:border-blue-700/70">
+          <span className="text-sm font-bold text-blue-600">S</span>
         </div>
       </div>
 
@@ -35,10 +35,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       <div className="flex flex-col items-center gap-2">
         <button
           onClick={() => navigate('/c/new')}
-          className="group flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 transition-all duration-300 hover:scale-105 hover:bg-gray-200 active:scale-[0.97]"
+          className="group flex size-10 items-center justify-center rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-100 transition-all duration-200 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300/70 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 dark:hover:border-blue-700/70"
         >
           <svg
-            className="h-4 w-4 text-gray-600 group-hover:text-gray-800"
+            className="h-5 w-5 text-blue-600 group-hover:text-blue-800"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -53,9 +53,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       <div className="flex flex-col items-center gap-2">
         <button
           onClick={handleHistory}
-          className="group flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 transition-all duration-300 hover:scale-105 hover:bg-blue-200 active:scale-[0.97]"
+          className="group flex size-10 items-center justify-center rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-100 transition-all duration-200 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300/70 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 dark:hover:border-blue-700/70"
         >
-          <History className="h-4 w-4 text-blue-600 group-hover:text-blue-800" />
+          <History className="h-5 w-5 text-blue-600 group-hover:text-blue-800" />
         </button>
         <span className="text-2xs font-medium text-gray-500">History</span>
       </div>
@@ -66,8 +66,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* User Profile */}
       <div className="flex flex-col items-center gap-2">
         <div className="relative">
-          <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-gray-200 transition-opacity duration-200 hover:opacity-80">
-            <User className="h-4 w-4 text-gray-600" />
+          <div className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-100 transition-all duration-200 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300/70 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 dark:hover:border-blue-700/70">
+            <User className="h-5 w-5 text-blue-600" />
           </div>
           {/* Online status indicator */}
           <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-green-500"></div>

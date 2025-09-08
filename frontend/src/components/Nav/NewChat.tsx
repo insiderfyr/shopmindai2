@@ -61,7 +61,7 @@ export default function NewChat({
               variant="outline"
               data-testid="close-sidebar-button"
               aria-label={localize('com_nav_close_sidebar')}
-              className="rounded-md border-none bg-transparent p-2 hover:bg-blue-50 dark:hover:bg-[#2a3a4a] md:rounded-md"
+              className="size-10 rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-100 p-2 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300/70 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 dark:hover:border-blue-700/70"
               onClick={toggleNav}
             >
               <Sidebar className="max-md:hidden" />
@@ -79,7 +79,7 @@ export default function NewChat({
                 variant="outline"
                 data-testid="nav-new-chat-button"
                 aria-label={localize('com_ui_new_chat')}
-                className="rounded-md border-none bg-transparent p-2 hover:bg-blue-50 dark:hover:bg-[#2a3a4a] md:rounded-md"
+                className="size-10 rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-100 p-2 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300/70 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:hover:from-blue-800/40 dark:hover:to-indigo-800/40 dark:hover:border-blue-700/70"
                 onClick={clickHandler}
               >
                 <NewChatIcon className="icon-md md:h-6 md:w-6" />
