@@ -243,6 +243,136 @@ app.get('/api/files/speech/config/get', (req, res) => {
   });
 });
 
+app.get('/api/files/config', (req, res) => {
+  console.log('GET /api/files/config');
+  res.json({
+    enabled: true,
+    maxFileSize: 10485760, // 10MB
+    allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/pdf'],
+    maxFiles: 10
+  });
+});
+
+app.get('/api/keys', (req, res) => {
+  console.log('GET /api/keys', req.query);
+  const { name } = req.query;
+  
+  const mockKeys = {
+    'xAI': {
+      name: 'xAI',
+      apiKey: 'mock-xai-key-' + Date.now(),
+      enabled: true,
+      lastUsed: new Date().toISOString()
+    },
+    'openAI': {
+      name: 'openAI',
+      apiKey: 'mock-openai-key-' + Date.now(),
+      enabled: true,
+      lastUsed: new Date().toISOString()
+    },
+    'anthropic': {
+      name: 'anthropic',
+      apiKey: 'mock-anthropic-key-' + Date.now(),
+      enabled: true,
+      lastUsed: new Date().toISOString()
+    }
+  };
+  
+  if (name && mockKeys[name]) {
+    res.json(mockKeys[name]);
+  } else {
+    res.json(Object.values(mockKeys));
+  }
+});
+
+app.get('/api/convos/:conversationId', (req, res) => {
+  console.log('GET /api/convos/' + req.params.conversationId);
+  const conversationId = req.params.conversationId;
+  
+  const mockConversation = {
+    id: conversationId,
+    title: 'Mock Conversation',
+    endpoint: 'openAI',
+    model: 'gpt-4',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    messages: [
+      {
+        id: 'msg-1',
+        role: 'user',
+        content: 'Hello, this is a mock conversation!',
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'msg-2',
+        role: 'assistant',
+        content: 'Hello! I\'m a mock AI assistant. How can I help you today?',
+        createdAt: new Date().toISOString()
+      }
+    ]
+  };
+  
+  res.json(mockConversation);
+});
+
+app.get('/api/prompts/groups', (req, res) => {
+  console.log('GET /api/prompts/groups', req.query);
+  const { pageNumber = 1, pageSize = 10, name = '', category = '' } = req.query;
+  
+  const mockPrompts = [
+    {
+      id: 'prompt-1',
+      name: 'Shopping Assistant',
+      category: 'Shopping',
+      description: 'Help with shopping decisions and product recommendations',
+      content: 'You are a helpful shopping assistant...',
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: 'prompt-2',
+      name: 'Product Researcher',
+      category: 'Research',
+      description: 'Research and analyze products',
+      content: 'You are a product research specialist...',
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: 'prompt-3',
+      name: 'Price Comparison',
+      category: 'Shopping',
+      description: 'Compare prices across different stores',
+      content: 'You are a price comparison expert...',
+      createdAt: new Date().toISOString()
+    }
+  ];
+  
+  // Simple filtering
+  let filteredPrompts = mockPrompts;
+  if (name) {
+    filteredPrompts = filteredPrompts.filter(p => 
+      p.name.toLowerCase().includes(name.toLowerCase())
+    );
+  }
+  if (category) {
+    filteredPrompts = filteredPrompts.filter(p => 
+      p.category.toLowerCase().includes(category.toLowerCase())
+    );
+  }
+  
+  // Pagination
+  const startIndex = (pageNumber - 1) * pageSize;
+  const endIndex = startIndex + parseInt(pageSize);
+  const paginatedPrompts = filteredPrompts.slice(startIndex, endIndex);
+  
+  res.json({
+    prompts: paginatedPrompts,
+    totalCount: filteredPrompts.length,
+    pageNumber: parseInt(pageNumber),
+    pageSize: parseInt(pageSize),
+    totalPages: Math.ceil(filteredPrompts.length / pageSize)
+  });
+});
+
 app.get('/api/roles/:roleName', (req, res) => {
   console.log('GET /api/roles/' + req.params.roleName);
   const roleName = req.params.roleName;
@@ -468,12 +598,16 @@ app.listen(PORT, () => {
   console.log(`   GET  /api/user`);
   console.log(`   GET  /api/conversations`);
   console.log(`   GET  /api/convos`);
+  console.log(`   GET  /api/convos/:conversationId`);
   console.log(`   GET  /api/presets`);
   console.log(`   GET  /api/files`);
+  console.log(`   GET  /api/files/config`);
   console.log(`   GET  /api/models`);
   console.log(`   GET  /api/balance`);
   console.log(`   GET  /api/search/enable`);
   console.log(`   GET  /api/files/speech/config/get`);
+  console.log(`   GET  /api/keys`);
+  console.log(`   GET  /api/prompts/groups`);
   console.log(`   GET  /api/roles/:roleName`);
   console.log(`   GET  /api/health`);
   console.log(`   POST /api/auth/login`);
