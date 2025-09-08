@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAuthContext, usePreviousLocation } from '~/hooks';
+import { usePreviousLocation } from '~/hooks';
 import { DashboardContext } from '~/Providers';
 import store from '~/store';
+import useAuthRedirect from '../useAuthRedirect';
 
 export default function DashboardRoute() {
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated } = useAuthRedirect();
   const prevLocationRef = usePreviousLocation();
   const clearConvoState = store.useClearConvoState();
   const [prevLocationPath, setPrevLocationPath] = useState('');
