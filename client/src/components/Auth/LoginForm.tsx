@@ -9,7 +9,7 @@ import { Spinner, Button } from '~/components';
 
 type TLoginFormProps = {
   onSubmit: (data: TLoginUser) => void;
-  startupConfig: TStartupConfig;
+  startupConfig: TStartupConfig | null;
   error: Pick<TAuthContext, 'error'>['error'];
   setError: Pick<TAuthContext, 'setError'>['setError'];
 };
@@ -29,7 +29,7 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
   const { data: config } = useGetStartupConfig();
   const useUsernameLogin = config?.ldap?.username;
   const validTheme = theme === 'dark' ? 'dark' : 'light';
-  const requireCaptcha = Boolean(startupConfig.turnstile?.siteKey);
+  const requireCaptcha = Boolean(startupConfig?.turnstile?.siteKey);
 
   useEffect(() => {
     if (error && error.includes('422') && !showResendLink) {
