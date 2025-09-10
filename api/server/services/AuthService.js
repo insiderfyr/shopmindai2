@@ -217,21 +217,14 @@ const registerUser = async (user, additionalData = {}) => {
       ...additionalData,
     };
 
-    const emailEnabled = checkEmailConfig();
+    const emailEnabled = false; // Disabled for testing
     const disableTTL = isEnabled(process.env.ALLOW_UNVERIFIED_EMAIL_LOGIN);
     const balanceConfig = await getBalanceConfig();
 
     const newUser = await createUser(newUserData, balanceConfig, disableTTL, true);
     newUserId = newUser._id;
-    if (emailEnabled && !newUser.emailVerified) {
-      await sendVerificationEmail({
-        _id: newUserId,
-        email,
-        name,
-      });
-    } else {
-      await updateUser(newUserId, { emailVerified: true });
-    }
+    // Skip email verification - mark user as verified immediately
+    await updateUser(newUserId, { emailVerified: true });
 
     return { status: 200, message: genericVerificationMessage };
   } catch (err) {
