@@ -103,10 +103,10 @@ services:
         ipv4_address: 172.20.0.12
     command: start-dev
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/localhost/8080' || exit 1"]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 60s
 
   # Auth Service
@@ -130,7 +130,7 @@ services:
       
       # Keycloak config (using container network)
       KEYCLOAK_REALM: ShopMindAI
-      KEYCLOAK_URL: http://keycloak:8080/auth
+      KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/ShopMindAI
       KEYCLOAK_JWKS_URL: http://keycloak:8080/realms/ShopMindAI/protocol/openid-connect/certs
       KEYCLOAK_AUTH_URL: http://keycloak:8080/realms/ShopMindAI/protocol/openid-connect/auth
@@ -138,7 +138,7 @@ services:
       KEYCLOAK_USERINFO_URL: http://keycloak:8080/realms/ShopMindAI/protocol/openid-connect/userinfo
       KEYCLOAK_LOGOUT_URL: http://keycloak:8080/realms/ShopMindAI/protocol/openid-connect/logout
       KEYCLOAK_CLIENT_ID: auth-service
-      KEYCLOAK_CLIENT_SECRET: your-client-secret-will-be-generated
+      KEYCLOAK_CLIENT_SECRET: 1rRvRfiy9BKYxmUBeHV6bkLBFsRfCTrX
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASS: admin_secure_password_2024
       

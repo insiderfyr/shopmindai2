@@ -3,11 +3,22 @@ import React, { useContext, useState } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
 import { useRegisterUserMutation } from 'librechat-data-provider/react-query';
-import type { TRegisterUser, TError } from 'librechat-data-provider';
+import type { TError } from 'librechat-data-provider';
 import { useLocalize, TranslationKeys, ThemeContext } from '~/hooks';
 import type { TLoginLayoutContext } from '~/common';
 import { Spinner, Button } from '~/components';
 import { ErrorMessage } from './ErrorMessage';
+
+// Local type definition for registration with separate first_name and last_name
+type TRegisterUserLocal = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  password: string;
+  confirm_password?: string;
+  token?: string;
+};
 
 const Registration: React.FC = () => {
   const navigate = useNavigate();
@@ -20,7 +31,7 @@ const Registration: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TRegisterUser>({ mode: 'onChange' });
+  } = useForm<TRegisterUserLocal>({ mode: 'onChange' });
   const password = watch('password');
 
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -72,7 +83,7 @@ const Registration: React.FC = () => {
           autoComplete={id}
           aria-label={localize(label)}
           {...register(
-            id as 'name' | 'email' | 'username' | 'password' | 'confirm_password',
+            id as 'first_name' | 'last_name' | 'email' | 'username' | 'password' | 'confirm_password',
             validation,
           )}
           aria-invalid={!!errors[id]}
@@ -128,19 +139,39 @@ const Registration: React.FC = () => {
             className="mt-6"
             aria-label="Registration form"
             method="POST"
-            onSubmit={handleSubmit((data: TRegisterUser) =>
-              registerUser.mutate({ ...data, token: token ?? undefined }),
-            )}
+            onSubmit={handleSubmit((data: TRegisterUserLocal) => {
+              // Transform local data to the format expected by the API
+              const apiData = {
+                first_name: data.first_name,
+                last_name: data.last_name,
+                email: data.email,
+                username: data.username,
+                password: data.password,
+                token: token ?? undefined,
+              };
+              registerUser.mutate(apiData);
+            })}
           >
-            {renderInput('name', 'com_auth_full_name', 'text', {
-              required: localize('com_auth_name_required'),
+            {renderInput('first_name', 'com_auth_first_name', 'text', {
+              required: localize('com_auth_first_name_required'),
               minLength: {
-                value: 3,
-                message: localize('com_auth_name_min_length'),
+                value: 2,
+                message: localize('com_auth_first_name_min_length'),
               },
               maxLength: {
-                value: 80,
-                message: localize('com_auth_name_max_length'),
+                value: 50,
+                message: localize('com_auth_first_name_max_length'),
+              },
+            })}
+            {renderInput('last_name', 'com_auth_last_name', 'text', {
+              required: localize('com_auth_last_name_required'),
+              minLength: {
+                value: 2,
+                message: localize('com_auth_last_name_min_length'),
+              },
+              maxLength: {
+                value: 50,
+                message: localize('com_auth_last_name_max_length'),
               },
             })}
             {renderInput('username', 'com_auth_username', 'text', {

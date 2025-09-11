@@ -57,7 +57,7 @@ func (rl *rateLimiter) allow(ip string) bool {
 	return true
 }
 
-var authRateLimiter = newRateLimiter(5, time.Minute)    // 5 auth attempts per minute
+var authRateLimiter = newRateLimiter(50, time.Minute)    // 50 auth attempts per minute for testing
 var generalRateLimiter = newRateLimiter(100, time.Minute) // 100 general requests per minute
 
 // AuthMiddleware validates JWT tokens from Keycloak
@@ -186,6 +186,7 @@ func CORSMiddleware(cfg *config.Config) gin.HandlerFunc {
 		allowedOrigins := []string{
 			"http://localhost:3000",
 			"http://localhost:3080",
+			"http://localhost:3090",
 			"http://localhost:8080",
 			"https://yourdomain.com", // Add your actual domain here
 		}

@@ -13,6 +13,18 @@ export default defineConfig(({ command }) => ({
     port: 3090,
     strictPort: true,
     proxy: {
+      '/api/auth': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
+      '/api/v1/auth': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
       '/api': {
         target: 'http://localhost:3080',
         changeOrigin: true,
@@ -20,7 +32,7 @@ export default defineConfig(({ command }) => ({
         ws: true,
       },
       '/oauth': {
-        target: 'http://localhost:3080',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         ws: true,
