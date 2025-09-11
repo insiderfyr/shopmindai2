@@ -67,8 +67,19 @@ func (k *KeycloakService) Login(username, password string) (*models.AuthResponse
 
 // Register creates a new user in Keycloak
 func (k *KeycloakService) Register(req *models.RegisterRequest) error {
-	// Get admin token
-	adminToken, err := k.client.LoginAdmin(k.ctx, k.cfg.AdminUser, k.cfg.AdminPass, k.cfg.Realm)
+	// Get admin token using admin-cli
+	adminRealm := k.cfg.AdminRealm
+	if adminRealm == "" {
+		adminRealm = "master" // fallback to master realm
+	}
+	
+	// Use admin-cli for admin operations
+	adminClientID := k.cfg.AdminClientID
+	if adminClientID == "" {
+		adminClientID = "admin-cli" // fallback to admin-cli
+	}
+	
+	adminToken, err := k.client.Login(k.ctx, adminClientID, "", adminRealm, k.cfg.AdminUser, k.cfg.AdminPass)
 	if err != nil {
 		k.logger.WithError(err).Error("Failed to get admin token")
 		return fmt.Errorf("failed to authenticate admin")
@@ -95,6 +106,13 @@ func (k *KeycloakService) Register(req *models.RegisterRequest) error {
 	if err != nil {
 		k.logger.WithError(err).Error("Failed to create user")
 		return fmt.Errorf("failed to create user")
+	}
+
+	// Set password for the user
+	err = k.client.SetPassword(k.ctx, adminToken.AccessToken, userID, k.cfg.Realm, req.Password, false)
+	if err != nil {
+		k.logger.WithError(err).Error("Failed to set password")
+		return fmt.Errorf("failed to set password")
 	}
 
 	k.logger.WithField("user_id", userID).Info("User created successfully")
@@ -173,7 +191,18 @@ func (k *KeycloakService) UpdateUserProfile(accessToken string, req *models.Upda
 	}
 
 	// Get admin token for user update
-	adminToken, err := k.client.LoginAdmin(k.ctx, k.cfg.AdminUser, k.cfg.AdminPass, k.cfg.Realm)
+	adminRealm := k.cfg.AdminRealm
+	if adminRealm == "" {
+		adminRealm = "master" // fallback to master realm
+	}
+	
+	// Use admin-cli for admin operations
+	adminClientID := k.cfg.AdminClientID
+	if adminClientID == "" {
+		adminClientID = "admin-cli" // fallback to admin-cli
+	}
+	
+	adminToken, err := k.client.Login(k.ctx, adminClientID, "", adminRealm, k.cfg.AdminUser, k.cfg.AdminPass)
 	if err != nil {
 		k.logger.WithError(err).Error("Failed to get admin token")
 		return fmt.Errorf("failed to authenticate admin")
@@ -206,7 +235,18 @@ func (k *KeycloakService) ChangePassword(accessToken, currentPassword, newPasswo
 	}
 
 	// Get admin token for password change
-	adminToken, err := k.client.LoginAdmin(k.ctx, k.cfg.AdminUser, k.cfg.AdminPass, k.cfg.Realm)
+	adminRealm := k.cfg.AdminRealm
+	if adminRealm == "" {
+		adminRealm = "master" // fallback to master realm
+	}
+	
+	// Use admin-cli for admin operations
+	adminClientID := k.cfg.AdminClientID
+	if adminClientID == "" {
+		adminClientID = "admin-cli" // fallback to admin-cli
+	}
+	
+	adminToken, err := k.client.Login(k.ctx, adminClientID, "", adminRealm, k.cfg.AdminUser, k.cfg.AdminPass)
 	if err != nil {
 		k.logger.WithError(err).Error("Failed to get admin token")
 		return fmt.Errorf("failed to authenticate admin")

@@ -19,11 +19,11 @@ const webSearchKeys = [
   "cohereApiKey"
 ];
 
-const { logger } = require('~/config');
 function extractVariableName(value) {
-  const match = value.match(/^\$\{([^}]+)\}$/);
+  const match = value.match(/^${([^}]+)}$/);
   return match ? match[1] : null;
 }
+const { logger } = require('~/config');
 
 const secretDefaults = {
   CREDS_KEY: 'f34be427ebb29de8d88c107a71546019685ed8b241d8f2ed00c3df97ad2566f0',

@@ -2,7 +2,7 @@ const {
   SystemRoles,
   Permissions,
   PermissionTypes,
-  isMemoryEnabled,
+  
   removeNullishValues,
 } = require('librechat-data-provider');
 const { updateAccessPermissions } = require('~/models/Role');
@@ -22,7 +22,7 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
   const includesAddedEndpoints = config?.modelSpecs?.addedEndpoints?.length > 0;
 
   const memoryConfig = config?.memory;
-  const memoryEnabled = isMemoryEnabled(memoryConfig);
+  const memoryEnabled = memoryConfig && Object.keys(memoryConfig).length > 0;
   /** Only disable memories if memory config is present but disabled/invalid */
   const shouldDisableMemories = memoryConfig && !memoryEnabled;
   /** Check if personalization is enabled (defaults to true if memory is configured and enabled) */
@@ -43,7 +43,7 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
     termsOfService: interfaceConfig?.termsOfService ?? defaults.termsOfService,
     mcpServers: interfaceConfig?.mcpServers ?? defaults.mcpServers,
     bookmarks: interfaceConfig?.bookmarks ?? defaults.bookmarks,
-    memories: shouldDisableMemories ? false : (interfaceConfig?.memories ?? defaults.memories),
+    memories: shouldDisableMemories ? false : (interfaceConfig?.memories ?? false),
     prompts: interfaceConfig?.prompts ?? defaults.prompts,
     multiConvo: interfaceConfig?.multiConvo ?? defaults.multiConvo,
     agents: interfaceConfig?.agents ?? defaults.agents,
