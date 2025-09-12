@@ -36,7 +36,6 @@ const buildDefaultConvo = ({
   if (!Array.isArray(models)) {
     console.warn('buildDefaultConvo: models parameter is not an array:', models);
   }
-  
   const model = lastConversationSetup?.model ?? lastSelectedModel?.[endpoint] ?? '';
   const secondaryModel: string | null =
     endpoint === EModelEndpoint.gptPlugins
