@@ -79,13 +79,17 @@ const AuthContextProvider = ({
 
   const loginUser = useLoginUserMutation({
     onSuccess: (data: t.TLoginResponse) => {
-      const { user, token, twoFAPending, tempToken } = data;
+      const { user, token, twoFAPending, tempToken, refreshToken } = data;
       if (twoFAPending) {
         // Redirect to the two-factor authentication route.
         navigate(`/login/2fa?tempToken=${tempToken}`, { replace: true });
         return;
       }
       setError(undefined);
+      // Store refresh token if provided
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
       setUserContext({ token, isAuthenticated: true, user, redirect: '/c/new' });
     },
     onError: (error: TResError | unknown) => {
@@ -96,6 +100,8 @@ const AuthContextProvider = ({
   });
   const logoutUser = useLogoutUserMutation({
     onSuccess: (data) => {
+      // Clear stored tokens
+      localStorage.removeItem('refreshToken');
       setUserContext({
         token: undefined,
         isAuthenticated: false,
@@ -105,6 +111,8 @@ const AuthContextProvider = ({
     },
     onError: (error) => {
       doSetError((error as Error).message);
+      // Clear stored tokens even on error
+      localStorage.removeItem('refreshToken');
       setUserContext({
         token: undefined,
         isAuthenticated: false,
@@ -138,11 +146,24 @@ const AuthContextProvider = ({
     }
     refreshToken.mutate(undefined, {
       onSuccess: (data: t.TRefreshTokenResponse | undefined) => {
-        const { user, token = '' } = data ?? {};
-        if (token) {
-          setUserContext({ token, isAuthenticated: true, user });
+        if (data) {
+          const { user, token = '' } = data;
+          if (token) {
+            setUserContext({ token, isAuthenticated: true, user });
+            // Store refresh token if provided
+            if (data.refreshToken) {
+              localStorage.setItem('refreshToken', data.refreshToken);
+            }
+          } else {
+            console.log('Token is not present. User is not authenticated.');
+            if (authConfig?.test === true) {
+              return;
+            }
+            navigate('/login');
+          }
         } else {
-          console.log('Token is not present. User is not authenticated.');
+          // No refresh token available or refresh failed
+          console.log('No refresh token available or refresh failed. Redirecting to login.');
           if (authConfig?.test === true) {
             return;
           }
@@ -154,6 +175,8 @@ const AuthContextProvider = ({
         if (authConfig?.test === true) {
           return;
         }
+        // Clear stored tokens on error
+        localStorage.removeItem('refreshToken');
         navigate('/login');
       },
     });

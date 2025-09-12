@@ -105,7 +105,7 @@ func (k *KeycloakService) Register(req *models.RegisterRequest) error {
 	userID, err := k.client.CreateUser(k.ctx, adminToken.AccessToken, k.cfg.Realm, user)
 	if err != nil {
 		k.logger.WithError(err).Error("Failed to create user")
-		return fmt.Errorf("failed to create user")
+		return fmt.Errorf("failed to create user: %w", err)
 	}
 
 	// Set password for the user

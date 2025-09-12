@@ -3,7 +3,6 @@ import { TAttachment } from 'librechat-data-provider';
 import { atomWithLocalStorage } from './utils';
 import { BadgeItem } from '~/common';
 
-const hideBannerHint = atomWithLocalStorage('hideBannerHint', [] as string[]);
 
 const messageAttachmentsMap = atom<Record<string, TAttachment[] | undefined>>({
   key: 'messageAttachmentsMap',
@@ -28,7 +27,6 @@ const chatBadges = atomWithLocalStorage<Pick<BadgeItem, 'id'>[]>('chatBadges', [
 ]);
 
 export default {
-  hideBannerHint,
   messageAttachmentsMap,
   queriesEnabled,
   isEditingBadges,

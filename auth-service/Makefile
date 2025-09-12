@@ -1,155 +1,182 @@
-# ShopMindAI Auth Service Makefile
+# ===========================================
+# ShopMindAI Auth Service - Makefile
+# ===========================================
 
-.PHONY: help build start stop restart logs clean test lint
+.PHONY: help build run stop clean test setup logs dev
 
 # Default target
-help:
-	@echo "🚀 ShopMindAI Auth Service Commands"
-	@echo "=================================="
-	@echo "build          - Build Docker images"
-	@echo "start          - Start all services"
-	@echo "stop           - Stop all services"
-	@echo "restart        - Restart all services"
-	@echo "logs           - Show logs for all services"
-	@echo "logs-auth      - Show auth service logs"
-	@echo "logs-keycloak  - Show Keycloak logs"
-	@echo "logs-postgres  - Show PostgreSQL logs"
-	@echo "logs-redis     - Show Redis logs"
-	@echo "clean          - Clean up containers and images"
-	@echo "test           - Run tests"
-	@echo "lint           - Run Go linter"
-	@echo "dev            - Start in development mode"
-	@echo "prod           - Start with production profile"
+.DEFAULT_GOAL := help
 
-# Build Docker images
-build:
-	@echo "🔨 Building Docker images..."
-	docker-compose build --no-cache
+# Colors for output
+RED := \033[0;31m
+GREEN := \033[0;32m
+YELLOW := \033[0;33m
+BLUE := \033[0;34m
+PURPLE := \033[0;35m
+CYAN := \033[0;36m
+WHITE := \033[0;37m
+RESET := \033[0m
 
-# Start all services
-start:
-	@echo "🚀 Starting all services..."
-	chmod +x start.sh
-	./start.sh
+help: ## Show this help message
+	@echo "$(CYAN)ShopMindAI Auth Service$(RESET)"
+	@echo "$(CYAN)========================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)Available commands:$(RESET)"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(YELLOW)%-15s$(RESET) %s\n", $$1, $$2}'
+	@echo ""
 
-# Stop all services
-stop:
-	@echo "🛑 Stopping all services..."
-	docker-compose down
+build: ## Build the auth service binary
+	@echo "$(BLUE)🔨 Building auth service...$(RESET)"
+	@go mod tidy
+	@go build -o auth-service cmd/main.go
+	@echo "$(GREEN)✅ Build completed!$(RESET)"
 
-# Restart all services
-restart: stop start
+run: ## Run the auth service locally (development mode)
+	@echo "$(BLUE)🚀 Starting auth service in development mode...$(RESET)"
+	@go run cmd/main.go
 
-# Show logs for all services
-logs:
-	docker-compose logs -f
+docker-build: ## Build Docker image
+	@echo "$(BLUE)🐳 Building Docker image...$(RESET)"
+	@docker build -t shopmindai/auth-service:latest .
+	@echo "$(GREEN)✅ Docker image built!$(RESET)"
 
-# Show auth service logs
-logs-auth:
-	docker-compose logs -f auth-service
+up: ## Start all services with Docker Compose
+	@echo "$(BLUE)🚀 Starting all services...$(RESET)"
+	@docker-compose up -d
+	@echo "$(GREEN)✅ Services started!$(RESET)"
+	@echo "$(CYAN)📋 Service URLs:$(RESET)"
+	@echo "  • Auth Service: http://localhost:8080"
+	@echo "  • Keycloak: http://localhost:8081"
+	@echo "  • PostgreSQL: localhost:5432"
+	@echo "  • Redis: localhost:6379"
 
-# Show Keycloak logs
-logs-keycloak:
-	docker-compose logs -f keycloak
+down: ## Stop all services
+	@echo "$(YELLOW)⏹️ Stopping all services...$(RESET)"
+	@docker-compose down
+	@echo "$(GREEN)✅ Services stopped!$(RESET)"
 
-# Show PostgreSQL logs
-logs-postgres:
-	docker-compose logs -f postgres
+restart: down up ## Restart all services
 
-# Show Redis logs
-logs-redis:
-	docker-compose logs -f redis
+setup: up ## Setup Keycloak with realm and test user
+	@echo "$(BLUE)⚙️ Setting up Keycloak...$(RESET)"
+	@sleep 10
+	@chmod +x setup-keycloak.sh
+	@./setup-keycloak.sh
+	@echo "$(GREEN)✅ Setup completed!$(RESET)"
 
-# Clean up containers and images
-clean:
-	@echo "🧹 Cleaning up..."
-	docker-compose down --volumes --remove-orphans
-	docker system prune -af
-	docker volume prune -f
+test: ## Run all tests
+	@echo "$(BLUE)🧪 Running tests...$(RESET)"
+	@go test -v ./...
+	@echo "$(GREEN)✅ Tests completed!$(RESET)"
 
-# Run tests
-test:
-	@echo "🧪 Running tests..."
-	go test -v ./...
+test-integration: ## Run integration tests
+	@echo "$(BLUE)🧪 Running integration tests...$(RESET)"
+	@chmod +x test-auth.sh
+	@./test-auth.sh
+	@echo "$(GREEN)✅ Integration tests completed!$(RESET)"
 
-# Run integration tests
-test-integration:
-	@echo "🔬 Running integration tests..."
-	go test -v ./test/...
+logs: ## Show logs for all services
+	@echo "$(BLUE)📋 Showing service logs...$(RESET)"
+	@docker-compose logs -f
 
-# Run Go linter
-lint:
-	@echo "🔍 Running Go linter..."
-	golangci-lint run
+logs-auth: ## Show logs for auth service only
+	@echo "$(BLUE)📋 Showing auth service logs...$(RESET)"
+	@docker-compose logs -f auth-service
 
-# Start in development mode
-dev:
-	@echo "🔧 Starting in development mode..."
-	docker-compose up -d postgres redis keycloak
-	@echo "⏳ Waiting for dependencies..."
-	sleep 30
-	go run cmd/main.go
+logs-keycloak: ## Show logs for Keycloak only
+	@echo "$(BLUE)📋 Showing Keycloak logs...$(RESET)"
+	@docker-compose logs -f keycloak
 
-# Start with production profile
-prod:
-	@echo "🏭 Starting with production profile..."
-	docker-compose --profile production up -d
+clean: ## Clean up containers and volumes
+	@echo "$(YELLOW)🧹 Cleaning up...$(RESET)"
+	@docker-compose down -v --remove-orphans
+	@docker system prune -f
+	@echo "$(GREEN)✅ Cleanup completed!$(RESET)"
 
-# Start with monitoring
-monitoring:
-	@echo "📊 Starting with monitoring..."
-	docker-compose --profile monitoring up -d
+dev: ## Start development environment (with hot reload)
+	@echo "$(BLUE)🛠️ Starting development environment...$(RESET)"
+	@make setup
+	@echo "$(CYAN)Starting auth service with hot reload...$(RESET)"
+	@air || go run cmd/main.go
 
-# Health check
-health:
-	@echo "🏥 Checking service health..."
-	@curl -s http://localhost:8080/health | jq . || echo "Auth service not responding"
-	@curl -s http://localhost:8081/health/ready | jq . || echo "Keycloak not responding"
-
-# Show service status
-status:
-	@echo "📊 Service Status:"
+status: ## Check status of all services
+	@echo "$(BLUE)📊 Service Status:$(RESET)"
 	@docker-compose ps
 
-# Database shell
-db-shell:
-	@echo "🗃️  Connecting to PostgreSQL..."
-	docker exec -it shopmind-postgres psql -U keycloak -d keycloak
+health: ## Check health of all services
+	@echo "$(BLUE)🏥 Health Checks:$(RESET)"
+	@echo -n "Auth Service: "
+	@curl -s http://localhost:8080/health | jq -r '.status' 2>/dev/null || echo "$(RED)DOWN$(RESET)"
+	@echo -n "Keycloak: "
+	@curl -s http://localhost:8081/health/ready >/dev/null 2>&1 && echo "$(GREEN)UP$(RESET)" || echo "$(RED)DOWN$(RESET)"
+	@echo -n "PostgreSQL: "
+	@docker-compose exec -T postgres pg_isready -U keycloak >/dev/null 2>&1 && echo "$(GREEN)UP$(RESET)" || echo "$(RED)DOWN$(RESET)"
+	@echo -n "Redis: "
+	@docker-compose exec -T redis redis-cli ping >/dev/null 2>&1 && echo "$(GREEN)UP$(RESET)" || echo "$(RED)DOWN$(RESET)"
 
-# Redis shell
-redis-shell:
-	@echo "🔴 Connecting to Redis..."
-	docker exec -it shopmind-redis redis-cli
+shell-auth: ## Access auth service container shell
+	@docker-compose exec auth-service sh
 
-# Generate API documentation
-docs:
-	@echo "📚 Generating API documentation..."
-	swag init -g cmd/main.go
+shell-keycloak: ## Access Keycloak container shell
+	@docker-compose exec keycloak sh
 
-# Run security scan
-security:
-	@echo "🔒 Running security scan..."
-	gosec ./...
+shell-postgres: ## Access PostgreSQL shell
+	@docker-compose exec postgres psql -U keycloak -d keycloak
 
-# Format code
-fmt:
-	@echo "💅 Formatting code..."
-	go fmt ./...
+shell-redis: ## Access Redis CLI
+	@docker-compose exec redis redis-cli
 
-# Update dependencies
-update:
-	@echo "⬆️  Updating dependencies..."
-	go get -u ./...
-	go mod tidy
+backup-db: ## Backup PostgreSQL database
+	@echo "$(BLUE)💾 Creating database backup...$(RESET)"
+	@mkdir -p backups
+	@docker-compose exec -T postgres pg_dump -U keycloak keycloak > backups/keycloak_$(shell date +%Y%m%d_%H%M%S).sql
+	@echo "$(GREEN)✅ Backup created in backups/ directory$(RESET)"
 
-# Backup data
-backup:
-	@echo "💾 Creating backup..."
-	mkdir -p backups
-	docker exec shopmind-postgres pg_dump -U keycloak keycloak > backups/keycloak-$(date +%Y%m%d-%H%M%S).sql
+restore-db: ## Restore PostgreSQL database (usage: make restore-db FILE=backup.sql)
+	@echo "$(BLUE)📥 Restoring database from $(FILE)...$(RESET)"
+	@docker-compose exec -T postgres psql -U keycloak -d keycloak < $(FILE)
+	@echo "$(GREEN)✅ Database restored!$(RESET)"
 
-# Restore data
-restore:
-	@echo "♻️  Restoring data..."
-	@read -p "Enter backup file path: " backup_file; \
-	docker exec -i shopmind-postgres psql -U keycloak -d keycloak < $$backup_file
+frontend-help: ## Show frontend integration examples
+	@echo "$(CYAN)🌐 Frontend Integration Examples:$(RESET)"
+	@echo ""
+	@echo "$(YELLOW)1. Get Auth Configuration:$(RESET)"
+	@echo "   fetch('http://localhost:8080/api/auth/config')"
+	@echo ""
+	@echo "$(YELLOW)2. Login User:$(RESET)"
+	@echo "   fetch('http://localhost:8080/api/v1/auth/login', {"
+	@echo "     method: 'POST',"
+	@echo "     headers: { 'Content-Type': 'application/json' },"
+	@echo "     body: JSON.stringify({ username: 'user', password: 'pass' })"
+	@echo "   })"
+	@echo ""
+	@echo "$(YELLOW)3. Access Protected Route:$(RESET)"
+	@echo "   fetch('http://localhost:8080/api/v1/user/profile', {"
+	@echo "     headers: { 'Authorization': 'Bearer ' + token }"
+	@echo "   })"
+	@echo ""
+	@echo "$(YELLOW)4. Register User:$(RESET)"
+	@echo "   fetch('http://localhost:8080/api/v1/auth/register', {"
+	@echo "     method: 'POST',"
+	@echo "     headers: { 'Content-Type': 'application/json' },"
+	@echo "     body: JSON.stringify({"
+	@echo "       username: 'newuser',"
+	@echo "       email: 'user@example.com',"
+	@echo "       password: 'Password123!',"
+	@echo "       first_name: 'John',"
+	@echo "       last_name: 'Doe'"
+	@echo "     })"
+	@echo "   })"
+	@echo ""
+
+# Development dependencies
+install-deps: ## Install development dependencies
+	@echo "$(BLUE)📦 Installing development dependencies...$(RESET)"
+	@go mod download
+	@go install github.com/cosmtrek/air@latest
+	@echo "$(GREEN)✅ Dependencies installed!$(RESET)"
+
+# Security scan
+security-scan: ## Run security scan on the codebase
+	@echo "$(BLUE)🔒 Running security scan...$(RESET)"
+	@gosec ./... || echo "$(YELLOW)⚠️ Security scan completed with warnings$(RESET)"

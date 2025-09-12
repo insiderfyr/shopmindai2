@@ -25,11 +25,19 @@ export function mapAttachments(attachments: Array<t.TAttachment | null | undefin
 }
 
 /** Maps Files by `file_id` for quick lookup */
-export function mapFiles(files: t.TFile[]) {
+export function mapFiles(files: t.TFile[] | undefined | null) {
   const fileMap = {} as Record<string, t.TFile>;
 
+  // Handle case where files is not an array or is undefined/null
+  if (!Array.isArray(files)) {
+    console.warn('mapFiles: Expected array but received:', typeof files, files);
+    return fileMap;
+  }
+
   for (const file of files) {
-    fileMap[file.file_id] = file;
+    if (file && file.file_id) {
+      fileMap[file.file_id] = file;
+    }
   }
 
   return fileMap;

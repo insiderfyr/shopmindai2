@@ -3,7 +3,6 @@ import { TStartupConfig } from 'librechat-data-provider';
 import { ErrorMessage } from '~/components/Auth/ErrorMessage';
 import { BlinkAnimation } from './BlinkAnimation';
 import { ThemeSelector } from '~/components';
-import { Banner } from '../Banners';
 import LogoIcon from '~/components/svg/LogoIcon';
 import Footer from './Footer';
 
@@ -66,7 +65,6 @@ function AuthLayout({
         } as React.CSSProperties
       }
     >
-      <Banner />
       <BlinkAnimation active={isFetching}>
         <div className="-ml-20 mt-4 flex h-14 items-center justify-center gap-3">
           <LogoIcon size={56} className="text-[#4d8eff]" />

@@ -44,6 +44,7 @@ func main() {
 	// Initialize handlers
 	authHandler := handlers.NewAuthHandler(cfg, logger)
 	userHandler := handlers.NewUserHandler(cfg, logger)
+	frontendHandler := handlers.NewFrontendHandler(cfg, logger)
 
 	// Register routes
 	api := r.Group("/api/v1")
@@ -86,6 +87,17 @@ func main() {
 				"app_name": "ShopMindAI",
 				"version": "1.0.0-mvp",
 				"features": []string{"auth", "ai", "shopping"},
+				"emailEnabled": false,
+				"registrationEnabled": true,
+				"socialLogins": gin.H{
+					"google": false,
+					"facebook": false,
+					"discord": false,
+					"github": false,
+				},
+				"turnstile": gin.H{
+					"siteKey": "",
+				},
 			},
 		})
 	})
@@ -100,12 +112,62 @@ func main() {
 		})
 	})
 
-	// Metrics endpoint (basic)
+	// Metrics endpoint
 	r.GET("/metrics", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"uptime":    time.Since(time.Now()).String(),
-			"goroutines": "n/a", // Could add runtime.NumGoroutine() if needed
-			"version":   "1.0.0-mvp",
+			"message": "Metrics endpoint - placeholder for ShopMindAI",
+			"data": gin.H{
+				"uptime": "running",
+				"requests": 0,
+				"errors": 0,
+			},
+		})
+	})
+
+	// Frontend endpoints
+	r.GET("/api/auth/config", frontendHandler.GetAuthConfig)
+	r.GET("/api/app/info", frontendHandler.GetAppInfo)
+	r.GET("/api/health/detailed", frontendHandler.GetHealthStatus)
+
+	// AI Endpoints endpoint (required by librechat-data-provider)
+	r.GET("/api/endpoints", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "AI Endpoints - placeholder for ShopMindAI",
+			"data": gin.H{
+				"xAI": nil,
+				"openAI": nil,
+				"azureOpenAI": nil,
+				"azureAssistants": nil,
+				"assistants": nil,
+				"agents": nil,
+				"chatGPTBrowser": nil,
+				"gptPlugins": nil,
+				"google": nil,
+				"anthropic": nil,
+				"custom": nil,
+			},
+		})
+	})
+
+	// Startup config endpoint (required by librechat-data-provider)
+	r.GET("/api/startup", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Startup config - placeholder for ShopMindAI",
+			"data": gin.H{
+				"app_name": "ShopMindAI",
+				"version": "1.0.0-mvp",
+				"emailEnabled": false,
+				"registrationEnabled": true,
+				"socialLogins": gin.H{
+					"google": false,
+					"facebook": false,
+					"discord": false,
+					"github": false,
+				},
+				"turnstile": gin.H{
+					"siteKey": "",
+				},
+			},
 		})
 	})
 

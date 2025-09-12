@@ -60,11 +60,6 @@ const setup = ({
     },
   },
   useGetStartupConfigReturnValue = mockStartupConfig,
-  useGetBannerQueryReturnValue = {
-    isLoading: false,
-    isError: false,
-    data: {},
-  },
 } = {}) => {
   const mockUseLoginUser = jest
     .spyOn(authMutations, 'useLoginUserMutation')
@@ -82,10 +77,6 @@ const setup = ({
     .spyOn(authMutations, 'useRefreshTokenMutation')
     //@ts-ignore - we don't need all parameters of the QueryObserverSuccessResult
     .mockReturnValue(useRefreshTokenMutationReturnValue);
-  const mockUseGetBannerQuery = jest
-    .spyOn(miscDataProvider, 'useGetBannerQuery')
-    //@ts-ignore - we don't need all parameters of the QueryObserverSuccessResult
-    .mockReturnValue(useGetBannerQueryReturnValue);
   const mockUseOutletContext = jest.spyOn(reactRouter, 'useOutletContext').mockReturnValue({
     startupConfig: useGetStartupConfigReturnValue.data,
   });
@@ -108,7 +99,6 @@ const setup = ({
     mockUseOutletContext,
     mockUseGetStartupConfig,
     mockUseRefreshTokenMutation,
-    mockUseGetBannerQuery,
   };
 };
 

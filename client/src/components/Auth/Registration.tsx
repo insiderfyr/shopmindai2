@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
-import { useRegisterUserMutation } from 'librechat-data-provider/react-query';
+import { useRegisterUserMutation } from '~/data-provider';
 import type { TError } from 'librechat-data-provider';
 import { useLocalize, TranslationKeys, ThemeContext } from '~/hooks';
 import type { TLoginLayoutContext } from '~/common';
@@ -38,6 +38,7 @@ const Registration: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countdown, setCountdown] = useState<number>(3);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -47,6 +48,13 @@ const Registration: React.FC = () => {
   // only require captcha if we have a siteKey
   const requireCaptcha = Boolean(startupConfig?.turnstile?.siteKey);
 
+  // Handle navigation after successful registration
+  useEffect(() => {
+    if (shouldNavigate && countdown === 0) {
+      navigate('/c/new', { replace: true });
+    }
+  }, [shouldNavigate, countdown, navigate]);
+
   const registerUser = useRegisterUserMutation({
     onMutate: () => {
       setIsSubmitting(true);
@@ -54,11 +62,11 @@ const Registration: React.FC = () => {
     onSuccess: () => {
       setIsSubmitting(false);
       setCountdown(3);
+      setShouldNavigate(true);
       const timer = setInterval(() => {
         setCountdown((prevCountdown) => {
           if (prevCountdown <= 1) {
             clearInterval(timer);
-            navigate('/c/new', { replace: true });
             return 0;
           } else {
             return prevCountdown - 1;
@@ -162,6 +170,10 @@ const Registration: React.FC = () => {
                 value: 50,
                 message: localize('com_auth_first_name_max_length'),
               },
+              pattern: {
+                value: /^[a-zA-Z\s'-]+$/,
+                message: 'First name must contain only letters and spaces',
+              },
             })}
             {renderInput('last_name', 'com_auth_last_name', 'text', {
               required: localize('com_auth_last_name_required'),
@@ -173,15 +185,24 @@ const Registration: React.FC = () => {
                 value: 50,
                 message: localize('com_auth_last_name_max_length'),
               },
+              pattern: {
+                value: /^[a-zA-Z\s'-]+$/,
+                message: 'Last name must contain only letters and spaces',
+              },
             })}
             {renderInput('username', 'com_auth_username', 'text', {
+              required: 'Username is required',
               minLength: {
-                value: 2,
+                value: 3,
                 message: localize('com_auth_username_min_length'),
               },
               maxLength: {
-                value: 80,
+                value: 30,
                 message: localize('com_auth_username_max_length'),
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9_]+$/,
+                message: 'Username must contain only letters, numbers, and underscores',
               },
             })}
             {renderInput('email', 'com_auth_email', 'email', {
@@ -208,6 +229,10 @@ const Registration: React.FC = () => {
               maxLength: {
                 value: 128,
                 message: localize('com_auth_password_max_length'),
+              },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+                message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
               },
             })}
             {renderInput('confirm_password', 'com_auth_password_confirm', 'password', {

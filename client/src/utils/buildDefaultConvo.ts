@@ -50,6 +50,17 @@ const buildDefaultConvo = ({
     secondaryModels = [...availableModels];
   }
 
+  // Validate endpoint before passing to parseConvo
+  const validEndpoints = Object.values(EModelEndpoint);
+  if (!validEndpoints.includes(endpoint as EModelEndpoint)) {
+    console.warn(`buildDefaultConvo: Invalid endpoint "${endpoint}", falling back to null`);
+    return {
+      ...conversation,
+      endpointType,
+      endpoint: null,
+    };
+  }
+
   const convo = parseConvo({
     endpoint: endpoint as EndpointSchemaKey,
     endpointType: endpointType as EndpointSchemaKey,

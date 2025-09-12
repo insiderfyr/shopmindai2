@@ -22,14 +22,19 @@ type ServerConfig struct {
 
 // KeycloakConfig holds Keycloak configuration
 type KeycloakConfig struct {
-	URL          string `mapstructure:"url"`
-	Realm        string `mapstructure:"realm"`
-	AdminRealm   string `mapstructure:"admin_realm"`
-	ClientID     string `mapstructure:"client_id"`
-	ClientSecret string `mapstructure:"client_secret"`
-	AdminClientID string `mapstructure:"admin_client_id"`
-	AdminUser    string `mapstructure:"admin_user"`
-	AdminPass    string `mapstructure:"admin_pass"`
+	URL              string `mapstructure:"url"`
+	ExternalURL      string `mapstructure:"external_url"`
+	Realm            string `mapstructure:"realm"`
+	AdminRealm       string `mapstructure:"admin_realm"`
+	ClientID         string `mapstructure:"client_id"`
+	ClientSecret     string `mapstructure:"client_secret"`
+	AdminClientID    string `mapstructure:"admin_client_id"`
+	AdminUser        string `mapstructure:"admin_user"`
+	AdminPass        string `mapstructure:"admin_pass"`
+	// External URLs for frontend
+	ExternalAuthURL   string `mapstructure:"external_auth_url"`
+	ExternalTokenURL  string `mapstructure:"external_token_url"`
+	ExternalLogoutURL string `mapstructure:"external_logout_url"`
 }
 
 // JWTConfig holds JWT configuration
@@ -65,6 +70,9 @@ func LoadConfig() (*Config, error) {
 	if viper.GetString("KEYCLOAK_URL") != "" {
 		config.Keycloak.URL = viper.GetString("KEYCLOAK_URL")
 	}
+	if viper.GetString("KEYCLOAK_EXTERNAL_URL") != "" {
+		config.Keycloak.ExternalURL = viper.GetString("KEYCLOAK_EXTERNAL_URL")
+	}
 	if viper.GetString("KEYCLOAK_REALM") != "" {
 		config.Keycloak.Realm = viper.GetString("KEYCLOAK_REALM")
 	}
@@ -86,6 +94,15 @@ func LoadConfig() (*Config, error) {
 	if viper.GetString("KEYCLOAK_ADMIN_PASS") != "" {
 		config.Keycloak.AdminPass = viper.GetString("KEYCLOAK_ADMIN_PASS")
 	}
+	if viper.GetString("KEYCLOAK_EXTERNAL_AUTH_URL") != "" {
+		config.Keycloak.ExternalAuthURL = viper.GetString("KEYCLOAK_EXTERNAL_AUTH_URL")
+	}
+	if viper.GetString("KEYCLOAK_EXTERNAL_TOKEN_URL") != "" {
+		config.Keycloak.ExternalTokenURL = viper.GetString("KEYCLOAK_EXTERNAL_TOKEN_URL")
+	}
+	if viper.GetString("KEYCLOAK_EXTERNAL_LOGOUT_URL") != "" {
+		config.Keycloak.ExternalLogoutURL = viper.GetString("KEYCLOAK_EXTERNAL_LOGOUT_URL")
+	}
 
 	return &config, nil
 }
@@ -99,6 +116,7 @@ func setDefaults() {
 
 	// Keycloak defaults
 	viper.SetDefault("KEYCLOAK_URL", "http://localhost:8080")
+	viper.SetDefault("KEYCLOAK_EXTERNAL_URL", "http://localhost:8081")
 	viper.SetDefault("KEYCLOAK_REALM", "master")
 	viper.SetDefault("KEYCLOAK_ADMIN_REALM", "master")
 	viper.SetDefault("KEYCLOAK_CLIENT_ID", "auth-service")
