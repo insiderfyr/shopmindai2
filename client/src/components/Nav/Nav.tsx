@@ -186,7 +186,7 @@ const Nav = memo(
                   <nav
                     id="chat-history-nav"
                     aria-label={localize('com_ui_chat_history')}
-                    className="nav-scroll-container flex h-full flex-col bg-blue-100/40 px-2 pb-3.5 dark:bg-[#0f1a2a]/80 md:px-3 border-r border-gray-300/60 dark:border-gray-600/60"
+                    className="nav-scroll-container flex h-full flex-col bg-blue-100/40 px-2 pb-3.5 dark:bg-[#0f1a2a]/80 md:px-3 border-r-0.5 border-black dark:border-black"
                   >
                     <div
                       className="nav-scroll-container flex flex-1 flex-col"

@@ -11,12 +11,13 @@ import ChatView from '~/components/Chat/ChatView';
 import useAuthRedirect from './useAuthRedirect';
 import temporaryStore from '~/store/temporary';
 import { Spinner } from '~/components/svg';
-import { useRecoilCallback } from 'recoil';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
 import store from '~/store';
 
 export default function ChatRoute() {
   const { data: startupConfig } = useGetStartupConfig();
   const { isAuthenticated, user } = useAuthRedirect();
+  const queriesEnabled = useRecoilValue(store.queriesEnabled);
 
   const setIsTemporary = useRecoilCallback(
     ({ set }) =>
@@ -59,7 +60,12 @@ export default function ChatRoute() {
    */
   useEffect(() => {
     const shouldSetConvo =
-      (startupConfig && !hasSetConversation.current && !modelsQuery.data?.initial) ?? false;
+      startupConfig &&
+      !hasSetConversation.current &&
+      !modelsQuery.isLoading &&
+      !endpointsQuery.isLoading &&
+      modelsQuery.data &&
+      endpointsQuery.data;
     /* Early exit if startupConfig is not loaded and conversation is already set and only initial models have loaded */
     if (!shouldSetConvo) {
       return;
@@ -117,7 +123,9 @@ export default function ChatRoute() {
     startupConfig,
     initialConvoQuery.data,
     endpointsQuery.data,
+    endpointsQuery.isLoading,
     modelsQuery.data,
+    modelsQuery.isLoading,
     assistantListMap,
   ]);
 

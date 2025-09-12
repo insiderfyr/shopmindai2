@@ -152,54 +152,56 @@ app.get('/api/user', (req, res) => {
 
 app.get('/api/endpoints', (req, res) => {
   res.json({
-    data: {
-      agents: null,
-      anthropic: null,
-      assistants: null,
-      azureAssistants: null,
-      azureOpenAI: null,
-      chatGPTBrowser: null,
-      custom: {
-        availableModels: ["custom-model"],
-        userProvide: false,
-        type: "custom"
-      },
-      google: null,
-      gptPlugins: null,
-      openAI: {
-        availableModels: ["gpt-3.5-turbo", "gpt-4"],
-        userProvide: false,
-        type: "openAI"
-      },
-      xAI: null
+    agents: null,
+    anthropic: null,
+    assistants: null,
+    azureAssistants: null,
+    azureOpenAI: null,
+    chatGPTBrowser: null,
+    custom: {
+      availableModels: ["custom-model"],
+      userProvide: false,
+      type: "custom"
     },
-    message: "AI Endpoints - configured for ShopMindAI"
+    google: null,
+    gptPlugins: null,
+    openAI: {
+      availableModels: ["gpt-3.5-turbo", "gpt-4"],
+      userProvide: false,
+      type: "openAI"
+    },
+    xAI: null
   });
 });
 
 app.get('/api/models', (req, res) => {
   res.json({
-    data: {
-      openAI: ["gpt-3.5-turbo", "gpt-4"],
-      custom: ["custom-model"]
-    },
-    message: "Available AI models for ShopMindAI"
+    openAI: ["gpt-3.5-turbo", "gpt-4"],
+    custom: ["custom-model"]
   });
 });
 
 app.get('/api/startup', (req, res) => {
   res.json({
-    data: {
-      app_name: "ShopMindAI",
-      version: "1.0.0-mvp",
-      features: {
-        plugins: true,
-        assistants: true,
-        files: true,
-        search: true
-      }
+    appTitle: "ShopMindAI",
+    version: "1.0.0-mvp",
+    description: "AI-Powered Shopping Assistant",
+    interface: {
+      modelSelect: true,
+      sidebar: true,
+      header: true,
+      footer: true
     },
-    message: "Startup config - placeholder for ShopMindAI"
+    registration: true,
+    passwordReset: true,
+    emailVerification: false,
+    socialLogin: false,
+    features: {
+      plugins: true,
+      assistants: true,
+      files: true,
+      search: true
+    }
   });
 });
 
