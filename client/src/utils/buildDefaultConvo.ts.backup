@@ -57,16 +57,6 @@ const buildDefaultConvo = ({
     secondaryModels = [...availableModels];
   }
 
-  // Check for specific invalid endpoint "data"
-  if (endpoint && typeof endpoint === "string" && endpoint === "data") {
-    console.warn("buildDefaultConvo: Detected invalid endpoint \"data\", likely from query parameter. Falling back to null.");
-    return {
-      ...conversation,
-      endpointType,
-      endpoint: null,
-    };
-  }
-
   // Validate endpoint before passing to parseConvo
   const validEndpoints = Object.values(EModelEndpoint);
   if (!validEndpoints.includes(endpoint as EModelEndpoint)) {

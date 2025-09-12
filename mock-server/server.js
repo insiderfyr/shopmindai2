@@ -259,6 +259,21 @@ app.get('/api/v1/auth/config', (req, res) => {
   });
 });
 
+// Files routes
+app.get("/api/files", (req, res) => {
+  res.json([]);
+});
+
+app.post("/api/files", (req, res) => {
+  res.json({
+    id: `file-${Date.now()}`,
+    name: "mock-file.txt",
+    size: 1024,
+    type: "text/plain",
+    createdAt: new Date().toISOString()
+  });
+});
+
 // Generic API routes
 app.get('/api/*', (req, res) => {
   res.json({
