@@ -68,7 +68,7 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
   return (
     <>
       {showResendLink && (
-        <div className="mt-2 rounded-md border border-green-500 bg-green-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200">
+        <div className="mt-2 rounded-md border border-green-500 bg-white px-3 py-2 text-sm text-gray-600 dark:text-gray-200">
           {localize('com_auth_email_verification_resend_prompt')}
           <button
             type="button"
@@ -84,7 +84,14 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
         className="mt-6"
         aria-label="Login form"
         method="POST"
-        onSubmit={handleSubmit((data) => onSubmit(data))}
+        onSubmit={handleSubmit((data) => {
+          console.log("🔐 Login Form Submit - Data being sent:", data);
+          console.log("🔐 Login Form Submit - Email/Username:", data.email);
+          console.log("🔐 Login Form Submit - Password length:", data.password?.length);
+          console.log("🔐 Login Form Submit - Turnstile token:", turnstileToken);
+          console.log("🔐 Login Form Submit - Form errors:", errors);
+          onSubmit(data);
+        })}
       >
         <div className="mb-4">
           <div className="relative">
@@ -102,12 +109,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
                 },
               })}
               aria-invalid={!!errors.email}
-              className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] bg-blue-50 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
+              className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] bg-white px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
               placeholder=" "
             />
             <label
               htmlFor="email"
-              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-white px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
             >
               {useUsernameLogin
                 ? localize('com_auth_username').replace(/ \(.*$/, '')
@@ -129,12 +136,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
                 maxLength: { value: 128, message: localize('com_auth_password_max_length') },
               })}
               aria-invalid={!!errors.password}
-              className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] bg-blue-50 px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
+              className="webkit-dark-styles transition-color peer w-full rounded-[16px] border border-[#4d8eff] bg-white px-3.5 pb-2.5 pt-3 text-black duration-200 focus:border-[#4d8eff] focus:outline-none dark:border-[#4d8eff] dark:bg-[#182533] dark:text-white"
               placeholder=" "
             />
             <label
               htmlFor="password"
-              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+              className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-white px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
             >
               {localize('com_auth_password')}
             </label>

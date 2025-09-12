@@ -76,8 +76,28 @@ const Registration: React.FC = () => {
     },
     onError: (error: unknown) => {
       setIsSubmitting(false);
-      if ((error as TError).response?.data?.message) {
-        setErrorMessage((error as TError).response?.data?.message ?? '');
+      console.error("📝 Registration Error Handler:", error);
+      
+      const axiosError = error as any;
+      console.error("📝 Registration Error Response:", axiosError.response?.data);
+      console.error("📝 Registration Error Status:", axiosError.response?.status);
+      
+      if (axiosError.response?.status === 409) {
+        // Handle conflict error (username/email already exists)
+        const errorData = axiosError.response?.data;
+        if (errorData?.message) {
+          setErrorMessage(errorData.message);
+        } else if (errorData?.error) {
+          setErrorMessage(errorData.error);
+        } else {
+          setErrorMessage('Acest nume de utilizator sau adresa de email este deja înregistrat(ă). Vă rugăm să alegeți alte date sau să vă conectați dacă aveți deja un cont.');
+        }
+      } else if (axiosError.response?.data?.message) {
+        setErrorMessage(axiosError.response.data.message);
+      } else if (axiosError.message) {
+        setErrorMessage(axiosError.message);
+      } else {
+        setErrorMessage('Registration failed. Please try again.');
       }
     },
   });
@@ -107,7 +127,7 @@ const Registration: React.FC = () => {
         />
         <label
           htmlFor={id}
-          className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-blue-50 px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
+          className="absolute start-3 top-1.5 z-10 origin-[0] -translate-y-4 scale-75 transform rounded-[12px] bg-white px-2 text-sm text-text-secondary-alt duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1.5 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-[#4d8eff] dark:bg-[#182533] rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4"
         >
           {localize(label)}
         </label>
@@ -129,7 +149,7 @@ const Registration: React.FC = () => {
       )}
       {registerUser.isSuccess && countdown > 0 && (
         <div
-          className="rounded-[16px] border border-green-500 bg-green-500/10 px-3 py-2 text-sm text-gray-600 dark:text-gray-200"
+          className="rounded-[16px] border border-green-500 bg-white px-3 py-2 text-sm text-gray-600 dark:text-gray-200"
           role="alert"
         >
           {localize(
@@ -148,6 +168,10 @@ const Registration: React.FC = () => {
             aria-label="Registration form"
             method="POST"
             onSubmit={handleSubmit((data: TRegisterUserLocal) => {
+              console.log("📝 Registration Form Submit - Raw form data:", data);
+              console.log("📝 Registration Form Submit - Form errors:", errors);
+              console.log("📝 Registration Form Submit - Turnstile token:", turnstileToken);
+              
               // Transform local data to the format expected by the API
               const apiData = {
                 first_name: data.first_name,
@@ -157,6 +181,11 @@ const Registration: React.FC = () => {
                 password: data.password,
                 token: token ?? undefined,
               };
+              
+              console.log("📝 Registration Form Submit - API data being sent:", apiData);
+              console.log("📝 Registration Form Submit - Password length:", data.password?.length);
+              console.log("📝 Registration Form Submit - Password confirmation match:", data.password === data.confirm_password);
+              
               registerUser.mutate(apiData);
             })}
           >

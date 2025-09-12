@@ -32,10 +32,10 @@ export default function MessagesView({
 
   return (
     <>
-      <div className="relative flex-1 overflow-hidden overflow-y-auto bg-[#F5FBFF] dark:bg-[#182533]">
+      <div className="relative flex-1 overflow-hidden overflow-y-auto bg-white dark:bg-[#182533]">
         <div className="relative h-full">
           <div
-            className="scrollbar-gutter-stable bg-[#F5FBFF] dark:bg-[#182533]"
+            className="scrollbar-gutter-stable bg-white dark:bg-[#182533]"
             onScroll={debouncedHandleScroll}
             ref={scrollableRef}
             style={{
@@ -44,7 +44,7 @@ export default function MessagesView({
               width: '100%',
             }}
           >
-            <div className="flex flex-col bg-[#F5FBFF] pb-6 dark:bg-[#182533] sm:pb-8 md:pb-9">
+            <div className="flex flex-col bg-white pb-6 dark:bg-[#182533] sm:pb-8 md:pb-9">
               {(_messagesTree && _messagesTree.length == 0) || _messagesTree === null ? (
                 <div
                   className={cn(

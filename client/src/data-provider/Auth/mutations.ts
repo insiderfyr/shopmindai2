@@ -25,10 +25,20 @@ export const useLoginUserMutation = (
   
   return useMutation([MutationKeys.loginUser], {
     mutationFn: async (payload: t.TLoginUser) => {
-      const response = await authService.post('/api/v1/auth/login', {
+      console.log("🚀 Login API Request - Payload:", payload);
+      console.log("🚀 Login API Request - Sending to:", 'http://localhost:8080/api/v1/auth/login');
+      
+      const requestData = {
         username: payload.email, // Our auth service expects username
         password: payload.password,
-      });
+      };
+      
+      console.log("🚀 Login API Request - Request data:", requestData);
+      
+      const response = await authService.post('/api/v1/auth/login', requestData);
+      
+      console.log("🚀 Login API Response - Status:", response.status);
+      console.log("🚀 Login API Response - Data:", response.data);
       
       // Transform response to match expected format
       return {
@@ -138,40 +148,34 @@ export const useRegisterUserMutation = (
   
   return useMutation([MutationKeys.registerUser], {
     mutationFn: async (payload: t.TRegisterUser) => {
-      const response = await authService.post('/api/v1/auth/register', {
+      console.log("📝 Registration API Request - Payload:", payload);
+      console.log("📝 Registration API Request - Sending to:", 'http://localhost:8080/api/v1/auth/register');
+      
+      const requestData = {
         username: payload.username,
         email: payload.email,
         password: payload.password,
         first_name: payload.first_name,
         last_name: payload.last_name,
-      });
+      };
       
-      // Transform response to match expected format
-      if (response.data.data && response.data.data.user) {
-        // Registration with immediate login (user data provided)
-        return {
-          user: {
-            id: response.data.data.user.id,
-            username: response.data.data.user.username,
-            email: response.data.data.user.email,
-            firstName: response.data.data.user.first_name,
-            lastName: response.data.data.user.last_name,
-            role: 'USER',
-            avatar: null,
-            createdAt: response.data.data.user.created_at,
-          },
-          token: response.data.data.access_token,
-          refreshToken: response.data.data.refresh_token,
-          message: response.data.message,
-        };
-      } else if (response.data.message === 'Registration successful') {
-        // Successful registration without immediate login
-        return {
-          message: response.data.message,
-        };
-      } else {
-        // Handle error responses (like 409 Conflict)
-        throw new Error(response.data.message || 'Registration failed');
+      console.log("📝 Registration API Request - Request data:", requestData);
+      
+      try {
+        const response = await authService.post('/api/v1/auth/register', requestData);
+        
+        console.log("📝 Registration API Response - Status:", response.status);
+        console.log("📝 Registration API Response - Data:", response.data);
+        
+        return response.data;
+      } catch (error: any) {
+        console.error("📝 Registration API Error:", error);
+        console.error("📝 Registration API Error Response:", error.response?.data);
+        console.error("📝 Registration API Error Status:", error.response?.status);
+        console.error("📝 Registration API Error Message:", error.message);
+        
+        // Re-throw the error with more details
+        throw error;
       }
     },
     ...(options || {}),

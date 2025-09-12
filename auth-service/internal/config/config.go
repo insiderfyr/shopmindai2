@@ -115,9 +115,9 @@ func setDefaults() {
 	viper.SetDefault("SERVER_MODE", "debug")
 
 	// Keycloak defaults
-	viper.SetDefault("KEYCLOAK_URL", "http://localhost:8080")
-	viper.SetDefault("KEYCLOAK_EXTERNAL_URL", "http://localhost:8081")
-	viper.SetDefault("KEYCLOAK_REALM", "master")
+	viper.SetDefault("KEYCLOAK_URL", "http://localhost:8080/auth")
+	viper.SetDefault("KEYCLOAK_EXTERNAL_URL", "http://localhost:8081/auth")
+	viper.SetDefault("KEYCLOAK_REALM", "ShopMindAI")
 	viper.SetDefault("KEYCLOAK_ADMIN_REALM", "master")
 	viper.SetDefault("KEYCLOAK_CLIENT_ID", "auth-service")
 	viper.SetDefault("KEYCLOAK_CLIENT_SECRET", "your-client-secret")

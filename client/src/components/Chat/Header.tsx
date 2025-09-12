@@ -23,7 +23,7 @@ export default function Header() {
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   return (
-    <div className="sticky top-0 z-10 -mt-2 flex h-12 w-full items-center justify-between bg-[#F5FBFF] p-1 font-semibold text-text-primary dark:bg-[#182533] sm:h-14 sm:p-2">
+    <div className="sticky top-0 z-10 -mt-2 flex h-12 w-full items-center justify-between bg-white p-1 font-semibold text-text-primary dark:bg-[#182533] sm:h-14 sm:p-2">
       <div className="hide-scrollbar flex w-full items-center justify-between gap-2 overflow-x-auto">
         <div className="mx-1 flex items-center gap-1 sm:gap-2">
           <div

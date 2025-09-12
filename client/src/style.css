@@ -72,25 +72,25 @@ html {
   --text-warning: var(--amber-500);
   --ring-primary: var(--gray-500);
   --header-primary: var(--white);
-  --header-hover: var(--gray-50);
-  --header-button-hover: var(--gray-50);
-  --surface-active: var(--gray-100);
-  --surface-active-alt: var(--gray-200);
-  --surface-hover: var(--gray-200);
-  --surface-hover-alt: var(--gray-300);
+  --header-hover: var(--white);
+  --header-button-hover: var(--white);
+  --surface-active: var(--white);
+  --surface-active-alt: var(--white);
+  --surface-hover: var(--white);
+  --surface-hover-alt: var(--white);
   --surface-primary: var(--white);
-  --surface-primary-alt: var(--gray-50);
-  --surface-primary-contrast: var(--gray-100);
-  --surface-secondary: var(--gray-50);
-  --surface-secondary-alt: var(--gray-200);
-  --surface-tertiary: var(--gray-100);
+  --surface-primary-alt: var(--white);
+  --surface-primary-contrast: var(--white);
+  --surface-secondary: var(--white);
+  --surface-secondary-alt: var(--white);
+  --surface-tertiary: var(--white);
   --surface-tertiary-alt: var(--white);
   --surface-dialog: var(--white);
   --surface-submit: #4d8eff;
   --surface-submit-hover: #3a6cd9;
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
-  --surface-chat: #F5FBFF;
+  --surface-chat: var(--white);
   --border-light: var(--gray-200);
   --border-medium-alt: var(--gray-300);
   --border-medium: var(--gray-300);
@@ -2160,7 +2160,7 @@ html {
 .webkit-dark-styles,
 .webkit-dark-styles:focus {
   background-clip: content-box;
-  -webkit-box-shadow: 0 0 0 50vh rgb(239, 246, 255) inset;
+  -webkit-box-shadow: 0 0 0 50vh rgb(255, 255, 255) inset;
 }
 
 .dark .webkit-dark-styles,
@@ -2607,7 +2607,7 @@ html {
   border-width: 1px;
   border-style: solid;
   border-color: var(--border-light);
-  background-color: rgb(239, 246, 255);
+  background-color: rgb(255, 255, 255);
   padding: 0.5rem;
   color: var(--text-primary);
   box-shadow:

@@ -57,10 +57,10 @@ function AuthLayout({
 
   return (
     <div
-      className="relative flex min-h-screen flex-col bg-[#F5FBFF] dark:bg-[#182533]"
+      className="relative flex min-h-screen flex-col bg-white dark:bg-[#182533]"
       style={
         {
-          '--page-bg': '#F5FBFF',
+          '--page-bg': '#ffffff',
           '--page-bg-dark': '#182533',
         } as React.CSSProperties
       }

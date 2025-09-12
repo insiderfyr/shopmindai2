@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { QueryObserverResult, UseQueryOptions } from '@tanstack/react-query';
 import type t from 'librechat-data-provider';
 import store from '~/store';
+import { getAuthStartupConfig } from './customStartupConfig';
 
 export const useGetEndpointsQuery = <TData = t.TEndpointsConfig>(
   config?: UseQueryOptions<t.TEndpointsConfig, unknown, TData>,
@@ -29,7 +30,7 @@ export const useGetStartupConfig = (
   const queriesEnabled = useRecoilValue<boolean>(store.queriesEnabled);
   return useQuery<t.TStartupConfig>(
     [QueryKeys.startupConfig],
-    () => dataService.getStartupConfig(),
+    () => getAuthStartupConfig(),
     {
       staleTime: Infinity,
       refetchOnWindowFocus: false,

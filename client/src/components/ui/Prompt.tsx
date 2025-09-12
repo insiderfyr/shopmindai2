@@ -6,13 +6,13 @@ export default function Prompt({ title, prompt }: { title: string; prompt: strin
   return (
     <div
       // onclick="selectPromptTemplate(0)"
-      className="flex w-full flex-col gap-2 rounded-md bg-gray-50 p-4 text-left hover:bg-gray-200 dark:bg-white/5"
+      className="flex w-full flex-col gap-2 rounded-md bg-white p-4 text-left hover:bg-white dark:bg-white/5"
     >
       <h2 className="m-auto flex items-center gap-3 text-lg font-normal md:flex-col md:gap-2">
         {title}
       </h2>
       <button>
-        <p className="w-full rounded-md bg-gray-50 p-3 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-gray-800">
+        <p className="w-full rounded-md bg-white p-3 hover:bg-white dark:bg-white/5 dark:hover:bg-gray-800">
           {prompt}
         </p>
       </button>

@@ -34,7 +34,7 @@ export default function PromptsView() {
   }
 
   return (
-    <div className="flex h-screen w-full flex-col bg-blue-50 p-0 dark:bg-[#182533] lg:p-2">
+    <div className="flex h-screen w-full flex-col bg-white p-0 dark:bg-[#182533] lg:p-2">
       <DashBreadcrumb />
       <div className="flex w-full flex-grow flex-row divide-x overflow-hidden dark:divide-gray-600">
         <GroupSidePanel isDetailView={isDetailView} {...groupsNav}>
@@ -44,7 +44,7 @@ export default function PromptsView() {
         </GroupSidePanel>
         <div
           className={cn(
-            'scrollbar-gutter-stable w-full overflow-y-auto bg-blue-50 dark:bg-[#182533] lg:w-3/4 xl:w-3/4',
+            'scrollbar-gutter-stable w-full overflow-y-auto bg-white dark:bg-[#182533] lg:w-3/4 xl:w-3/4',
             isDetailView ? 'block' : 'hidden md:block',
           )}
         >
