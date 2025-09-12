@@ -159,13 +159,31 @@ app.get('/api/endpoints', (req, res) => {
       azureAssistants: null,
       azureOpenAI: null,
       chatGPTBrowser: null,
-      custom: null,
+      custom: {
+        availableModels: ["custom-model"],
+        userProvide: false,
+        type: "custom"
+      },
       google: null,
       gptPlugins: null,
-      openAI: null,
+      openAI: {
+        availableModels: ["gpt-3.5-turbo", "gpt-4"],
+        userProvide: false,
+        type: "openAI"
+      },
       xAI: null
     },
-    message: "AI Endpoints - placeholder for ShopMindAI"
+    message: "AI Endpoints - configured for ShopMindAI"
+  });
+});
+
+app.get('/api/models', (req, res) => {
+  res.json({
+    data: {
+      openAI: ["gpt-3.5-turbo", "gpt-4"],
+      custom: ["custom-model"]
+    },
+    message: "Available AI models for ShopMindAI"
   });
 });
 
@@ -193,6 +211,51 @@ app.get('/metrics', (req, res) => {
       timestamp: new Date().toISOString()
     },
     message: "Metrics endpoint - placeholder for ShopMindAI"
+  });
+});
+
+// Auth config endpoint
+app.get('/api/v1/auth/config', (req, res) => {
+  res.json({
+    data: {
+      keycloak: {
+        url: 'http://localhost:8081',
+        realm: 'ShopMindAI',
+        clientId: 'auth-service',
+        authUrl: 'http://localhost:8081/realms/ShopMindAI/protocol/openid-connect/auth',
+        tokenUrl: 'http://localhost:8081/realms/ShopMindAI/protocol/openid-connect/token',
+        logoutUrl: 'http://localhost:8081/realms/ShopMindAI/protocol/openid-connect/logout',
+      },
+      endpoints: {
+        login: '/api/v1/auth/login',
+        register: '/api/v1/auth/register',
+        refresh: '/api/v1/auth/refresh',
+        logout: '/api/v1/auth/logout',
+        profile: '/api/v1/user/profile',
+      },
+      features: {
+        registration: true,
+        passwordReset: true,
+        emailVerification: false,
+        socialLogin: false,
+      },
+      validation: {
+        username: {
+          minLength: 3,
+          maxLength: 50,
+          pattern: '^[a-zA-Z0-9_-]+$'
+        },
+        password: {
+          minLength: 8,
+          maxLength: 128,
+          requireUppercase: true,
+          requireLowercase: true,
+          requireNumbers: true,
+          requireSpecialChars: true
+        }
+      }
+    },
+    message: "Auth config for ShopMindAI"
   });
 });
 
@@ -236,52 +299,3 @@ app.listen(port, () => {
 });
 
 module.exports = app;
-
-// Auth config endpoint
-app.get('/api/v1/auth/config', (req, res) => {
-  res.json({
-    data: {
-      app_name: "ShopMindAI",
-      version: "1.0.0-mvp",
-      features: {
-        plugins: true,
-        assistants: true,
-        files: true,
-        search: true
-      },
-      auth: {
-        enabled: true,
-        provider: "keycloak",
-        keycloak_url: "http://localhost:8080",
-        realm: "shopmindai",
-        client_id: "shopmindai-client"
-      }
-    },
-    message: "Auth configuration for ShopMindAI"
-  });
-});
-
-
-// Auth config endpoint
-app.get('/api/v1/auth/config', (req, res) => {
-  res.json({
-    data: {
-      app_name: 'ShopMindAI',
-      version: '1.0.0-mvp',
-      features: {
-        plugins: true,
-        assistants: true,
-        files: true,
-        search: true
-      },
-      auth: {
-        enabled: true,
-        provider: 'keycloak',
-        keycloak_url: 'http://localhost:8080',
-        realm: 'shopmindai',
-        client_id: 'shopmindai-client'
-      }
-    },
-    message: 'Auth configuration for ShopMindAI'
-  });
-});
