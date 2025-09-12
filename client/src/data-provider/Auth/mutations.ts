@@ -35,26 +35,44 @@ export const useLoginUserMutation = (
       
       console.log("🚀 Login API Request - Request data:", requestData);
       
-      const response = await authService.post('/api/v1/auth/login', requestData);
+      try {
+        const response = await authService.post('/api/v1/auth/login', requestData);
+        
+        console.log("🚀 Login API Response - Status:", response.status);
+        console.log("🚀 Login API Response - Data:", response.data);
+        
+        // Transform response to match expected format
+        return {
+          user: {
+            id: response.data.data.user.id,
+            username: response.data.data.user.username,
+            email: response.data.data.user.email,
+            firstName: response.data.data.user.first_name,
+            lastName: response.data.data.user.last_name,
+            role: 'USER',
+            avatar: null,
+            createdAt: response.data.data.user.created_at,
+          },
+          token: response.data.data.access_token,
+          refreshToken: response.data.data.refresh_token,
+        };
+      } catch (error: any) {
+      console.error("🚀 Login API Error:", error);
+      console.error("🚀 Login API Error Response:", error.response?.data);
+      console.error("🚀 Login API Error Status:", error.response?.status);
       
-      console.log("🚀 Login API Response - Status:", response.status);
-      console.log("🚀 Login API Response - Data:", response.data);
-      
-      // Transform response to match expected format
-      return {
-        user: {
-          id: response.data.data.user.id,
-          username: response.data.data.user.username,
-          email: response.data.data.user.email,
-          firstName: response.data.data.user.first_name,
-          lastName: response.data.data.user.last_name,
-          role: 'USER',
-          avatar: null,
-          createdAt: response.data.data.user.created_at,
-        },
-        token: response.data.data.access_token,
-        refreshToken: response.data.data.refresh_token,
-      };
+      const errorData = error.response?.data;
+      if (errorData?.error === 'validation_error') {
+        // Handle validation errors specifically
+        throw new Error(errorData.details || errorData.message || 'Invalid input data');
+      } else if (errorData?.error === 'authentication_failed') {
+        // Handle authentication errors
+        throw new Error('Invalid username or password');
+      } else {
+        // Handle other errors
+        throw new Error(error.message || 'Login failed');
+      }
+      }
     },
     ...(options || {}),
     onMutate: (vars) => {

@@ -147,11 +147,13 @@ const useNewConvo = (index = 0) => {
           }
 
           const models = modelsConfig?.[defaultEndpoint] ?? [];
+          // Ensure models is always an array before passing to buildDefaultConvo
+          const safeModels = Array.isArray(models) ? models : [];
           conversation = buildDefaultConvo({
             conversation,
             lastConversationSetup: activePreset as TConversation,
             endpoint: defaultEndpoint,
-            models,
+            models: safeModels,
           });
         }
 

@@ -117,11 +117,13 @@ const useGenerateConvo = ({
       }
 
       const models = modelsConfig?.[defaultEndpoint ?? ''] ?? [];
+      // Ensure models is always an array before passing to buildDefaultConvo
+      const safeModels = Array.isArray(models) ? models : [];
       conversation = buildDefaultConvo({
         conversation,
         lastConversationSetup: preset as TConversation,
         endpoint: defaultEndpoint ?? ('' as EModelEndpoint),
-        models,
+        models: safeModels,
       });
 
       if (preset?.title != null && preset.title !== '') {

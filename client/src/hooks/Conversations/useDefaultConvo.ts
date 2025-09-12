@@ -34,6 +34,8 @@ const useDefaultConvo = () => {
     });
 
     const models = modelsConfig[endpoint ?? ''] || [];
+    // Ensure models is always an array before passing to buildDefaultConvo
+    const safeModels = Array.isArray(models) ? models : [];
     const conversation = { ..._convo };
     if (cleanInput === true) {
       for (const key in conversation) {
@@ -51,7 +53,7 @@ const useDefaultConvo = () => {
       conversation: conversation as TConversation,
       endpoint,
       lastConversationSetup: preset as TConversation,
-      models,
+      models: safeModels,
     });
 
     if (!cleanOutput) {
